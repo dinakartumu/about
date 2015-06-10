@@ -141,15 +141,16 @@
 	}
 
 	#work .websites{
-		width: 100%;
+		border: none;
+		width: 100%; 
 	}
 
 	#work .websites img{
 		width: 100%;
 	}
 
-	#work .websites:nth-child(1){
+	/*#work .websites:nth-child(1){
 		margin-bottom: 20px;
-	}
+	}*/
 
 }
