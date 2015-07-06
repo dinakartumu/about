@@ -4,7 +4,8 @@
 
 	body{
 		background-color: #f1f1f1;
-		font-family: 'Roboto Slab';
+		font-family: proxima_nova_ltsemibold, Helvetica, Arial;
+		letter-spacing: 0.1em;
 	}
 
 	#container{
@@ -20,11 +21,11 @@
 		color: #ffffff;
 	}
 
-	#introduction h1{
+	#introduction h2{
 		text-align: center;
 	}
 
-	#introduction h1:nth-child(1){
+	#introduction h2:nth-child(1){
 		text-align: center;
 		padding-top: 220px;
 	}
