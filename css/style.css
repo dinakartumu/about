@@ -18,6 +18,7 @@
 /*introduction*/
 
 	#introduction{
+		min-width: 960px;
 		width: 100%;
 		height: 600px;
 		background-color: #19BF9F;
@@ -35,7 +36,8 @@
 	}
 
 	.sections{
-		width: 100%;
+		min-width: 960px;
+		/*width: 100%;*/
 		text-align: center;
 		background-color: white;
 		padding: 10px 0;
@@ -438,6 +440,7 @@
 /*socialmedia*/
 
 	#social_media{
+		min-width: 960px;
 		width: 100%;
 		height: 40px;
 		background-color: #ffffff;
@@ -457,7 +460,8 @@
 /*footer*/
 
 	#site-footer, .page-wrap:after {
-	  height: 50px; 
+		min-width: 960px;
+	  	height: 50px; 
 	}
 
 	#site-footer {
