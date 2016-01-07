@@ -98,34 +98,34 @@
 
 /*experinces*/
 
-	#experiences{
+	.experiences{
 		width: 100%;
 		height: auto;
 	}
-	
-	#post{
+
+	.experience .post{
 		width: 100%;
 		float: none;
 	}
 
-	#post h4{
+	.experience .post h4{
 		padding-top: 15px;
 	}
 
-	#year{
+	.experience .exp_year{
 		width: 120px;
 		margin-left: auto;
 		margin-right: auto;
 		margin-top: 15px;
 		float: none;
 	}
-	
-	#descrpition{
+
+	.experience .description{
 		float: none;
 		width: 100%;
 	}
 
-	#descrpition P{
+	.experience .description p{
 		padding: 15px 10px 15px 10px;
 	}
 

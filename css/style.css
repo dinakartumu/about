@@ -139,11 +139,11 @@
 	}
 
 	.language_name li:nth-child(3) span{ 
-		background:#60b3cb !important;  
+		background:#7c9849 !important;
 	}
 
 	.language_name li:nth-child(4) span{ 
-		background:#7c9849 !important;  
+		background:#60b3cb !important;
 	}
 
 	.bars {
@@ -163,16 +163,16 @@
 
 	.bars #second{
 	background: #f1f1f1; /* Old browsers */
-	background: -moz-linear-gradient(top,  #f1f1f1 0%, #f1f1f1 20%, #f1f1f1 20%, #e0c157 20%, #e0c157 20%); /* FF3.6+ */
+	background: -moz-linear-gradient(top,  #f1f1f1 0%, #f1f1f1 0%, #f1f1f1 0%, #e0c157 0%, #e0c157 0%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f1f1f1), color-stop(20%,#f1f1f1), color-stop(20%,#f1f1f1), color-stop(20%,#e0c157), color-stop(20%,#e0c157)); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top,  #f1f1f1 0%,#f1f1f1 20%,#f1f1f1 20%,#e0c157 20%,#e0c157 20%); /* Chrome10+,Safari5.1+ */
 	background: -o-linear-gradient(top,  #f1f1f1 0%,#f1f1f1 20%,#f1f1f1 20%,#e0c157 20%,#e0c157 20%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #f1f1f1 0%,#f1f1f1 20%,#f1f1f1 20%,#e0c157 20%,#e0c157 20%); /* IE10+ */
-	background: linear-gradient(to bottom,  #f1f1f1 0%,#f1f1f1 20%,#f1f1f1 20%,#e0c157 20%,#e0c157 20%); /* W3C */
+	background: linear-gradient(to bottom,  #f1f1f1 0%,#f1f1f1 10%,#f1f1f1 10%,#e0c157 10%,#e0c157 10%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1f1f1', endColorstr='#e0c157',GradientType=0 ); /* IE6-9 */
 	}
 
-	.bars #third{
+	.bars #fourth{
 	background: #f1f1f1; /* Old browsers */
 	background: -moz-linear-gradient(top,  #f1f1f1 0%, #f1f1f1 20%, #f1f1f1 40%, #60b3cb 40%, #60b3cb 40%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f1f1f1), color-stop(40%,#f1f1f1), color-stop(20%,#f1f1f1), color-stop(20%,#60b3cb), color-stop(20%,#60b3cb)); /* Chrome,Safari4+ */
@@ -183,14 +183,14 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1f1f1', endColorstr='#60b3cb',GradientType=0 ); /* IE6-9 */
 	}
 
-	.bars #fourth{
+	.bars #third{
 	background: #f1f1f1; /* Old browsers */
-	background: -moz-linear-gradient(top,  #f1f1f1 0%, #f1f1f1 50%, #f1f1f1 50%, #7c9849 50%, #7c9849 50%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f1f1f1), color-stop(50%,#f1f1f1), color-stop(50%,#f1f1f1), color-stop(50%,#7c9849), color-stop(50%,#7c9849)); /* Chrome,Safari4+ */
+	background: -moz-linear-gradient(top,  #f1f1f1 0%, #f1f1f1 20%, #f1f1f1 20%, #7c9849 20%, #7c9849 20%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f1f1f1), color-stop(20%,#f1f1f1), color-stop(20%,#f1f1f1), color-stop(20%,#7c9849), color-stop(20%,#7c9849)); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top,  #f1f1f1 0%,#f1f1f1 50%,#f1f1f1 50%,#7c9849 50%,#7c9849 50%); /* Chrome10+,Safari5.1+ */
 	background: -o-linear-gradient(top,  #f1f1f1 0%,#f1f1f1 50%,#f1f1f1 50%,#7c9849 50%,#7c9849 50%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #f1f1f1 0%,#f1f1f1 50%,#f1f1f1 50%,#7c9849 50%,#7c9849 50%); /* IE10+ */
-	background: linear-gradient(to bottom,  #f1f1f1 0%,#f1f1f1 50%,#f1f1f1 50%,#7c9849 50%,#7c9849 50%); /* W3C */
+	background: linear-gradient(to bottom,  #f1f1f1 0%,#f1f1f1 20%,#f1f1f1 20%,#7c9849 20%,#7c9849 20%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1f1f1', endColorstr='#7c9849',GradientType=0 ); /* IE6-9 */
 	}
 
@@ -318,7 +318,7 @@
 
 /*experiences*/
 
-	#experiences{
+	.experiences{
 		background-color: #ffffff;
 		text-align: center;	
 		margin: 20px auto;
@@ -326,16 +326,16 @@
 		height: 118px;
 	}
 
-	#post{
+	.experiences .post{
 		width: 27%;
 		float: left;
 	}
-	
-	#post h4{
+
+	.experiences .post h4{
 		padding-top: 30px;
 	}
 
-	#year{
+	.experiences .exp_year{
 		width: 12%;
 		height: 118px;
 		border-radius: 100%;
@@ -344,16 +344,20 @@
 		line-height: 100%;
 	}
 
-	#year h4:nth-child(1){
+	.experiences .wooter{
+		background-color: #7c9849;
+	}
+
+	.experiences .exp_year h4:nth-child(1){
 		padding-top:30px;
 	}
 
-	#descrpition{
+	.experiences .description{
 		width:60%;	
 		float: left;
 	}
-	
-	#descrpition p{
+
+	.experiences .description p{
 		padding-top: 30px;
 		text-align: left;
 	}
@@ -374,12 +378,12 @@
 		padding: 10px 15px 25px 22px;
 	}
 
-	#masters,#ug,#hs{
+	#masters, #ug, #hs{
 		float: left;
 		width: 300px;	
 	}
 
-	#masters,#ug {
+	#masters, #ug {
 		margin-right: 30px;
 	}
 
@@ -442,7 +446,7 @@
 		height: 200px;
 	}
 
-	#work .websites:nth-child(1){
+	#work .websites:nth-child(odd){
 		margin-right: 20px;
 	}
 
