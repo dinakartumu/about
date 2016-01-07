@@ -103,16 +103,16 @@
 		height: auto;
 	}
 
-	.experience .post{
+	.experiences .post{
 		width: 100%;
 		float: none;
 	}
 
-	.experience .post h4{
+	.experiences .post h4{
 		padding-top: 15px;
 	}
 
-	.experience .exp_year{
+	.experiences .exp_year{
 		width: 120px;
 		margin-left: auto;
 		margin-right: auto;
@@ -120,12 +120,12 @@
 		float: none;
 	}
 
-	.experience .description{
+	.experiences .description{
 		float: none;
 		width: 100%;
 	}
 
-	.experience .description p{
+	.experiences .description p{
 		padding: 15px 10px 15px 10px;
 	}
 
