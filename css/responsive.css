@@ -1,0 +1,175 @@
+@media screen and (max-width: 650px) {
+
+	#introduction{
+		min-width: 100%;
+	}
+
+/*sections*/
+	.sections{
+		min-width: 100%;
+		/*width: 100%;*/
+	}
+
+/*aboutme*/
+	#about{
+		width: 100%;
+		margin: 20px auto;
+		height:auto;
+		
+	}
+
+	#image{
+		width: 100%;
+		
+	}
+
+	#about img{
+		width:40%;
+		height: inherit;
+		border-radius: 100%;
+		border-style:solid;
+		border-color: #f1f1f1;
+		border-width:5px;	
+		display: block;
+	    margin-left: auto;
+	    margin-right: auto;
+	    float: none;
+	}
+
+	#mystory{
+		width: 100%;
+		height: auto;
+		margin: 0px 0px 20px 0px;
+		padding-bottom: 15px;
+		background-color: #ffffff;
+	}
+
+/*cabalities*/
+
+	#capabilties{
+		width: 100%;
+		margin: 0px;
+		height: auto;
+	}
+
+	#languages,#designs{
+		width: 100%;
+		margin-top: 20px;
+	}
+
+	#languages table{
+		margin-left: -20px;
+	}
+	
+	#languages .percentage td:nth-child(1){
+		width:45%;
+	}
+
+/*for languages names*/
+
+	.language_name li{
+		text-align: left;
+		padding: 0px;
+		margin-left: -10px;
+	}
+	
+/*for bullet points*/
+
+	.language_name li span{  
+		margin-right:0px;
+	}
+	
+	#languages,#designs h3{
+		text-align: center;
+	}
+
+/*for design tool name*/
+
+	#design_tools{
+		position: absolute;
+		left: 170px;
+		top: 60px;
+	}
+
+	.design_tools li{
+		margin: 5px 0 0 0px;
+		padding: 0 0 0 0;
+	}
+
+/*experinces*/
+
+	.experiences{
+		width: 100%;
+		height: auto;
+	}
+
+	.experiences .post{
+		width: 100%;
+		float: none;
+	}
+
+	.experiences .post h4{
+		padding-top: 15px;
+	}
+
+	.experiences .exp_year{
+		width: 120px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 15px;
+		float: none;
+	}
+
+	.experiences .description{
+		float: none;
+		width: 100%;
+	}
+
+	.experiences .description p{
+		padding: 15px 10px 15px 10px;
+	}
+
+/*education*/
+
+	#education{
+		width: 100%;
+	}
+
+	#masters,#ug,#hs{
+		width:100%;	
+	}
+
+	.year{
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+/*work*/
+
+	#work{
+		width: 100%;
+		height: auto;
+	}
+
+	#work .websites{
+		border: none;
+		width: 100%; 
+	}
+
+	#work .websites img{
+		width: 100%;
+	}
+
+/*socialmedia*/
+
+	#social_media{
+		min-width: 100%;
+	}
+
+/*footer*/
+	#site-footer, .page-wrap:after {
+		min-width: 100%;
+	}
+
+
+}
