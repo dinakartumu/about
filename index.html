@@ -20,7 +20,39 @@
     <!-- css3-mediaqueries.js for IE less than 9 -->
     <!--[if lt IE 9]>
       <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <![endif]-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        
+        console.log('hello');
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+   };
+
+   var urlparams=decodeURIComponent(window.location.search)
+
+      if(getUrlParameter('state')=='youtube'){
+        window.location.replace("spotifyyoutube://"+urlparams);
+      }
+
+      console.log(urlparams);
+
+      });
+    </script>
     <script src="js/wow.min.js"></script>
     <script>
        new WOW().init();
