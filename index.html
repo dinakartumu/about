@@ -60,7 +60,7 @@
 
         console.log(getUrlParameter('state'),urlparams);
         if(getUrlParameter('state')[0]=='youtube'){
-          window.location.replace("spotifyyoutube://"+urlparams);
+          window.location.replace("spotifyyoutube://?"+urlparams);
         }
 
       });
