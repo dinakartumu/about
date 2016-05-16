@@ -25,31 +25,43 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
-        
-        console.log('hello');
 
-        var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
+          var urlparams='';
+        // funtion for getting url parameters
+          var getUrlParameter = function getUrlParameter(sParam) {
 
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
+          var originuri=window.location.href;
 
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
+          if(originuri.indexOf('#')>0){
+            urlparams=originuri.substring(originuri.indexOf('#')+1,originuri.length); 
+            var sPageURL=urlparams, 
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+          }
+
+          else if(originuri.indexOf('?')){
+            urlparams = decodeURIComponent(window.location.search.substring(1))  
+            var sPageURL = urlparams,
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+          }
+
+          for (i = 0; i < sURLVariables.length; i++) {
+              sParameterName = sURLVariables[i].split('=');
+
+              if (sParameterName[0] === sParam) {
+                  return [sParameterName[1] === undefined ? true : sParameterName[1], urlparams];
+              }
+          }
+
+         };
+
+        console.log(getUrlParameter('state'),urlparams);
+        if(getUrlParameter('state')[0]=='youtube'){
+          window.location.replace("spotifyyoutube://"+urlparams);
         }
-    }
-   };
-
-   var urlparams=decodeURIComponent(window.location.search)
-
-      if(getUrlParameter('state')=='youtube'){
-        window.location.replace("spotifyyoutube://"+urlparams);
-      }
-
-      console.log(urlparams);
 
       });
     </script>
