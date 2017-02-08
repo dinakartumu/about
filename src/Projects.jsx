@@ -30,6 +30,7 @@ class Projects extends React.Component {
                     <div className='Eachproject'>
                         <div className='Projectname'>
                             <h3>Wooter</h3>
+                            <p>iOS and Android App</p>
                         </div>
                         <div className='Projectimages'>
                             <div className='Eachimage'>
@@ -49,6 +50,7 @@ class Projects extends React.Component {
                     <div className='Eachproject'>
                         <div className='Projectname'>
                             <h3>My Activities</h3>
+                            <p>Website</p>
                         </div>
                         <div className='Projectimages Webapp'>
                             <div className='Eachimage'>
@@ -68,6 +70,7 @@ class Projects extends React.Component {
                     <div className='Eachproject'>
                         <div className='Projectname'>
                             <h3>Cobalt Theme for github and youtube</h3>
+                            <p>Chrome Extension</p>
                         </div>
                         <div className='Projectimages Webapp'>
                             <div className='Eachimage'>

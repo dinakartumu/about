@@ -8,15 +8,15 @@
 .Projects .Header {
   display: flex;
   width: 100%;
-  padding: 0 16px;
-}
-
-.Projects .Header h2 {
-  margin: 0;
+  padding: 16px 16px;
 }
 
 .Projects .Eachproject {
-  padding: 0 16px;
+  padding: 16px 16px;
+}
+
+.Projects .Eachproject .Projectname {
+  margin-bottom: 16px;
 }
 
 .Projects .Eachproject .Projectimages {

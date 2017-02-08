@@ -4,18 +4,22 @@
     border-radius: 8px;
     margin:16px;
 
+    // h2,h3,p{
+    //     margin: 0;
+    // }
+
     .Header{
         display: flex;
         width: 100%;
-        padding: 0 16px;
-
-        h2{
-            margin: 0;
-        }
+        padding: 16px 16px;
     }
 
     .Eachproject{
-        padding: 0 16px;
+        padding: 16px 16px;
+
+        .Projectname{
+            margin-bottom: 16px;
+        }
 
         .Projectimages{
             display: flex;
