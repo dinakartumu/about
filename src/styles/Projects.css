@@ -1,0 +1,62 @@
+.Projects {
+  background-color: #1E252B;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px;
+}
+
+.Projects .Header {
+  display: flex;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.Projects .Header h2 {
+  margin: 0;
+}
+
+.Projects .Eachproject {
+  padding: 0 16px;
+}
+
+.Projects .Eachproject .Projectimages {
+  display: flex;
+  width: 100%;
+  overflow: scroll;
+}
+
+.Projects .Eachproject .Projectimages .Eachimage {
+  width: 33.3%;
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.Projects .Eachproject .Projectimages .Eachimage img {
+  width: 100%;
+}
+
+.Projects .Eachproject .Projectimages :first-child {
+  padding-left: 0;
+}
+
+.Projects .Eachproject .Projectimages :last-child {
+  padding-right: 0;
+}
+
+.Projects .Eachproject .Webapp .Eachimage {
+  width: 75%;
+}
+
+@media (max-width: 480px) {
+  .Projects .Eachproject .Projectimages .Eachimage {
+    width: 80%;
+    flex-shrink: 0;
+  }
+  .Projects .Eachproject .Projectimages .Eachimage img {
+    width: 100%;
+  }
+  .Projects .Eachproject .Webapp .Eachimage {
+    flex-shrink: 0;
+    width: 85%;
+  }
+}
