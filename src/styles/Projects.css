@@ -8,7 +8,7 @@
 .Projects .Header {
   display: flex;
   width: 100%;
-  padding: 16px 16px;
+  padding: 16px 16px 0;
 }
 
 .Projects .Eachproject {
@@ -26,7 +26,7 @@
 }
 
 .Projects .Eachproject .Projectimages .Eachimage {
-  width: 33.3%;
+  width: calc(33.3% - 32px);
   padding: 0 16px;
   flex-shrink: 0;
 }
@@ -44,19 +44,21 @@
 }
 
 .Projects .Eachproject .Webapp .Eachimage {
-  width: 75%;
+  width: calc(75% - 32px);
+}
+
+.Projects p {
+  font-size: 14px;
 }
 
 @media (max-width: 480px) {
   .Projects .Eachproject .Projectimages .Eachimage {
-    width: 80%;
-    flex-shrink: 0;
+    width: calc(80% - 16px);
   }
   .Projects .Eachproject .Projectimages .Eachimage img {
     width: 100%;
   }
   .Projects .Eachproject .Webapp .Eachimage {
-    flex-shrink: 0;
-    width: 85%;
+    width: calc(85% - 32px);
   }
 }
