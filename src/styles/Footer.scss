@@ -1,0 +1,21 @@
+.Footer{
+    // background-color:#1E252B;
+    // padding: 16px 0;
+    border-radius: 8px;
+    margin:16px;
+    display: flex;
+    align-items: center;
+    // color:rgba(230, 222, 222, 0.8);
+
+    .Serviceimage{
+        display: flex;
+
+        .Eachservice{
+            width: 24px;
+            padding: 0 8px;
+            img{
+                width: 100%;
+            }
+        }
+    }
+}
