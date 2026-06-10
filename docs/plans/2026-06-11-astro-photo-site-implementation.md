@@ -249,6 +249,7 @@ const { title, description = 'Dinakar Tumu — engineer and photographer.' } = A
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
   </head>
   <body>
@@ -259,6 +260,15 @@ const { title, description = 'Dinakar Tumu — engineer and photographer.' } = A
     <Footer />
   </body>
 </html>
+```
+
+**Step 4b: Write `public/favicon.svg`** (simple monogram on the site's dark background)
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#0c0c0d"/>
+  <text x="16" y="22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#d9a553">dt</text>
+</svg>
 ```
 
 **Step 5: Rewrite `src/pages/index.astro` to use the layout**
@@ -1172,8 +1182,14 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
   </dialog>
 </Layout>
 
-<script define:vars={{ lightboxUrls }}>
-  const dialog = document.getElementById('lightbox');
+<script type="application/json" id="lightbox-data" set:html={JSON.stringify(lightboxUrls)} />
+<script>
+  // Note: data passed via JSON script tag, NOT define:vars — astro 5.x has an open
+  // XSS advisory in define:vars sanitization (GHSA-j687-52p2-xcff).
+  const lightboxUrls = JSON.parse(
+    document.getElementById('lightbox-data')!.textContent!
+  ) as string[];
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement;
   const img = dialog.querySelector('img');
   let current = 0;
 
