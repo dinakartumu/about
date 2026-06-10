@@ -1617,6 +1617,14 @@ git add -A && git commit -m "fix: address code review findings"
 
 ### Task 12: Deploy to Cloudflare Pages (NEEDS HUMAN PARTNER)
 
+**Step 0: Pre-deploy content check**
+
+```bash
+grep -rn "TODO\|DRAFT COPY" src/
+```
+
+The draft placeholders from Task 10 must be rewritten (or consciously accepted) before the site goes public. Also re-verify the home "Recent photos" strip renders correctly now that real manifests exist.
+
 **Step 1: Push the branch and merge to master** (per partner's preference — see superpowers:finishing-a-development-branch)
 
 **Step 2: Walk the partner through Pages setup**
