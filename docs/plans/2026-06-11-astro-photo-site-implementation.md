@@ -1080,7 +1080,7 @@ const year = date.slice(0, 4);
 <a class="card" href={`/photos/${slug}`}>
   <img
     src={photoUrl(cover, { width: 800, height: 500, fit: 'cover' })}
-    alt={title}
+    alt=""
     width="800"
     height="500"
     loading="lazy"
@@ -1144,7 +1144,7 @@ const sets = (await getCollection('photosets')).sort((a, b) =>
 <style>
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
     gap: 1.5rem 1.25rem;
     margin: 2rem 0;
   }
@@ -1503,7 +1503,7 @@ const recent = (await getCollection('photosets'))
   h2 { font-size: 1.1rem; margin: 2rem 0 1rem; }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
     gap: 1.5rem 1.25rem;
     margin-bottom: 2rem;
   }
