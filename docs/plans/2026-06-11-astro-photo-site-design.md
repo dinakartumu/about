@@ -82,8 +82,9 @@ included). Publish = export collection/picks to a folder.
 2. Upload originals to R2 via S3 API (credentials in `.env`, never committed).
    Skips already-uploaded files — incremental and re-runnable.
 3. Write/update the manifest, sorted by capture time, first photo as default
-   cover. Hand edits (title, description, cover, order) survive re-imports;
-   the script only manages the photo list.
+   cover. Hand edits (title, description, cover, order, date) survive
+   re-imports; the script only manages the photo list. `date` is set from the
+   latest capture time at creation and is owner-editable thereafter.
 
 Flags: `--dry-run` (show what would happen), `--prune` (remove manifest
 entries for photos deleted from the export folder — explicit, never default).

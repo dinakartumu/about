@@ -671,6 +671,13 @@ for (const file of files) {
   });
 }
 
+// Ids derive from basenames — fail loudly on collisions (e.g. DSC001.jpg + DSC001.jpeg)
+const dupes = [...new Set(scanned.map((p) => p.id).filter((id, i, ids) => ids.indexOf(id) !== i))];
+if (dupes.length) {
+  console.error(`Duplicate photo ids in folder: ${dupes.join(', ')}`);
+  process.exit(1);
+}
+
 // 2. Merge into manifest
 const merged = mergeManifest(
   existing,
