@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import PhotoSetCard from '../../components/PhotoSetCard.astro';
+
+const sets = (await getCollection('photosets')).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date)
+);
+---
+<Layout title="Photos · Dinakar Tumu" description="Photosets by Dinakar Tumu.">
+  <section class="container">
+    <h1>Photos</h1>
+    <div class="grid">
+      {sets.map(({ data }) => (
+        <PhotoSetCard
+          slug={data.slug}
+          title={data.title}
+          cover={data.cover}
+          count={data.photos.length}
+          date={data.date}
+        />
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 1.5rem 1.25rem;
+    margin: 2rem 0;
+  }
+</style>
