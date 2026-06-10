@@ -505,12 +505,39 @@ describe('toPhotoExif', () => {
     expect(toPhotoExif({ ExposureTime: 1 }).shutter).toBe('1s');
   });
 
+  it('formats sub-second exposures of 0.4s and up as decimal seconds', () => {
+    expect(toPhotoExif({ ExposureTime: 0.6 }).shutter).toBe('0.6s');
+    expect(toPhotoExif({ ExposureTime: 0.8 }).shutter).toBe('0.8s');
+  });
+
+  it('formats fast exposures as reciprocal fractions', () => {
+    expect(toPhotoExif({ ExposureTime: 0.3333 }).shutter).toBe('1/3');
+    expect(toPhotoExif({ ExposureTime: 0.004 }).shutter).toBe('1/250');
+  });
+
   it('keeps fractional apertures', () => {
     expect(toPhotoExif({ FNumber: 2.8 }).aperture).toBe('f/2.8');
   });
 
+  it('rounds apertures to one decimal to absorb APEX float noise', () => {
+    expect(toPhotoExif({ FNumber: 1.7999999523162842 }).aperture).toBe('f/1.8');
+  });
+
   it('rounds focal lengths', () => {
     expect(toPhotoExif({ FocalLength: 23.3 }).focal).toBe('23mm');
+  });
+
+  it('omits taken for malformed DateTimeOriginal without throwing', () => {
+    const exif = toPhotoExif({
+      Model: 'X100V',
+      ISO: 320,
+      DateTimeOriginal: '2026:05:01 10:30:00',
+    });
+    expect(exif).toEqual({ camera: 'X100V', iso: 320 });
+  });
+
+  it('falls back to Make for camera when Model is missing', () => {
+    expect(toPhotoExif({ Make: 'FUJIFILM' }).camera).toBe('FUJIFILM');
   });
 
   it('omits missing fields entirely', () => {
@@ -532,7 +559,7 @@ Expected: FAIL — `Cannot find module './exif-format.mjs'`.
 
 ```js
 export function formatShutter(t) {
-  if (t >= 1) return `${Number(t)}s`;
+  if (t >= 0.4) return `${Number(t)}s`;
   return `1/${Math.round(1 / t)}`;
 }
 
@@ -541,12 +568,16 @@ export function toPhotoExif(raw) {
   if (!raw) return {};
   const exif = {};
   if (raw.Model) exif.camera = raw.Model;
+  else if (raw.Make) exif.camera = raw.Make;
   if (raw.LensModel) exif.lens = raw.LensModel;
   if (raw.FocalLength) exif.focal = `${Math.round(raw.FocalLength)}mm`;
-  if (raw.FNumber) exif.aperture = `f/${Number(raw.FNumber)}`;
+  if (raw.FNumber) exif.aperture = `f/${Math.round(raw.FNumber * 10) / 10}`;
   if (raw.ExposureTime) exif.shutter = formatShutter(raw.ExposureTime);
   if (raw.ISO) exif.iso = raw.ISO;
-  if (raw.DateTimeOriginal) exif.taken = new Date(raw.DateTimeOriginal).toISOString();
+  if (raw.DateTimeOriginal) {
+    const d = new Date(raw.DateTimeOriginal);
+    if (Number.isFinite(d.getTime())) exif.taken = d.toISOString();
+  }
   return exif;
 }
 ```
