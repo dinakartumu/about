@@ -1,0 +1,42 @@
+---
+import { photoUrl, photoSrcset } from '../lib/images';
+import Exif from './Exif.astro';
+
+interface Props {
+  photo: {
+    id: string;
+    width: number;
+    height: number;
+    exif?: Record<string, any>;
+  };
+  index: number;
+  sizes?: string;
+}
+const { photo, index, sizes = '(max-width: 76rem) 100vw, 72rem' } = Astro.props;
+const srcset = photoSrcset(photo.id);
+---
+<figure>
+  <a
+    class="photo-link"
+    href={photoUrl(photo.id, { width: 2400 })}
+    data-index={index}
+    aria-label={`View photo ${index + 1} full screen`}
+  >
+    <img
+      src={photoUrl(photo.id, { width: 1200 })}
+      srcset={srcset || undefined}
+      sizes={srcset ? sizes : undefined}
+      width={photo.width}
+      height={photo.height}
+      alt=""
+      loading={index < 2 ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  </a>
+  <Exif exif={photo.exif} />
+</figure>
+
+<style>
+  figure { margin: 0; }
+  img { width: 100%; border-radius: 4px; background: var(--surface); }
+</style>
