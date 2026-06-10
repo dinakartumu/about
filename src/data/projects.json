@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Pageloop",
+    "blurb": "TODO: one-liner about what you build at Pageloop.",
+    "href": "https://pageloop.ai",
+    "year": "2026"
+  },
+  {
+    "title": "This site",
+    "blurb": "Astro, Cloudflare R2 photosets imported straight from Lightroom.",
+    "href": "https://github.com/dinakartumu/about",
+    "year": "2026"
+  }
+]
