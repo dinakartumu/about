@@ -127,6 +127,8 @@ previews. Domain → Pages; `photos.<domain>` → R2. No build-time secrets
 - **Missing EXIF:** line simply not rendered; schema fields optional.
 - **Re-import:** diffs against manifest; uploads only new files; deletions
   require `--prune`.
+- **Re-exported edits:** detected by size mismatch against the remote object
+  and re-uploaded with `--force`.
 - **Transform limits:** Cloudflare free tier ≈5,000 unique transforms/month;
   variants edge-cache, and overage degrades to originals, never broken images.
 

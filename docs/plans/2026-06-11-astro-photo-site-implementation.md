@@ -604,9 +604,9 @@ git commit -m "feat: EXIF formatting for photo manifests"
 Wires folder scan + EXIF + merge + R2 upload. R2 upload is isolated in a small module; the CLI supports `--dry-run` so it can be verified before Cloudflare exists.
 
 **Files:**
-- Create: `scripts/lib/r2.mjs`, `scripts/import-photos.mjs`, `.env.example`
+- Create: `scripts/lib/r2.mjs`, `scripts/lib/r2.test.mjs`, `scripts/import-photos.mjs`, `.env.example`
 
-**Step 1: Write `scripts/lib/r2.mjs`**
+**Step 1: Write `scripts/lib/r2.mjs`** (unit-tested in `scripts/lib/r2.test.mjs` with a stub client — no network)
 
 ```js
 import { S3Client, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -619,13 +619,20 @@ export function r2Client({ accountId, accessKeyId, secretAccessKey }) {
   });
 }
 
-/** Upload body to bucket/key unless it already exists. Returns 'uploaded' or 'skipped'. */
-export async function uploadIfMissing(client, bucket, key, body) {
-  try {
-    await client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
-    return 'skipped';
-  } catch (err) {
-    if (err.$metadata?.httpStatusCode !== 404 && err.name !== 'NotFound') throw err;
+/**
+ * Upload body to bucket/key unless it already exists with the same size.
+ * Returns 'uploaded', 'skipped' (exists, same size), or 'mismatch' (exists but
+ * the remote size differs from the local body — likely a re-exported edit).
+ * Pass { force: true } to skip the existence check and PUT unconditionally.
+ */
+export async function uploadIfMissing(client, bucket, key, body, { force = false } = {}) {
+  if (!force) {
+    try {
+      const head = await client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
+      return head.ContentLength === body.length ? 'skipped' : 'mismatch';
+    } catch (err) {
+      if (err.$metadata?.httpStatusCode !== 404 && err.name !== 'NotFound') throw err;
+    }
   }
   await client.send(
     new PutObjectCommand({ Bucket: bucket, Key: key, Body: body, ContentType: 'image/jpeg' })
@@ -659,16 +666,21 @@ const { values: opts, positionals } = parseArgs({
     slug: { type: 'string' },
     'dry-run': { type: 'boolean', default: false },
     prune: { type: 'boolean', default: false },
+    force: { type: 'boolean', default: false },
   },
 });
 
 const folder = positionals[0];
 if (!folder || !existsSync(folder)) {
-  console.error('Usage: npm run import-photos -- <folder> --title "Name" [--slug name] [--dry-run] [--prune]');
+  console.error('Usage: npm run import-photos -- <folder> --title "Name" [--slug name] [--dry-run] [--prune] [--force]');
   process.exit(1);
 }
 
-const slug = opts.slug ?? path.basename(folder).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const slug = (opts.slug ?? path.basename(folder)).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+if (!slug) {
+  console.error('Could not derive a slug from folder name — pass --slug.');
+  process.exit(1);
+}
 const manifestPath = path.join(MANIFEST_DIR, `${slug}.json`);
 const existing = existsSync(manifestPath) ? JSON.parse(await readFile(manifestPath, 'utf8')) : null;
 
@@ -732,7 +744,7 @@ if (opts['dry-run']) {
   process.exit(0);
 }
 
-// 3. Upload to R2 (skips objects that already exist)
+// 3. Upload to R2 (skips objects that already exist with the same size; --force re-uploads)
 const env = {
   accountId: process.env.R2_ACCOUNT_ID,
   accessKeyId: process.env.R2_ACCESS_KEY_ID,
@@ -745,13 +757,28 @@ if (!env.accountId || !env.accessKeyId || !env.secretAccessKey || !bucket) {
 }
 const client = r2Client(env);
 let uploaded = 0;
+const mismatched = [];
 for (const p of toUpload) {
   const key = `photos/${p.id}.jpg`;
-  const result = await uploadIfMissing(client, bucket, key, await readFile(p._file));
+  let result;
+  try {
+    result = await uploadIfMissing(client, bucket, key, await readFile(p._file), { force: opts.force });
+  } catch (err) {
+    console.error(`\nUpload failed for ${key}: ${err.message}`);
+    process.exit(1);
+  }
   if (result === 'uploaded') uploaded += 1;
+  if (result === 'mismatch') mismatched.push(p.id);
   process.stdout.write(`\r${key} (${result})        `);
 }
 console.log(`\nUploaded ${uploaded} new, skipped ${toUpload.length - uploaded} existing.`);
+if (mismatched.length) {
+  console.warn(
+    `Warning: ${mismatched.length} existing object(s) differ in size from the local files (re-exported edits?):\n` +
+    mismatched.map((id) => `  - ${id}`).join('\n') +
+    '\nRe-run with --force to re-upload them.'
+  );
+}
 
 // 4. Write manifest
 await mkdir(MANIFEST_DIR, { recursive: true });
