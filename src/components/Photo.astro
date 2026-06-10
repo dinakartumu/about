@@ -18,12 +18,12 @@ const srcset = photoSrcset(photo.id);
 <figure>
   <a
     class="photo-link"
-    href={photoUrl(photo.id, { width: 2400 })}
+    href={photoUrl(photo.id, { width: 2400, fit: 'scale-down' })}
     data-index={index}
     aria-label={`View photo ${index + 1} full screen`}
   >
     <img
-      src={photoUrl(photo.id, { width: 1200 })}
+      src={photoUrl(photo.id, { width: 1200, fit: 'scale-down' })}
       srcset={srcset || undefined}
       sizes={srcset ? sizes : undefined}
       width={photo.width}

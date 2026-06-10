@@ -36,7 +36,15 @@ if (!slug) {
   process.exit(1);
 }
 const manifestPath = path.join(MANIFEST_DIR, `${slug}.json`);
-const existing = existsSync(manifestPath) ? JSON.parse(await readFile(manifestPath, 'utf8')) : null;
+let existing = null;
+if (existsSync(manifestPath)) {
+  try {
+    existing = JSON.parse(await readFile(manifestPath, 'utf8'));
+  } catch (err) {
+    console.error(`Could not parse ${manifestPath}: ${err.message}`);
+    process.exit(1);
+  }
+}
 
 if (!existing && !opts.title) {
   console.error('New photoset: --title is required.');

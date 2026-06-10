@@ -682,7 +682,15 @@ if (!slug) {
   process.exit(1);
 }
 const manifestPath = path.join(MANIFEST_DIR, `${slug}.json`);
-const existing = existsSync(manifestPath) ? JSON.parse(await readFile(manifestPath, 'utf8')) : null;
+let existing = null;
+if (existsSync(manifestPath)) {
+  try {
+    existing = JSON.parse(await readFile(manifestPath, 'utf8'));
+  } catch (err) {
+    console.error(`Could not parse ${manifestPath}: ${err.message}`);
+    process.exit(1);
+  }
+}
 
 if (!existing && !opts.title) {
   console.error('New photoset: --title is required.');
@@ -1226,12 +1234,12 @@ const srcset = photoSrcset(photo.id);
 <figure>
   <a
     class="photo-link"
-    href={photoUrl(photo.id, { width: 2400 })}
+    href={photoUrl(photo.id, { width: 2400, fit: 'scale-down' })}
     data-index={index}
     aria-label={`View photo ${index + 1} full screen`}
   >
     <img
-      src={photoUrl(photo.id, { width: 1200 })}
+      src={photoUrl(photo.id, { width: 1200, fit: 'scale-down' })}
       srcset={srcset || undefined}
       sizes={srcset ? sizes : undefined}
       width={photo.width}
@@ -1281,7 +1289,7 @@ for (let i = 0; i < photos.length; i++) {
     rows.push({ photos: [{ photo: photos[i], index: i }] });
   }
 }
-const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
+const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400, fit: 'scale-down' }));
 ---
 <Layout title={`${title} · Photos · Dinakar Tumu`} description={description || `${title} photoset.`}>
   <article class="container">

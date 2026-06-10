@@ -24,7 +24,7 @@ for (let i = 0; i < photos.length; i++) {
     rows.push({ photos: [{ photo: photos[i], index: i }] });
   }
 }
-const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
+const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400, fit: 'scale-down' }));
 ---
 <Layout title={`${title} · Photos · Dinakar Tumu`} description={description || `${title} photoset.`}>
   <article class="container">
