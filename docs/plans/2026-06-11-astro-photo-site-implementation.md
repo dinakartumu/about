@@ -1298,7 +1298,7 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
             <Photo
               photo={photo}
               index={index}
-              sizes={row.photos.length === 2 ? '(max-width: 76rem) 50vw, 36rem' : undefined}
+              sizes={row.photos.length === 2 ? '(max-width: 40rem) 100vw, (max-width: 76rem) 50vw, 36rem' : undefined}
             />
           ))}
         </div>
@@ -1306,31 +1306,34 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
     </div>
   </article>
 
-  <dialog id="lightbox">
+  <dialog id="lightbox" aria-label="Photo viewer">
     <button class="close" aria-label="Close">×</button>
     <button class="prev" aria-label="Previous photo">‹</button>
     <img alt="" />
     <button class="next" aria-label="Next photo">›</button>
   </dialog>
-</Layout>
 
-<script type="application/json" id="lightbox-data" set:html={JSON.stringify(lightboxUrls)} />
-<script>
+  <script
+    type="application/json"
+    id="lightbox-data"
+    set:html={JSON.stringify(lightboxUrls).replace(/</g, '\\u003c')}
+  />
+  <script>
   // Note: data passed via JSON script tag, NOT define:vars — astro 5.x has an open
   // XSS advisory in define:vars sanitization (GHSA-j687-52p2-xcff).
   const lightboxUrls = JSON.parse(
     document.getElementById('lightbox-data')!.textContent!
   ) as string[];
   const dialog = document.getElementById('lightbox') as HTMLDialogElement;
-  const img = dialog.querySelector('img');
+  const img = dialog.querySelector('img')!;
   let current = 0;
 
-  function show(i) {
+  function show(i: number) {
     current = (i + lightboxUrls.length) % lightboxUrls.length;
     img.src = lightboxUrls[current];
   }
 
-  document.querySelectorAll('.photo-link').forEach((link) => {
+  document.querySelectorAll<HTMLAnchorElement>('.photo-link').forEach((link) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       show(Number(link.dataset.index));
@@ -1338,9 +1341,9 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
     });
   });
 
-  dialog.querySelector('.close').addEventListener('click', () => dialog.close());
-  dialog.querySelector('.prev').addEventListener('click', () => show(current - 1));
-  dialog.querySelector('.next').addEventListener('click', () => show(current + 1));
+  dialog.querySelector('.close')!.addEventListener('click', () => dialog.close());
+  dialog.querySelector('.prev')!.addEventListener('click', () => show(current - 1));
+  dialog.querySelector('.next')!.addEventListener('click', () => show(current + 1));
   dialog.addEventListener('click', (e) => {
     if (e.target === dialog) dialog.close();
   });
@@ -1349,7 +1352,7 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
     if (e.key === 'ArrowRight') show(current + 1);
   });
 
-  let touchX = null;
+  let touchX: number | null = null;
   dialog.addEventListener('touchstart', (e) => (touchX = e.touches[0].clientX), { passive: true });
   dialog.addEventListener('touchend', (e) => {
     if (touchX === null) return;
@@ -1357,7 +1360,8 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400 }));
     if (Math.abs(dx) > 40) show(dx < 0 ? current + 1 : current - 1);
     touchX = null;
   });
-</script>
+  </script>
+</Layout>
 
 <style>
   header { margin: 1rem 0 2rem; }
