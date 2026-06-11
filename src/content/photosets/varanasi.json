@@ -1,0 +1,261 @@
+{
+  "title": "Varanasi",
+  "slug": "varanasi",
+  "description": "",
+  "cover": "varanasi/DSCF5251",
+  "date": "2023-11-26",
+  "photos": [
+    {
+      "id": "varanasi/DSCF5251",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/2200",
+        "iso": 500,
+        "taken": "2023-11-24T10:57:19.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5279",
+      "width": 4785,
+      "height": 7178,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/170",
+        "iso": 250,
+        "taken": "2023-11-24T11:21:11.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5286",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/8",
+        "shutter": "1/50",
+        "iso": 1000,
+        "taken": "2023-11-24T11:30:49.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5302-Pano",
+      "width": 20472,
+      "height": 7076,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/210",
+        "iso": 500,
+        "taken": "2023-11-24T11:34:12.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5333",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 500,
+        "taken": "2023-11-24T12:42:26.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5414",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/500",
+        "iso": 500,
+        "taken": "2023-11-25T01:19:50.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5418",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-11-25T01:20:33.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5419",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-11-25T01:35:54.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5447",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.6",
+        "shutter": "1/80",
+        "iso": 125,
+        "taken": "2023-11-25T02:32:49.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5450",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.6",
+        "shutter": "1/80",
+        "iso": 125,
+        "taken": "2023-11-25T02:33:44.000Z"
+      }
+    },
+    {
+      "id": "varanasi/IMG_1927",
+      "width": 4032,
+      "height": 3024,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 2.22mm f/2.2",
+        "focal": "2mm",
+        "aperture": "f/2.2",
+        "shutter": "1/60",
+        "iso": 500,
+        "taken": "2023-11-25T02:33:57.000Z"
+      }
+    },
+    {
+      "id": "varanasi/IMG_1938",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 2.22mm f/2.2",
+        "focal": "2mm",
+        "aperture": "f/2.2",
+        "shutter": "1/60",
+        "iso": 500,
+        "taken": "2023-11-25T03:11:56.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5459",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/6.4",
+        "shutter": "1/2400",
+        "iso": 500,
+        "taken": "2023-11-25T03:20:15.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5479-Pano",
+      "width": 18730,
+      "height": 5117,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 320,
+        "taken": "2023-11-25T13:00:53.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5485",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 500,
+        "taken": "2023-11-25T13:20:40.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5517",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 200,
+        "taken": "2023-11-25T15:24:18.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5521",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/1800",
+        "iso": 500,
+        "taken": "2023-11-26T03:18:52.000Z"
+      }
+    },
+    {
+      "id": "varanasi/DSCF5538",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/950",
+        "iso": 250,
+        "taken": "2023-11-26T03:27:06.000Z"
+      }
+    }
+  ]
+}
