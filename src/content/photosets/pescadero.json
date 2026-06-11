@@ -1,0 +1,415 @@
+{
+  "title": "Pescadero",
+  "slug": "pescadero",
+  "description": "",
+  "cover": "pescadero/DSCF1598",
+  "date": "2023-03-25",
+  "photos": [
+    {
+      "id": "pescadero/DSCF1598",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-11T10:35:07.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF1599",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-03-11T10:35:51.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF1605",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/180",
+        "iso": 125,
+        "taken": "2023-03-11T11:48:37.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2282",
+      "width": 6916,
+      "height": 4611,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2",
+        "shutter": "1/105",
+        "iso": 125,
+        "taken": "2023-03-25T01:22:33.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2291",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-03-25T02:46:55.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2294",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-03-25T02:47:36.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2303",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.2",
+        "shutter": "1/160",
+        "iso": 125,
+        "taken": "2023-03-25T03:12:48.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2305",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/420",
+        "iso": 125,
+        "taken": "2023-03-25T03:16:44.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2313",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/420",
+        "iso": 125,
+        "taken": "2023-03-25T03:24:43.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2347",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2",
+        "shutter": "1/105",
+        "iso": 125,
+        "taken": "2023-03-25T03:59:29.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2353",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2",
+        "shutter": "1/125",
+        "iso": 125,
+        "taken": "2023-03-25T04:01:11.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2370",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-25T04:36:39.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2375",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/550",
+        "iso": 125,
+        "taken": "2023-03-25T04:39:42.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2399",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-03-25T04:59:14.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2429",
+      "width": 4185,
+      "height": 6277,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/5400",
+        "iso": 125,
+        "taken": "2023-03-25T05:40:10.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2439",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-25T06:03:44.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2445",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/800",
+        "iso": 125,
+        "taken": "2023-03-25T06:11:52.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2447",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/480",
+        "iso": 125,
+        "taken": "2023-03-25T06:12:25.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2491",
+      "width": 3232,
+      "height": 4848,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-25T06:24:07.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2505",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-25T06:31:45.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2527",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/16",
+        "shutter": "1/80",
+        "iso": 125,
+        "taken": "2023-03-25T06:43:37.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2534",
+      "width": 3435,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/640",
+        "iso": 125,
+        "taken": "2023-03-25T06:44:58.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2548",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/550",
+        "iso": 125,
+        "taken": "2023-03-25T07:02:07.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2549",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.6",
+        "shutter": "1/90",
+        "iso": 125,
+        "taken": "2023-03-25T07:02:33.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2552",
+      "width": 4488,
+      "height": 6733,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2023-03-25T07:03:01.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2559",
+      "width": 4262,
+      "height": 6395,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/70",
+        "iso": 125,
+        "taken": "2023-03-25T07:26:08.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2563",
+      "width": 4253,
+      "height": 6380,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 160,
+        "taken": "2023-03-25T07:30:49.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2566",
+      "width": 6110,
+      "height": 4073,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-25T07:32:40.000Z"
+      }
+    },
+    {
+      "id": "pescadero/DSCF2570",
+      "width": 3892,
+      "height": 5838,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/7000",
+        "iso": 125,
+        "taken": "2023-03-25T07:33:12.000Z"
+      }
+    }
+  ]
+}

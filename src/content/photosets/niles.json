@@ -1,0 +1,93 @@
+{
+  "title": "Niles",
+  "slug": "niles",
+  "description": "",
+  "cover": "niles/DSCF2669",
+  "date": "2023-03-30",
+  "photos": [
+    {
+      "id": "niles/DSCF2669",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2",
+        "shutter": "1/150",
+        "iso": 125,
+        "taken": "2023-03-28T10:17:28.000Z"
+      }
+    },
+    {
+      "id": "niles/DSCF2775",
+      "width": 7723,
+      "height": 5149,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/1250",
+        "iso": 125,
+        "taken": "2023-03-30T07:32:16.000Z"
+      }
+    },
+    {
+      "id": "niles/DSCF2779",
+      "width": 5148,
+      "height": 7724,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-30T07:33:37.000Z"
+      }
+    },
+    {
+      "id": "niles/DSCF2782",
+      "width": 5148,
+      "height": 7724,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-30T07:34:21.000Z"
+      }
+    },
+    {
+      "id": "niles/DSCF2784",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-30T07:35:00.000Z"
+      }
+    },
+    {
+      "id": "niles/DSCF2792",
+      "width": 5148,
+      "height": 7724,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-30T07:36:05.000Z"
+      }
+    }
+  ]
+}
