@@ -24,6 +24,10 @@ a:hover { color: var(--accent); }
 
 h1, h2, h3 { line-height: 1.2; font-weight: 600; color: #fff; }
 
+/* Consistent page chrome: same top/bottom rhythm and title treatment everywhere */
+main { padding: 1.5rem 0 2rem; }
+main h1 { font-size: 2rem; margin: 0 0 1.5rem; }
+
 img { display: block; max-width: 100%; height: auto; }
 
 .container {

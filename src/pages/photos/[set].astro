@@ -107,9 +107,10 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400, fit: 'scale
 </Layout>
 
 <style>
-  header { margin: 1rem 0 2rem; }
+  header { margin: 0 0 2rem; }
+  header h1 { margin: 0 0 0.25rem; }
   .count { font-size: 0.85rem; }
-  .photos { display: flex; flex-direction: column; gap: 2.5rem; padding-bottom: 2rem; }
+  .photos { display: flex; flex-direction: column; gap: 2.5rem; }
   .row.pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
