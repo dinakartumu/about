@@ -1,4 +1,4 @@
-# tumudinakar.com
+# dinakartumu.com
 
 Personal site built with Astro. Photos served from Cloudflare R2.
 

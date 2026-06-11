@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { PHOTO_WIDTHS, photoSrcset, photoUrl } from './images';
 
 // These tests assume src/lib/config.ts has:
-//   PHOTOS_BASE = 'https://photos.tumudinakar.com'
+//   PHOTOS_BASE = 'https://photos.dinakartumu.com'
 //   TRANSFORMS_ENABLED = true
-const BASE = 'https://photos.tumudinakar.com';
+const BASE = 'https://photos.dinakartumu.com';
 
 describe('photoUrl', () => {
   it('returns the plain photo URL when no width/height is given', () => {
