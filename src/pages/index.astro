@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PhotoSetCard from '../components/PhotoSetCard.astro';
+
+const recent = (await getCollection('photosets'))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date))
+  .slice(0, 4);
+---
+<Layout title="Dinakar Tumu">
+  <section class="container intro">
+    <h1>Dinakar Tumu</h1>
+    <p>
+      <!-- DRAFT COPY — rewrite me -->
+      Engineer at <a href="https://pageloop.ai">Pageloop</a>. I spend my weekends
+      photographing the Bay Area — most of what I shoot ends up in
+      <a href="/photos">photosets</a>.
+    </p>
+    <p class="muted">
+      <a href="mailto:dinakar@pageloop.ai">Email</a> · <a href="https://github.com/dinakartumu">GitHub</a>
+    </p>
+  </section>
+
+  {recent.length > 0 && (
+    <section class="container">
+      <h2>Recent photos</h2>
+      <div class="grid">
+        {recent.map(({ data }) => (
+          <PhotoSetCard
+            slug={data.slug}
+            title={data.title}
+            cover={data.cover}
+            count={data.photos.length}
+            date={data.date}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+</Layout>
+
+<style>
+  .intro p { max-width: 44rem; }
+  h2 { font-size: 1.1rem; margin: 2rem 0 1rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+    gap: 1.5rem 1.25rem;
+    margin-bottom: 2rem;
+  }
+</style>

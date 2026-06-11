@@ -1,0 +1,37 @@
+[
+  {
+    "title": "Pageloop",
+    "blurb": "TODO: one-liner about what you build at Pageloop.",
+    "href": "https://pageloop.ai",
+    "year": "2026"
+  },
+  {
+    "title": "Nostaliga",
+    "blurb": "A timeline of everything you've done — music, workouts, photos, and check-ins reconstructed into one personal history, all on-device.",
+    "href": "https://nostaliga.app",
+    "year": "2026"
+  },
+  {
+    "title": "This site",
+    "blurb": "Astro, Cloudflare R2 photosets imported straight from Lightroom.",
+    "href": "https://github.com/dinakartumu/about",
+    "year": "2026"
+  },
+  {
+    "title": "My Activities",
+    "blurb": "Web app that visualized my daily activity data — places, music, movement — the predecessor to Nostaliga.",
+    "href": "https://github.com/dinakartumu/myactivities-website",
+    "year": "2019"
+  },
+  {
+    "title": "Cobalt Theme",
+    "blurb": "Chrome extension that brought dark mode to YouTube and GitHub before they had one.",
+    "href": "https://github.com/dinakartumu/darkmode",
+    "year": "2017"
+  },
+  {
+    "title": "Wooter",
+    "blurb": "iOS and Android app for sports leagues — live scores, teams, players, and game schedules.",
+    "year": "2017"
+  }
+]

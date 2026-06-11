@@ -1,0 +1,46 @@
+---
+import { photoUrl } from '../lib/images';
+
+interface Props {
+  slug: string;
+  title: string;
+  cover: string;
+  count: number;
+  date: string;
+}
+const { slug, title, cover, count, date } = Astro.props;
+const year = date.slice(0, 4);
+---
+<a class="card" href={`/photos/${slug}`}>
+  <img
+    src={photoUrl(cover, { width: 800, height: 500, fit: 'cover' })}
+    alt=""
+    width="800"
+    height="500"
+    loading="lazy"
+  />
+  <div class="meta">
+    <span class="title">{title}</span>
+    <span class="muted">{count} photos · {year}</span>
+  </div>
+</a>
+
+<style>
+  .card { display: block; }
+  img {
+    width: 100%;
+    aspect-ratio: 8 / 5;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.5rem 0.1rem;
+    font-size: 0.9rem;
+  }
+  .title { color: #fff; font-weight: 500; }
+  .card:hover img { opacity: 0.85; }
+</style>

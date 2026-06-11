@@ -1,0 +1,121 @@
+{
+  "title": "La Mesa",
+  "slug": "la-mesa",
+  "description": "",
+  "cover": "la-mesa/IMG_9918",
+  "date": "2021-07-24",
+  "photos": [
+    {
+      "id": "la-mesa/IMG_9918",
+      "width": 4032,
+      "height": 3024,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 4.25mm f/1.8",
+        "focal": "4mm",
+        "aperture": "f/1.8",
+        "shutter": "1/480",
+        "iso": 32,
+        "taken": "2021-05-03T13:26:50.000Z"
+      }
+    },
+    {
+      "id": "la-mesa/IMG_0431",
+      "width": 4032,
+      "height": 3024,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 6mm f/2",
+        "focal": "6mm",
+        "aperture": "f/2",
+        "shutter": "1/640",
+        "iso": 20,
+        "taken": "2021-07-01T13:48:21.000Z"
+      }
+    },
+    {
+      "id": "la-mesa/IMG_0432",
+      "width": 4032,
+      "height": 3024,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 6mm f/2",
+        "focal": "6mm",
+        "aperture": "f/2",
+        "shutter": "1/690",
+        "iso": 20,
+        "taken": "2021-07-01T13:52:46.000Z"
+      }
+    },
+    {
+      "id": "la-mesa/IMG_0435",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 6mm f/2",
+        "focal": "6mm",
+        "aperture": "f/2",
+        "shutter": "1/640",
+        "iso": 20,
+        "taken": "2021-07-01T14:05:45.000Z"
+      }
+    },
+    {
+      "id": "la-mesa/IMG_0568",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 6mm f/2",
+        "focal": "6mm",
+        "aperture": "f/2",
+        "shutter": "1/400",
+        "iso": 20,
+        "taken": "2021-07-09T14:08:57.000Z"
+      }
+    },
+    {
+      "id": "la-mesa/IMG_0591",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 6mm f/2",
+        "focal": "6mm",
+        "aperture": "f/2",
+        "shutter": "1/310",
+        "iso": 20,
+        "taken": "2021-07-21T14:09:12.000Z"
+      }
+    },
+    {
+      "id": "la-mesa/IMG_0596",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 6mm f/2",
+        "focal": "6mm",
+        "aperture": "f/2",
+        "shutter": "1/30",
+        "iso": 20,
+        "taken": "2021-07-21T14:29:09.000Z"
+      }
+    },
+    {
+      "id": "la-mesa/IMG_0617",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 11 Pro",
+        "lens": "iPhone 11 Pro back camera 6mm f/2",
+        "focal": "6mm",
+        "aperture": "f/2",
+        "shutter": "1/35",
+        "iso": 20,
+        "taken": "2021-07-24T14:16:08.000Z"
+      }
+    }
+  ]
+}

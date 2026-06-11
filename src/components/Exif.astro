@@ -1,0 +1,25 @@
+---
+interface Props {
+  exif?: {
+    camera?: string;
+    lens?: string;
+    focal?: string;
+    aperture?: string;
+    shutter?: string;
+    iso?: number;
+  };
+}
+const { exif } = Astro.props;
+const parts = exif
+  ? [exif.camera, exif.focal, exif.aperture, exif.shutter, exif.iso && `ISO ${exif.iso}`].filter(Boolean)
+  : [];
+---
+{parts.length > 0 && <p class="exif muted">{parts.join(' · ')}</p>}
+
+<style>
+  .exif {
+    font-size: 0.78rem;
+    margin: 0.4rem 0 0;
+    letter-spacing: 0.01em;
+  }
+</style>
