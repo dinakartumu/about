@@ -1,0 +1,345 @@
+{
+  "title": "Stanford University",
+  "slug": "stanford-university",
+  "description": "",
+  "cover": "stanford-university/DSCF2581",
+  "date": "2023-03-26",
+  "photos": [
+    {
+      "id": "stanford-university/DSCF2581",
+      "width": 4359,
+      "height": 6538,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/200",
+        "iso": 125,
+        "taken": "2023-03-26T11:24:43.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2587",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-03-26T11:37:35.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2588",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/800",
+        "iso": 125,
+        "taken": "2023-03-26T11:38:54.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2591",
+      "width": 3435,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/800",
+        "iso": 125,
+        "taken": "2023-03-26T11:40:11.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2594",
+      "width": 5681,
+      "height": 3787,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/800",
+        "iso": 125,
+        "taken": "2023-03-26T11:41:11.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2601",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-03-26T11:52:46.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2605",
+      "width": 5369,
+      "height": 3020,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-03-26T11:57:50.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2609",
+      "width": 6170,
+      "height": 4113,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-03-26T11:59:00.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2610",
+      "width": 4009,
+      "height": 6013,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-03-26T11:59:20.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2612",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-03-26T12:00:18.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2616",
+      "width": 3435,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/240",
+        "iso": 125,
+        "taken": "2023-03-26T12:02:04.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2620",
+      "width": 4255,
+      "height": 6383,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/200",
+        "iso": 125,
+        "taken": "2023-03-26T12:03:09.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2627",
+      "width": 6969,
+      "height": 4646,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-26T12:05:35.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2634",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-26T12:09:37.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2638",
+      "width": 4218,
+      "height": 6327,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-26T12:11:42.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2640",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/450",
+        "iso": 125,
+        "taken": "2023-03-26T12:12:14.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2642",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-03-26T12:12:43.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2643",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/480",
+        "iso": 125,
+        "taken": "2023-03-26T12:13:11.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2647",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/550",
+        "iso": 125,
+        "taken": "2023-03-26T12:15:41.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2648",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.2",
+        "shutter": "1/140",
+        "iso": 125,
+        "taken": "2023-03-26T12:16:45.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2650",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/250",
+        "iso": 125,
+        "taken": "2023-03-26T12:17:47.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2651",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-26T12:18:55.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2654-Pano",
+      "width": 4669,
+      "height": 7003,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/450",
+        "iso": 125,
+        "taken": "2023-03-26T12:20:18.000Z"
+      }
+    },
+    {
+      "id": "stanford-university/DSCF2655",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-26T12:23:36.000Z"
+      }
+    }
+  ]
+}
