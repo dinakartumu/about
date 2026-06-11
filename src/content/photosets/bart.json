@@ -1,0 +1,107 @@
+{
+  "title": "BART",
+  "slug": "bart",
+  "description": "",
+  "cover": "bart/IMG_3202",
+  "date": "2022-05-12",
+  "photos": [
+    {
+      "id": "bart/IMG_3202",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/320",
+        "iso": 32,
+        "taken": "2022-03-19T11:57:57.000Z"
+      }
+    },
+    {
+      "id": "bart/DSC03231",
+      "width": 4000,
+      "height": 6000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/10",
+        "shutter": "1/250",
+        "iso": 100,
+        "taken": "2022-03-30T06:47:51.000Z"
+      }
+    },
+    {
+      "id": "bart/IMG_4418",
+      "width": 2422,
+      "height": 3229,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/120",
+        "iso": 80,
+        "taken": "2022-05-10T14:36:47.000Z"
+      }
+    },
+    {
+      "id": "bart/IMG_4421",
+      "width": 2398,
+      "height": 3197,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/100",
+        "iso": 40,
+        "taken": "2022-05-10T14:37:41.000Z"
+      }
+    },
+    {
+      "id": "bart/DSC03716",
+      "width": 6000,
+      "height": 3376,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4",
+        "shutter": "1/100",
+        "iso": 500,
+        "taken": "2022-05-10T14:43:53.000Z"
+      }
+    },
+    {
+      "id": "bart/DSC03727",
+      "width": 6000,
+      "height": 3376,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/5",
+        "shutter": "1/400",
+        "iso": 100,
+        "taken": "2022-05-12T03:45:29.000Z"
+      }
+    },
+    {
+      "id": "bart/DSC03729",
+      "width": 6000,
+      "height": 3376,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/5",
+        "shutter": "1/640",
+        "iso": 100,
+        "taken": "2022-05-12T03:45:38.000Z"
+      }
+    }
+  ]
+}

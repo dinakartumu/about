@@ -1,0 +1,261 @@
+{
+  "title": "Mill Valley",
+  "slug": "mill-valley",
+  "description": "",
+  "cover": "mill-valley/IMG_6414",
+  "date": "2023-05-07",
+  "photos": [
+    {
+      "id": "mill-valley/IMG_6414",
+      "width": 4097,
+      "height": 5462,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/540",
+        "iso": 80,
+        "taken": "2022-10-02T06:25:37.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/IMG_6426",
+      "width": 8064,
+      "height": 6048,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/5000",
+        "iso": 100,
+        "taken": "2022-10-02T06:53:19.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/IMG_6430",
+      "width": 5381,
+      "height": 7174,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/16000",
+        "iso": 100,
+        "taken": "2022-10-02T07:30:09.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/IMG_6441",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/1500",
+        "iso": 80,
+        "taken": "2022-10-02T08:06:48.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/IMG_6442",
+      "width": 5076,
+      "height": 6768,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/750",
+        "iso": 80,
+        "taken": "2022-10-02T08:07:38.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/IMG_6445",
+      "width": 5076,
+      "height": 6768,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/6000",
+        "iso": 100,
+        "taken": "2022-10-02T08:09:57.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/IMG_6447",
+      "width": 5076,
+      "height": 6768,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/800",
+        "iso": 100,
+        "taken": "2022-10-02T08:17:54.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF1206",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.2",
+        "shutter": "1/180",
+        "iso": 125,
+        "taken": "2023-03-04T08:30:27.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF1215",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-04T08:49:30.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF1216",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/640",
+        "iso": 125,
+        "taken": "2023-03-04T08:49:43.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF1717",
+      "width": 4204,
+      "height": 6306,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 160,
+        "taken": "2023-03-13T09:46:28.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF1718",
+      "width": 4090,
+      "height": 6135,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 160,
+        "taken": "2023-03-13T09:46:58.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF1719",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 160,
+        "taken": "2023-03-13T09:47:50.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF1721",
+      "width": 6566,
+      "height": 4377,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.2",
+        "shutter": "1/200",
+        "iso": 125,
+        "taken": "2023-03-13T10:14:09.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF2966",
+      "width": 3423,
+      "height": 5134,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-04-01T09:43:20.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF2970",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-04-01T09:47:38.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF4257",
+      "width": 3663,
+      "height": 5494,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-05-07T10:38:54.000Z"
+      }
+    },
+    {
+      "id": "mill-valley/DSCF4258",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-05-07T10:39:22.000Z"
+      }
+    }
+  ]
+}
