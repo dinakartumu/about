@@ -1,0 +1,359 @@
+{
+  "title": "Dharamshala",
+  "slug": "dharamshala",
+  "description": "",
+  "cover": "dharamshala/IMG_5413",
+  "date": "2025-06-04",
+  "photos": [
+    {
+      "id": "dharamshala/IMG_5413",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/50",
+        "iso": 320,
+        "taken": "2025-05-27T13:38:18.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9846",
+      "width": 3824,
+      "height": 5736,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/4.5",
+        "shutter": "1/280",
+        "iso": 800,
+        "taken": "2025-05-28T13:01:15.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9850",
+      "width": 4013,
+      "height": 6020,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/5.6",
+        "shutter": "1/1800",
+        "iso": 800,
+        "taken": "2025-05-28T13:03:17.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9851",
+      "width": 3435,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/5.6",
+        "shutter": "1/1800",
+        "iso": 800,
+        "taken": "2025-05-28T13:04:26.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9858",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/5.6",
+        "shutter": "1/1100",
+        "iso": 800,
+        "taken": "2025-05-28T13:12:04.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9866",
+      "width": 6327,
+      "height": 4217,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/2.8",
+        "shutter": "1/100",
+        "iso": 800,
+        "taken": "2025-05-28T13:17:36.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9868",
+      "width": 4320,
+      "height": 6480,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/4.5",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2025-05-28T13:20:25.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9869",
+      "width": 3435,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/2.5",
+        "shutter": "1/90",
+        "iso": 125,
+        "taken": "2025-05-28T13:26:01.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9894",
+      "width": 3432,
+      "height": 5148,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/2.8",
+        "shutter": "1/110",
+        "iso": 125,
+        "taken": "2025-05-29T03:34:00.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9898",
+      "width": 3779,
+      "height": 5669,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/4.5",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2025-05-29T04:02:54.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9905",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/4",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2025-05-29T09:57:28.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9917",
+      "width": 2191,
+      "height": 1461,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/3.2",
+        "shutter": "1/150",
+        "iso": 125,
+        "taken": "2025-05-29T13:46:44.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9935",
+      "width": 4966,
+      "height": 3311,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/16",
+        "shutter": "1/45",
+        "iso": 125,
+        "taken": "2025-05-31T08:57:02.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9964",
+      "width": 4043,
+      "height": 6064,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/4.5",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2025-05-31T10:50:16.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF9976",
+      "width": 5137,
+      "height": 3425,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/3.6",
+        "shutter": "1/210",
+        "iso": 125,
+        "taken": "2025-06-01T03:13:39.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0011",
+      "width": 5152,
+      "height": 7726,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/16",
+        "shutter": "1/50",
+        "iso": 125,
+        "taken": "2025-06-01T04:13:14.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0012",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/16",
+        "shutter": "1/35",
+        "iso": 160,
+        "taken": "2025-06-01T04:19:56.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0014",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/16",
+        "shutter": "1/35",
+        "iso": 250,
+        "taken": "2025-06-01T04:20:58.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0032",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/4.5",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2025-06-01T11:48:01.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0056",
+      "width": 7726,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/2.2",
+        "shutter": "1/75",
+        "iso": 125,
+        "taken": "2025-06-01T12:03:08.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/IMG_5494",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/320",
+        "iso": 32,
+        "taken": "2025-06-02T13:06:00.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0076",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/4.5",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2025-06-04T01:51:49.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0085",
+      "width": 7726,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/5.6",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2025-06-04T02:36:50.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0106",
+      "width": 7726,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/5.6",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2025-06-04T03:58:22.000Z"
+      }
+    },
+    {
+      "id": "dharamshala/DSCF0121",
+      "width": 7726,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF23mmF2 R WR",
+        "focal": "23mm",
+        "aperture": "f/5.6",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2025-06-04T04:54:11.000Z"
+      }
+    }
+  ]
+}

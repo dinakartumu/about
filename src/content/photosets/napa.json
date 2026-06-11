@@ -1,0 +1,443 @@
+{
+  "title": "Napa",
+  "slug": "napa",
+  "description": "",
+  "cover": "napa/IMG_6557",
+  "date": "2023-05-02",
+  "photos": [
+    {
+      "id": "napa/IMG_6557",
+      "width": 4032,
+      "height": 2268,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/180",
+        "iso": 32,
+        "taken": "2022-10-09T02:12:22.000Z"
+      }
+    },
+    {
+      "id": "napa/IMG_6558",
+      "width": 4722,
+      "height": 6296,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/450",
+        "iso": 80,
+        "taken": "2022-10-09T02:23:47.000Z"
+      }
+    },
+    {
+      "id": "napa/IMG_6594",
+      "width": 3914,
+      "height": 5218,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/1600",
+        "iso": 100,
+        "taken": "2022-10-09T07:51:45.000Z"
+      }
+    },
+    {
+      "id": "napa/IMG_6603",
+      "width": 6048,
+      "height": 3402,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/2700",
+        "iso": 80,
+        "taken": "2022-10-09T08:00:19.000Z"
+      }
+    },
+    {
+      "id": "napa/IMG_6610",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/60",
+        "iso": 200,
+        "taken": "2022-10-09T08:40:35.000Z"
+      }
+    },
+    {
+      "id": "napa/IMG_6613",
+      "width": 8064,
+      "height": 6048,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/800",
+        "iso": 100,
+        "taken": "2022-10-09T09:25:06.000Z"
+      }
+    },
+    {
+      "id": "napa/IMG_6639-Pano",
+      "width": 9592,
+      "height": 2687,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/390",
+        "iso": 32,
+        "taken": "2022-10-09T12:10:53.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1338",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-03-05T01:50:18.000Z"
+      }
+    },
+    {
+      "id": "napa/IMG_9751",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/1050",
+        "iso": 64,
+        "taken": "2023-03-05T02:14:03.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1380",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-05T02:57:56.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1382",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-03-05T03:03:19.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1398-Pano",
+      "width": 19710,
+      "height": 4654,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-05T03:31:52.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1413-Pano",
+      "width": 19544,
+      "height": 4244,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/800",
+        "iso": 125,
+        "taken": "2023-03-05T03:41:07.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1427",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-03-05T04:49:30.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1435",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/850",
+        "iso": 125,
+        "taken": "2023-03-05T05:11:50.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1439",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/950",
+        "iso": 125,
+        "taken": "2023-03-05T05:14:56.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1450",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/8000",
+        "iso": 125,
+        "taken": "2023-03-05T05:17:30.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1455",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-05T05:30:23.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1469",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/6000",
+        "iso": 125,
+        "taken": "2023-03-05T07:58:17.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1472",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-03-05T08:03:46.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1473",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2023-03-05T08:10:00.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1474",
+      "width": 5152,
+      "height": 6022,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-05T08:14:16.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1482",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/480",
+        "iso": 125,
+        "taken": "2023-03-05T09:58:34.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF1489",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/1000",
+        "iso": 125,
+        "taken": "2023-03-05T10:19:51.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF3431",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/640",
+        "iso": 125,
+        "taken": "2023-04-04T09:54:06.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF3433",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-04-04T09:56:05.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF3439",
+      "width": 5362,
+      "height": 3575,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/210",
+        "iso": 125,
+        "taken": "2023-04-04T10:05:06.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF3440",
+      "width": 6837,
+      "height": 4558,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-04-04T10:07:32.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF3457",
+      "width": 3643,
+      "height": 5465,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/420",
+        "iso": 125,
+        "taken": "2023-04-04T10:54:02.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF3972",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-05-02T08:45:18.000Z"
+      }
+    },
+    {
+      "id": "napa/DSCF3982",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/480",
+        "iso": 125,
+        "taken": "2023-05-02T09:08:43.000Z"
+      }
+    }
+  ]
+}
