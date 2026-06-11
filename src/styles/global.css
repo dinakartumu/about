@@ -4,8 +4,20 @@
   --text: #d4d4d8;
   --muted: #8a8a93;
   --accent: #d9a553;
+  --heading: #fff;
   --content-width: 72rem;
+  color-scheme: dark;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+:root[data-theme='light'] {
+  --bg: #fafafa;
+  --surface: #ececee;
+  --text: #27272a;
+  --muted: #62626b;
+  --accent: #9a6b15;
+  --heading: #18181b;
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -22,7 +34,7 @@ body {
 a { color: var(--text); text-decoration: none; }
 a:hover { color: var(--accent); }
 
-h1, h2, h3 { line-height: 1.2; font-weight: 600; color: #fff; }
+h1, h2, h3 { line-height: 1.2; font-weight: 600; color: var(--heading); }
 
 /* Consistent page chrome: same top/bottom rhythm and title treatment everywhere */
 main { padding: 1.5rem 0 2rem; }

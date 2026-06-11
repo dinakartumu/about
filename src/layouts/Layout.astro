@@ -16,6 +16,14 @@ const { title, description = 'Dinakar Tumu — engineer and photographer.' } = A
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      // Set theme before first paint: saved choice, else system preference.
+      (() => {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.dataset.theme =
+          saved ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      })();
+    </script>
     <title>{title}</title>
   </head>
   <body>
