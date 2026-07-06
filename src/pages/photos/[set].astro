@@ -24,7 +24,10 @@ for (let i = 0; i < photos.length; i++) {
     rows.push({ photos: [{ photo: photos[i], index: i }] });
   }
 }
-const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400, fit: 'scale-down' }));
+const lightboxItems = photos.map((p) => ({
+  url: photoUrl(p.id, { width: 2400, fit: 'scale-down' }),
+  id: p.id,
+}));
 ---
 <Layout title={`${title} · Photos · Dinakar Tumu`} description={description || `${title} photoset.`}>
   <article class="container">
@@ -59,48 +62,83 @@ const lightboxUrls = photos.map((p) => photoUrl(p.id, { width: 2400, fit: 'scale
   <script
     type="application/json"
     id="lightbox-data"
-    set:html={JSON.stringify(lightboxUrls).replace(/</g, '\\u003c')}
+    set:html={JSON.stringify(lightboxItems).replace(/</g, '\\u003c')}
   />
   <script>
   // Note: data passed via JSON script tag, NOT define:vars — astro 5.x has an open
   // XSS advisory in define:vars sanitization (GHSA-j687-52p2-xcff).
-  const lightboxUrls = JSON.parse(
+  const lightboxItems = JSON.parse(
     document.getElementById('lightbox-data')!.textContent!
-  ) as string[];
+  ) as { url: string; id: string }[];
   const dialog = document.getElementById('lightbox') as HTMLDialogElement;
   const img = dialog.querySelector('img')!;
   let current = 0;
 
-  function show(i: number) {
-    current = (i + lightboxUrls.length) % lightboxUrls.length;
-    img.src = lightboxUrls[current];
+  // Photo ids look like "pescadero/DSCF1598"; the set is already in the path,
+  // so the URL hash just carries the filename slug, e.g. #DSCF1598.
+  const slug = (id: string) => id.split('/').pop()!;
+  const indexForSlug = (s: string) => lightboxItems.findIndex((it) => slug(it.id) === s);
+
+  function render(i: number) {
+    current = (i + lightboxItems.length) % lightboxItems.length;
+    img.src = lightboxItems[current].url;
+  }
+
+  // Opening pushes a history entry (so Back closes the lightbox); navigating
+  // within it replaces, keeping the shareable URL in sync without spamming history.
+  function open(i: number) {
+    render(i);
+    history.pushState(null, '', '#' + slug(lightboxItems[current].id));
+    if (!dialog.open) dialog.showModal();
+  }
+  function go(i: number) {
+    render(i);
+    history.replaceState(null, '', '#' + slug(lightboxItems[current].id));
   }
 
   document.querySelectorAll<HTMLAnchorElement>('.photo-link').forEach((link) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      show(Number(link.dataset.index));
-      dialog.showModal();
+      open(Number(link.dataset.index));
     });
   });
 
   dialog.querySelector('.close')!.addEventListener('click', () => dialog.close());
-  dialog.querySelector('.prev')!.addEventListener('click', () => show(current - 1));
-  dialog.querySelector('.next')!.addEventListener('click', () => show(current + 1));
+  dialog.querySelector('.prev')!.addEventListener('click', () => go(current - 1));
+  dialog.querySelector('.next')!.addEventListener('click', () => go(current + 1));
   dialog.addEventListener('click', (e) => {
     if (e.target === dialog) dialog.close();
   });
   dialog.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') show(current - 1);
-    if (e.key === 'ArrowRight') show(current + 1);
+    if (e.key === 'ArrowLeft') go(current - 1);
+    if (e.key === 'ArrowRight') go(current + 1);
   });
+  // Closing (Esc, button, backdrop) drops the hash so the URL is clean again.
+  dialog.addEventListener('close', () => {
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  });
+
+  // Back/forward and shared deep links: open, navigate, or close to match the URL.
+  function syncToHash() {
+    const s = decodeURIComponent(location.hash.slice(1));
+    if (!s) {
+      if (dialog.open) dialog.close();
+      return;
+    }
+    const i = indexForSlug(s);
+    if (i < 0) return;
+    render(i);
+    if (!dialog.open) dialog.showModal();
+  }
+  window.addEventListener('popstate', syncToHash);
+  syncToHash(); // handle a deep link on initial load
 
   let touchX: number | null = null;
   dialog.addEventListener('touchstart', (e) => (touchX = e.touches[0].clientX), { passive: true });
   dialog.addEventListener('touchend', (e) => {
     if (touchX === null) return;
     const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 40) show(dx < 0 ? current + 1 : current - 1);
+    if (Math.abs(dx) > 40) go(dx < 0 ? current + 1 : current - 1);
     touchX = null;
   });
   </script>
