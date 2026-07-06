@@ -27,6 +27,8 @@ for (let i = 0; i < photos.length; i++) {
 const lightboxItems = photos.map((p) => ({
   url: photoUrl(p.id, { width: 2400, fit: 'scale-down' }),
   id: p.id,
+  w: p.width,
+  h: p.height,
 }));
 ---
 <Layout title={`${title} · Photos · Dinakar Tumu`} description={description || `${title} photoset.`}>
@@ -55,6 +57,7 @@ const lightboxItems = photos.map((p) => ({
   <dialog id="lightbox" aria-label="Photo viewer">
     <button class="close" aria-label="Close">×</button>
     <button class="prev" aria-label="Previous photo">‹</button>
+    <div class="shimmer" aria-hidden="true"></div>
     <img alt="" />
     <button class="next" aria-label="Next photo">›</button>
   </dialog>
@@ -69,19 +72,67 @@ const lightboxItems = photos.map((p) => ({
   // XSS advisory in define:vars sanitization (GHSA-j687-52p2-xcff).
   const lightboxItems = JSON.parse(
     document.getElementById('lightbox-data')!.textContent!
-  ) as { url: string; id: string }[];
+  ) as { url: string; id: string; w: number; h: number }[];
   const dialog = document.getElementById('lightbox') as HTMLDialogElement;
   const img = dialog.querySelector('img')!;
+  const shimmer = dialog.querySelector('.shimmer') as HTMLDivElement;
+  const prevBtn = dialog.querySelector('.prev') as HTMLButtonElement;
+  const nextBtn = dialog.querySelector('.next') as HTMLButtonElement;
   let current = 0;
+
+  // Size the shimmer to the incoming photo's on-screen box (object-fit: contain
+  // within 95vw/95vh) so the skeleton matches the image that will replace it.
+  function sizeShimmer(w: number, h: number) {
+    const scale = Math.min((window.innerWidth * 0.95) / w, (window.innerHeight * 0.95) / h);
+    shimmer.style.width = `${Math.round(w * scale)}px`;
+    shimmer.style.height = `${Math.round(h * scale)}px`;
+  }
 
   // Photo ids look like "pescadero/DSCF1598"; the set is already in the path,
   // so the URL hash just carries the filename slug, e.g. #DSCF1598.
   const slug = (id: string) => id.split('/').pop()!;
   const indexForSlug = (s: string) => lightboxItems.findIndex((it) => slug(it.id) === s);
 
+  const preloaded = new Set<string>();
+  function preload(i: number) {
+    if (i < 0 || i >= lightboxItems.length) return;
+    const url = lightboxItems[i].url;
+    if (preloaded.has(url)) return;
+    preloaded.add(url);
+    new Image().src = url;
+  }
+
+  // Decode the target off-screen before swapping, so we never leave the previous
+  // photo on screen or flash a half-loaded one. While it loads we hide the old
+  // photo and show a shimmer skeleton (delayed slightly so instant, preloaded
+  // swaps don't flicker). A token guards against fast, out-of-order navigation.
+  let renderToken = 0;
   function render(i: number) {
-    current = (i + lightboxItems.length) % lightboxItems.length;
-    img.src = lightboxItems[current].url;
+    // Bounded (no wrap): clamp, and disable Prev/Next at the ends.
+    current = Math.max(0, Math.min(i, lightboxItems.length - 1));
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === lightboxItems.length - 1;
+    const item = lightboxItems[current];
+    const token = ++renderToken;
+
+    img.classList.add('hidden');
+    sizeShimmer(item.w, item.h);
+    const shimmerTimer = window.setTimeout(() => {
+      if (token === renderToken) shimmer.classList.add('active');
+    }, 100);
+
+    const pending = new Image();
+    pending.src = item.url;
+    pending.decode().catch(() => {}).then(() => {
+      if (token !== renderToken) return; // superseded by a newer navigation
+      window.clearTimeout(shimmerTimer);
+      img.src = item.url;
+      img.classList.remove('hidden');
+      shimmer.classList.remove('active');
+    });
+
+    preload(current + 1);
+    preload(current - 1);
   }
 
   // Opening pushes a history entry (so Back closes the lightbox); navigating
@@ -92,6 +143,7 @@ const lightboxItems = photos.map((p) => ({
     if (!dialog.open) dialog.showModal();
   }
   function go(i: number) {
+    if (i < 0 || i >= lightboxItems.length) return; // no wrap at the ends
     render(i);
     history.replaceState(null, '', '#' + slug(lightboxItems[current].id));
   }
@@ -178,6 +230,33 @@ const lightboxItems = photos.map((p) => ({
     position: absolute;
     inset: 0;
     object-fit: contain;
+    transition: opacity 0.2s ease;
+  }
+  dialog img.hidden { opacity: 0; }
+
+  .shimmer {
+    display: none;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    border-radius: 4px;
+    background-color: #17171a;
+    background-image: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.06) 50%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+  }
+  .shimmer.active { display: block; animation: shimmer 1.2s ease-in-out infinite; }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer.active { animation: none; }
   }
   dialog button {
     position: fixed;
@@ -190,6 +269,10 @@ const lightboxItems = photos.map((p) => ({
     padding: 0.5rem 0.9rem;
     border-radius: 4px;
     cursor: pointer;
+  }
+  dialog button:disabled {
+    opacity: 0.25;
+    cursor: default;
   }
   .close { top: 1rem; right: 1rem; }
   .prev { left: 1rem; top: 50%; transform: translateY(-50%); }
