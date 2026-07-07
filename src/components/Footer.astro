@@ -2,10 +2,15 @@
 const year = new Date().getFullYear();
 ---
 <footer class="container">
-  <p class="muted">© {year} Dinakar Tumu · Built with Astro</p>
+  <p class="muted">
+    © {year} Dinakar Tumu · Built with Astro ·
+    <a rel="me" href="https://mastodon.social/@dinakar91">Mastodon</a>
+  </p>
 </footer>
 
 <style>
   footer { padding: 3rem 1.25rem; }
   p { font-size: 0.85rem; }
+  a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: var(--heading); }
 </style>
