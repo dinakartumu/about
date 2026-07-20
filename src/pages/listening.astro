@@ -1,0 +1,314 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {
+  monthRanges,
+  rewindFetch,
+  shapeTopList,
+  yearHeadline,
+  type TopItem,
+} from '../lib/rewind';
+
+type TopListJson = Parameters<typeof shapeTopList>[0];
+type YearJson = Parameters<typeof yearHeadline>[0];
+
+const now = new Date();
+const year = now.getUTCFullYear();
+
+const headline = yearHeadline(await rewindFetch<YearJson>(`/v1/listening/year/${year}`));
+
+// One batch per month (three parallel calls each), months in sequence to
+// stay well inside the API's per-key rate limit. Any failure throws and
+// fails the build — never publish a page with missing sections.
+interface MonthData {
+  label: string;
+  artists: TopItem[];
+  albums: TopItem[];
+  tracks: TopItem[];
+}
+
+const months: MonthData[] = [];
+for (const { label, from, to } of monthRanges(year, now)) {
+  const q = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+  const [artists, albums, tracks] = await Promise.all([
+    rewindFetch<TopListJson>(`/v1/listening/top/artists?${q}&limit=10`).then(shapeTopList),
+    rewindFetch<TopListJson>(`/v1/listening/top/albums?${q}&limit=12`).then(shapeTopList),
+    rewindFetch<TopListJson>(`/v1/listening/top/tracks?${q}&limit=10`).then(shapeTopList),
+  ]);
+  months.push({ label, artists, albums, tracks });
+}
+
+const [all] = months;
+
+const plays = (n: number) => `${n.toLocaleString('en-US')} ${n === 1 ? 'play' : 'plays'}`;
+const linkAttrs = (link: string | null) =>
+  link ? { href: link, target: '_blank', rel: 'noopener' } : {};
+
+// Guard against a literal </script> inside names breaking the JSON island.
+const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
+---
+<Layout
+  title="Listening · Dinakar Tumu"
+  description={`What Dinakar Tumu has been listening to in ${year} — top artists, albums, and tracks.`}
+>
+  <section class="container head">
+    <h1>{plays(headline.totalPlays)} in {headline.year}</h1>
+    <select id="month-select" aria-label="Filter by month">
+      {months.map((m, i) => <option value={i}>{m.label}</option>)}
+    </select>
+  </section>
+
+  <section class="container">
+    <h2>Top Artists</h2>
+    <ol class="list" id="top-artists">
+      {all.artists.map((a) => (
+        <li>
+          <a class="row" {...linkAttrs(a.link)}>
+            <span class="rank">{a.rank}</span>
+            {a.image ? (
+              <img
+                class="thumb"
+                src={a.image.url}
+                alt={`${a.name} artwork`}
+                width="56"
+                height="56"
+                loading="lazy"
+                decoding="async"
+                style={`background:${a.image.dominantColor}`}
+              />
+            ) : (
+              <span class="thumb placeholder" aria-hidden="true"></span>
+            )}
+            <span class="meta">
+              <span class="name">{a.name}</span>
+              <span class="sub muted">{plays(a.playcount)}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+      {all.artists.length === 0 && <li class="empty muted">No plays in {all.label}</li>}
+    </ol>
+  </section>
+
+  <section class="container">
+    <h2>Top Albums</h2>
+    <ul class="shelf" id="top-albums">
+      {all.albums.map((a) => (
+        <li>
+          <a class="card" {...linkAttrs(a.link)}>
+            {a.image ? (
+              <img
+                class="cover"
+                src={a.image.url}
+                alt={`${a.name} cover`}
+                width="160"
+                height="160"
+                loading="lazy"
+                decoding="async"
+                style={`background:${a.image.dominantColor}`}
+              />
+            ) : (
+              <span class="cover placeholder" aria-hidden="true"></span>
+            )}
+            <span class="name">{a.name}</span>
+            <span class="sub muted">{a.detail}</span>
+          </a>
+        </li>
+      ))}
+      {all.albums.length === 0 && <li class="empty muted">No plays in {all.label}</li>}
+    </ul>
+  </section>
+
+  <section class="container">
+    <h2>Top Tracks</h2>
+    <ol class="list" id="top-tracks">
+      {all.tracks.map((t) => (
+        <li>
+          <a class="row" {...linkAttrs(t.link)}>
+            <span class="rank">{t.rank}</span>
+            <span class="meta">
+              <span class="name">{t.name}</span>
+              <span class="sub muted">{t.detail}</span>
+            </span>
+            <span class="plays muted">{plays(t.playcount)}</span>
+          </a>
+        </li>
+      ))}
+      {all.tracks.length === 0 && <li class="empty muted">No plays in {all.label}</li>}
+    </ol>
+  </section>
+
+  <script type="application/json" id="listening-data" set:html={islandJson} />
+</Layout>
+
+<script>
+  // Progressive enhancement: the page ships fully rendered for "All months";
+  // this script only swaps the three lists when the dropdown changes.
+  type Img = { url: string; dominantColor: string } | null;
+  type Item = {
+    rank: number;
+    name: string;
+    detail: string;
+    playcount: number;
+    image: Img;
+    link: string | null;
+  };
+  type Month = { label: string; artists: Item[]; albums: Item[]; tracks: Item[] };
+
+  const island = document.getElementById('listening-data');
+  const select = document.getElementById('month-select') as HTMLSelectElement | null;
+
+  if (island?.textContent && select) {
+    const months: Month[] = JSON.parse(island.textContent);
+
+    const esc = (s: string) =>
+      s.replace(
+        /[&<>"']/g,
+        (c) =>
+          ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string
+      );
+
+    const plays = (n: number) => `${n.toLocaleString('en-US')} ${n === 1 ? 'play' : 'plays'}`;
+
+    const img = (image: Img, cls: string, size: number, alt: string) =>
+      image
+        ? `<img class="${cls}" src="${esc(image.url)}" alt="${esc(alt)}" width="${size}" height="${size}" loading="lazy" decoding="async" style="background:${esc(image.dominantColor)}">`
+        : `<span class="${cls} placeholder" aria-hidden="true"></span>`;
+
+    const wrap = (link: string | null, cls: string, inner: string) =>
+      `<a class="${cls}"${link ? ` href="${esc(link)}" target="_blank" rel="noopener"` : ''}>${inner}</a>`;
+
+    const artistLi = (a: Item) =>
+      `<li>${wrap(
+        a.link,
+        'row',
+        `<span class="rank">${a.rank}</span>${img(a.image, 'thumb', 56, `${a.name} artwork`)}<span class="meta"><span class="name">${esc(a.name)}</span><span class="sub muted">${plays(a.playcount)}</span></span>`
+      )}</li>`;
+
+    const albumLi = (a: Item) =>
+      `<li>${wrap(
+        a.link,
+        'card',
+        `${img(a.image, 'cover', 160, `${a.name} cover`)}<span class="name">${esc(a.name)}</span><span class="sub muted">${esc(a.detail)}</span>`
+      )}</li>`;
+
+    const trackLi = (t: Item) =>
+      `<li>${wrap(
+        t.link,
+        'row',
+        `<span class="rank">${t.rank}</span><span class="meta"><span class="name">${esc(t.name)}</span><span class="sub muted">${esc(t.detail)}</span></span><span class="plays muted">${plays(t.playcount)}</span>`
+      )}</li>`;
+
+    const fill = (id: string, items: Item[], render: (i: Item) => string, label: string) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = items.length
+        ? items.map(render).join('')
+        : `<li class="empty muted">No plays in ${esc(label)}</li>`;
+    };
+
+    select.addEventListener('change', () => {
+      const m = months[Number(select.value)];
+      if (!m) return;
+      fill('top-artists', m.artists, artistLi, m.label);
+      fill('top-albums', m.albums, albumLi, m.label);
+      fill('top-tracks', m.tracks, trackLi, m.label);
+    });
+  }
+</script>
+
+<style>
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .head h1 { margin-bottom: 0.5rem; }
+
+  #month-select {
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 0;
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+  }
+  #month-select:hover { color: var(--heading); }
+
+  h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
+
+  /* Ranked rows shared by artists and tracks */
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 44rem;
+  }
+  .list li + li { border-top: 1px solid var(--surface); }
+  .list :global(.row) {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.55rem 0;
+  }
+  .list :global(a.row[href]:hover .name) { color: var(--accent); }
+  .list :global(.rank) {
+    flex-shrink: 0;
+    width: 1.4rem;
+    text-align: right;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .list :global(.thumb) {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  .list :global(.meta) {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .list :global(.plays) {
+    margin-left: auto;
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+
+  /* Horizontally scrollable album shelf */
+  .shelf {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.5rem;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+  }
+  .shelf li { flex: 0 0 auto; width: 160px; }
+  .shelf :global(.card) { display: flex; flex-direction: column; }
+  .shelf :global(a.card[href]:hover .name) { color: var(--accent); }
+  .shelf :global(.cover) {
+    width: 160px;
+    height: 160px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Shared bits — also produced by the client-side swap */
+  section :global(.name) {
+    color: var(--heading);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  section :global(.sub) { font-size: 0.85rem; }
+  section :global(.placeholder) { display: block; background: var(--surface); }
+  section :global(.empty) { padding: 0.55rem 0; }
+</style>
