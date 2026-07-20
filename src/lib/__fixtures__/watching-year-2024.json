@@ -1,0 +1,168 @@
+{
+  "year": 2024,
+  "total_movies": 106,
+  "genres": [
+    {
+      "name": "Drama",
+      "count": 28
+    },
+    {
+      "name": "Thriller",
+      "count": 25
+    },
+    {
+      "name": "Crime",
+      "count": 20
+    },
+    {
+      "name": "Action",
+      "count": 15
+    },
+    {
+      "name": "Comedy",
+      "count": 15
+    },
+    {
+      "name": "Romance",
+      "count": 11
+    },
+    {
+      "name": "Adventure",
+      "count": 8
+    },
+    {
+      "name": "Horror",
+      "count": 5
+    },
+    {
+      "name": "Science Fiction",
+      "count": 5
+    },
+    {
+      "name": "Family",
+      "count": 4
+    }
+  ],
+  "decades": [
+    {
+      "decade": 2020,
+      "count": 80
+    },
+    {
+      "decade": 1950,
+      "count": 10
+    },
+    {
+      "decade": 2000,
+      "count": 5
+    },
+    {
+      "decade": 2010,
+      "count": 3
+    },
+    {
+      "decade": 1990,
+      "count": 2
+    },
+    {
+      "decade": 1980,
+      "count": 2
+    },
+    {
+      "decade": 1960,
+      "count": 2
+    },
+    {
+      "decade": 1970,
+      "count": 1
+    },
+    {
+      "decade": 1940,
+      "count": 1
+    }
+  ],
+  "monthly": [
+    {
+      "month": "2024-01",
+      "count": 15
+    },
+    {
+      "month": "2024-02",
+      "count": 6
+    },
+    {
+      "month": "2024-03",
+      "count": 10
+    },
+    {
+      "month": "2024-04",
+      "count": 10
+    },
+    {
+      "month": "2024-05",
+      "count": 7
+    },
+    {
+      "month": "2024-06",
+      "count": 6
+    },
+    {
+      "month": "2024-07",
+      "count": 7
+    },
+    {
+      "month": "2024-08",
+      "count": 5
+    },
+    {
+      "month": "2024-09",
+      "count": 9
+    },
+    {
+      "month": "2024-10",
+      "count": 18
+    },
+    {
+      "month": "2024-11",
+      "count": 3
+    },
+    {
+      "month": "2024-12",
+      "count": 10
+    }
+  ],
+  "top_rated": [
+    {
+      "movie": {
+        "id": 1606,
+        "title": "Past Lives",
+        "year": 2023,
+        "tmdb_id": 666277,
+        "image": {
+          "cdn_url": "https://cdn.dinakartumu.com/cdn-cgi/image/width=240,height=360,fit=cover,format=auto,quality=85/watching/movies/1606/original.jpg?v=1",
+          "thumbhash": "WAgGFwQwanjpU5dlWHiWdXhoBtZ7kK0I",
+          "dominant_color": "#6c6c60",
+          "accent_color": "#a69f8d"
+        }
+      },
+      "user_rating": 10,
+      "watched_at": "2024-02-26T04:57:00.000Z"
+    },
+    {
+      "movie": {
+        "id": 1627,
+        "title": "Lost Ladies",
+        "year": 2024,
+        "tmdb_id": 1163194,
+        "image": {
+          "cdn_url": "https://cdn.dinakartumu.com/cdn-cgi/image/width=240,height=360,fit=cover,format=auto,quality=85/watching/movies/1627/original.jpg?v=1",
+          "thumbhash": "IykKFwSMp3h/iHeDh3WHSHhrdiCoVJAC",
+          "dominant_color": "#adafa6",
+          "accent_color": "#9e8263"
+        }
+      },
+      "user_rating": 10,
+      "watched_at": "2024-05-04T15:59:00.000Z"
+    }
+  ]
+}

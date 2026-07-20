@@ -1,0 +1,12 @@
+---
+import MoviesYear from '../../components/MoviesYear.astro';
+import Layout from '../../layouts/Layout.astro';
+
+const year = new Date().getUTCFullYear();
+---
+<Layout
+  title="Movies · Dinakar Tumu"
+  description="What Dinakar Tumu has been watching — recently watched films with ratings."
+>
+  <MoviesYear year={year} global />
+</Layout>

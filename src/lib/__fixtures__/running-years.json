@@ -1,0 +1,74 @@
+{
+    "data": [
+        {
+            "year": 2026,
+            "total_runs": 3,
+            "total_distance_mi": 5.91,
+            "total_elevation_ft": 335.3,
+            "total_duration_s": 5421,
+            "avg_pace": "15:17/mi",
+            "longest_run_mi": 2.08,
+            "race_count": 0
+        },
+        {
+            "year": 2025,
+            "total_runs": 25,
+            "total_distance_mi": 22.22,
+            "total_elevation_ft": 120.74,
+            "total_duration_s": 17320,
+            "avg_pace": "12:59/mi",
+            "longest_run_mi": 2.02,
+            "race_count": 0
+        },
+        {
+            "year": 2024,
+            "total_runs": 21,
+            "total_distance_mi": 18.79,
+            "total_elevation_ft": 0,
+            "total_duration_s": 15213,
+            "avg_pace": "13:30/mi",
+            "longest_run_mi": 2.58,
+            "race_count": 0
+        },
+        {
+            "year": 2023,
+            "total_runs": 4,
+            "total_distance_mi": 6.81,
+            "total_elevation_ft": 132.55,
+            "total_duration_s": 5946,
+            "avg_pace": "14:33/mi",
+            "longest_run_mi": 2.04,
+            "race_count": 0
+        },
+        {
+            "year": 2021,
+            "total_runs": 50,
+            "total_distance_mi": 111.62,
+            "total_elevation_ft": 12640.74,
+            "total_duration_s": 90782,
+            "avg_pace": "13:33/mi",
+            "longest_run_mi": 4.18,
+            "race_count": 0
+        },
+        {
+            "year": 2016,
+            "total_runs": 21,
+            "total_distance_mi": 19.04,
+            "total_elevation_ft": 456.37,
+            "total_duration_s": 11352,
+            "avg_pace": "9:56/mi",
+            "longest_run_mi": 1.03,
+            "race_count": 0
+        },
+        {
+            "year": 2015,
+            "total_runs": 58,
+            "total_distance_mi": 164.35,
+            "total_elevation_ft": 2362.2,
+            "total_duration_s": 99890,
+            "avg_pace": "10:08/mi",
+            "longest_run_mi": 4.25,
+            "race_count": 0
+        }
+    ]
+}

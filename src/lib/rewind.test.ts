@@ -1,23 +1,41 @@
 import { describe, expect, it } from 'vitest';
 import {
+  fmtDuration,
   fmtWatchDate,
   monthRanges,
+  runningMonthlyPoints,
+  shapeActivities,
   shapePlacesStats,
   shapeRecentCheckins,
   shapeRecentWatches,
+  shapeRunningStats,
+  shapeRunningYears,
   shapeTopList,
+  shapeTrends,
   shapeWatchingStats,
+  shapeWatchingYear,
   starsFor,
+  trendsAriaLabel,
+  trendsFirstYear,
+  wideTrendsPath,
   yearHeadline,
 } from './rewind';
+import listeningTrends2017 from './__fixtures__/listening-trends-2017.json';
+import listeningTrends2024 from './__fixtures__/listening-trends-2024.json';
 import listeningYear from './__fixtures__/listening-year.json';
 import placesRecent from './__fixtures__/places-recent.json';
 import placesStats from './__fixtures__/places-stats.json';
+import runningActivities2016 from './__fixtures__/running-activities-2016.json';
+import runningStats from './__fixtures__/running-stats.json';
+import runningYear2016 from './__fixtures__/running-year-2016.json';
+import runningYears from './__fixtures__/running-years.json';
 import topAlbums from './__fixtures__/top-albums.json';
 import topArtists from './__fixtures__/top-artists.json';
 import topTracks from './__fixtures__/top-tracks.json';
 import watchingRecent from './__fixtures__/watching-recent.json';
 import watchingStats from './__fixtures__/watching-stats.json';
+import watchingTrendsWide from './__fixtures__/watching-trends-wide.json';
+import watchingYear2024 from './__fixtures__/watching-year-2024.json';
 
 describe('monthRanges', () => {
   it('returns the all entry first, then elapsed months newest first', () => {
@@ -305,9 +323,17 @@ describe('shapePlacesStats', () => {
       uniqueVenues: 264,
       thisYear: 0,
       topCategories: [
-        { name: 'Bakery', count: 159 },
-        { name: 'Coffee Shop', count: 85 },
-        { name: 'Mexican Restaurant', count: 51 },
+        {
+          name: 'Bakery',
+          count: 159,
+          icon: 'https://ss3.4sqi.net/img/categories_v2/food/bakery_64.png',
+        },
+        {
+          name: 'Coffee Shop',
+          count: 85,
+          icon: 'https://ss3.4sqi.net/img/categories_v2/food/coffeeshop_64.png',
+        },
+        { name: 'Mexican Restaurant', count: 51, icon: null },
       ],
       topCities: [
         { name: 'Harrison', count: 225 },
@@ -335,10 +361,17 @@ describe('shapeRecentCheckins', () => {
     expect(checkins[0]).toEqual({
       venueName: '9/11 Tribute Center',
       category: 'Museum',
+      icon: 'https://ss3.4sqi.net/img/categories_v2/arts_entertainment/museum_64.png',
       place: 'New York, United States',
       date: 'Sep 11, 2016',
       shout: null,
     });
+  });
+
+  it('leaves the icon null when the venue has none', () => {
+    const checkins = shapeRecentCheckins(placesRecent);
+    const noIcon = checkins.find((c) => c.venueName === 'Alum Rock Creek Trail Trailhead')!;
+    expect(noIcon.icon).toBeNull();
   });
 
   it('carries the shout through when present', () => {
@@ -373,6 +406,299 @@ describe('shapeRecentCheckins', () => {
 
   it('throws when the payload has no data array', () => {
     expect(() => shapeRecentCheckins({})).toThrow(/data/);
+  });
+});
+
+describe('shapeTrends', () => {
+  const now = new Date('2026-07-20T12:00:00Z');
+
+  it('maps a full historical year to twelve labeled points', () => {
+    const points = shapeTrends(listeningTrends2024, 2024, now);
+    expect(points).toHaveLength(12);
+    expect(points[0]).toEqual({ label: 'Jan', value: 581 });
+    expect(points[4]).toEqual({ label: 'May', value: 835 });
+    expect(points[11]).toEqual({ label: 'Dec', value: 445 });
+  });
+
+  it('zero-fills months missing from a historical year', () => {
+    const points = shapeTrends(listeningTrends2017, 2017, now);
+    expect(points).toHaveLength(12);
+    expect(points[0]).toEqual({ label: 'Jan', value: 0 });
+    expect(points[8]).toEqual({ label: 'Sep', value: 0 });
+    expect(points[9]).toEqual({ label: 'Oct', value: 860 });
+    expect(points[11]).toEqual({ label: 'Dec', value: 429 });
+  });
+
+  it('runs the current year only through the current month', () => {
+    const points = shapeTrends(
+      {
+        data: [
+          { period: '2026-01', value: 719 },
+          { period: '2026-07', value: 606 },
+        ],
+      },
+      2026,
+      now
+    );
+    expect(points.map((p) => p.label)).toEqual(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']);
+    expect(points[1].value).toBe(0);
+    expect(points[6].value).toBe(606);
+  });
+
+  it('uses the UTC month for the current-year cutoff', () => {
+    // 00:30 UTC on Jul 1 is still June in every western-hemisphere zone.
+    const points = shapeTrends({ data: [] }, 2026, new Date('2026-07-01T00:30:00Z'));
+    expect(points).toHaveLength(7);
+  });
+
+  it('normalizes count-keyed responses like watching and places trends', () => {
+    const points = shapeTrends({ data: [{ period: '2024-03', count: 12 }] }, 2024, now);
+    expect(points[2]).toEqual({ label: 'Mar', value: 12 });
+  });
+
+  it('returns all zeros for a year with no data', () => {
+    const points = shapeTrends({ data: [] }, 2016, now);
+    expect(points).toHaveLength(12);
+    expect(points.every((p) => p.value === 0)).toBe(true);
+  });
+
+  it('returns no points for a year that has not started', () => {
+    expect(shapeTrends({ data: [] }, 2027, now)).toEqual([]);
+  });
+
+  it('throws when the payload has no data array', () => {
+    expect(() => shapeTrends({}, 2024, now)).toThrow(/data/);
+  });
+});
+
+describe('trendsAriaLabel', () => {
+  const now = new Date('2026-07-20T12:00:00Z');
+
+  it('summarizes the peak month with the full month name', () => {
+    const points = shapeTrends(listeningTrends2024, 2024, now);
+    expect(trendsAriaLabel(points, 'plays')).toBe('Monthly plays, peak May 835');
+  });
+
+  it('formats thousands with separators', () => {
+    expect(trendsAriaLabel([{ label: 'Jun', value: 1019 }], 'plays')).toBe(
+      'Monthly plays, peak June 1,019'
+    );
+  });
+
+  it('reports no data for an all-zero year', () => {
+    expect(trendsAriaLabel([{ label: 'Jan', value: 0 }], 'plays')).toBe('Monthly plays, no data');
+  });
+
+  it('reports no data for an empty point list', () => {
+    expect(trendsAriaLabel([], 'watches')).toBe('Monthly watches, no data');
+  });
+});
+
+describe('shapeTrends year filtering', () => {
+  const now = new Date('2026-07-20T12:00:00Z');
+
+  it('ignores buckets from other years in a multi-year response', () => {
+    const points = shapeTrends(watchingTrendsWide, 2024, now);
+    expect(points).toHaveLength(12);
+    expect(points[0]).toEqual({ label: 'Jan', value: 15 });
+    expect(points[9]).toEqual({ label: 'Oct', value: 18 });
+    expect(points[11]).toEqual({ label: 'Dec', value: 10 });
+  });
+
+  it('does not let another year fill a month that is empty in the target year', () => {
+    const points = shapeTrends(
+      { data: [{ period: '2023-03', count: 9 }] },
+      2024,
+      now
+    );
+    expect(points[2]).toEqual({ label: 'Mar', value: 0 });
+  });
+});
+
+describe('wideTrendsPath', () => {
+  it('builds the encoded probe path for a domain', () => {
+    expect(wideTrendsPath('watching', 2026)).toBe(
+      '/v1/watching/trends?from=2000-01-01T00%3A00%3A00Z&to=2026-12-31T23%3A59%3A59Z'
+    );
+  });
+});
+
+describe('trendsFirstYear', () => {
+  it('returns the earliest year in a trends response', () => {
+    expect(trendsFirstYear(watchingTrendsWide)).toBe(2012);
+  });
+
+  it('does not assume the buckets are sorted', () => {
+    expect(
+      trendsFirstYear({
+        data: [
+          { period: '2019-04', count: 1 },
+          { period: '2014-01', count: 2 },
+        ],
+      })
+    ).toBe(2014);
+  });
+
+  it('throws when the payload has no data array', () => {
+    expect(() => trendsFirstYear({})).toThrow(/data/);
+  });
+
+  it('throws when the response has no buckets', () => {
+    expect(() => trendsFirstYear({ data: [] })).toThrow(/empty/);
+  });
+});
+
+describe('shapeWatchingYear', () => {
+  it('reads the film count and monthly buckets from the year rollup', () => {
+    const shaped = shapeWatchingYear(watchingYear2024);
+    expect(shaped.year).toBe(2024);
+    expect(shaped.totalMovies).toBe(106);
+    expect(shaped.monthly).toHaveLength(12);
+    expect(shaped.monthly[0]).toEqual({ period: '2024-01', count: 15 });
+  });
+
+  it('feeds shapeTrends through the normalized monthly buckets', () => {
+    const shaped = shapeWatchingYear(watchingYear2024);
+    const points = shapeTrends({ data: shaped.monthly }, 2024, new Date('2026-07-20T12:00:00Z'));
+    expect(points[9]).toEqual({ label: 'Oct', value: 18 });
+  });
+
+  it('throws when the rollup lacks a film total', () => {
+    expect(() => shapeWatchingYear({ year: 2024, monthly: [] })).toThrow(/total_movies/);
+  });
+
+  it('throws when the rollup lacks the monthly breakdown', () => {
+    expect(() => shapeWatchingYear({ year: 2024, total_movies: 5 })).toThrow(/monthly/);
+  });
+});
+
+describe('fmtDuration', () => {
+  it('formats hours and minutes', () => {
+    expect(fmtDuration(245924)).toBe('68h 19m');
+    expect(fmtDuration(11352)).toBe('3h 9m');
+  });
+
+  it('drops the hour part under an hour', () => {
+    expect(fmtDuration(2700)).toBe('45m');
+  });
+
+  it('carries a rounded 60 minutes into the next hour', () => {
+    expect(fmtDuration(3580)).toBe('1h 0m');
+  });
+
+  it('formats zero as zero minutes', () => {
+    expect(fmtDuration(0)).toBe('0m');
+  });
+});
+
+describe('shapeRunningStats', () => {
+  it('reads the lifetime numbers and parses the duration to seconds', () => {
+    expect(shapeRunningStats(runningStats)).toEqual({
+      totalRuns: 182,
+      totalMiles: 348.74,
+      totalDurationS: 245924,
+      avgPace: '11:45/mi',
+    });
+  });
+
+  it('throws when the payload has no data object', () => {
+    expect(() => shapeRunningStats({})).toThrow(/data/);
+  });
+
+  it('throws on an unparseable duration', () => {
+    expect(() =>
+      shapeRunningStats({
+        data: {
+          total_runs: 1,
+          total_distance_mi: 1,
+          total_duration: 'soon',
+          avg_pace: null,
+        },
+      })
+    ).toThrow(/duration/);
+  });
+});
+
+describe('shapeRunningYears', () => {
+  it('shapes each year summary to the rendered fields', () => {
+    const years = shapeRunningYears(runningYears);
+    expect(years).toHaveLength(7);
+    expect(years[0]).toEqual({
+      year: 2026,
+      totalRuns: 3,
+      totalMiles: 5.91,
+      totalDurationS: 5421,
+      avgPace: '15:17/mi',
+    });
+  });
+
+  it('carries a null average pace through', () => {
+    const years = shapeRunningYears({
+      data: [
+        {
+          year: 2020,
+          total_runs: 0,
+          total_distance_mi: 0,
+          total_duration_s: 0,
+          avg_pace: null,
+        },
+      ],
+    });
+    expect(years[0].avgPace).toBeNull();
+  });
+
+  it('throws when the payload has no data array', () => {
+    expect(() => shapeRunningYears({})).toThrow(/data/);
+  });
+});
+
+describe('runningMonthlyPoints', () => {
+  const now = new Date('2026-07-20T12:00:00Z');
+
+  it('turns the year rollup monthly breakdown into run-count points', () => {
+    const points = runningMonthlyPoints(runningYear2016, 2016, now);
+    expect(points).toHaveLength(12);
+    expect(points[0]).toEqual({ label: 'Jan', value: 0 });
+    expect(points[3]).toEqual({ label: 'Apr', value: 8 });
+    expect(points[4]).toEqual({ label: 'May', value: 13 });
+  });
+
+  it('throws when the rollup lacks the monthly breakdown', () => {
+    expect(() => runningMonthlyPoints({ year: 2016 }, 2016, now)).toThrow(/monthly/);
+  });
+});
+
+describe('shapeActivities', () => {
+  it('shapes activities to the rendered fields', () => {
+    const runs = shapeActivities(runningActivities2016);
+    expect(runs).toHaveLength(3);
+    expect(runs[0]).toEqual({
+      name: 'Night Run',
+      date: 'May 26, 2016',
+      distanceMi: 0.88,
+      pace: '10:16/mi',
+      stravaUrl: 'https://www.strava.com/activities/1113441499',
+    });
+  });
+
+  it('leaves the strava link null when the API has none', () => {
+    const runs = shapeActivities({
+      data: [
+        {
+          name: 'Treadmill',
+          date: '2016-01-02T10:00:00Z',
+          distance_mi: 1.5,
+          pace: '10:00/mi',
+          strava_url: null,
+        },
+      ],
+    });
+    expect(runs[0].stravaUrl).toBeNull();
+    expect(runs[0].date).toBe('Jan 2, 2016');
+  });
+
+  it('throws when the payload has no data array', () => {
+    expect(() => shapeActivities({})).toThrow(/data/);
   });
 });
 

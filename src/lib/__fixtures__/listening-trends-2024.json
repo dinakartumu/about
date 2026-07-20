@@ -1,0 +1,53 @@
+{
+    "metric": "scrobbles",
+    "data": [
+        {
+            "period": "2024-01",
+            "value": 581
+        },
+        {
+            "period": "2024-02",
+            "value": 614
+        },
+        {
+            "period": "2024-03",
+            "value": 794
+        },
+        {
+            "period": "2024-04",
+            "value": 637
+        },
+        {
+            "period": "2024-05",
+            "value": 835
+        },
+        {
+            "period": "2024-06",
+            "value": 488
+        },
+        {
+            "period": "2024-07",
+            "value": 769
+        },
+        {
+            "period": "2024-08",
+            "value": 725
+        },
+        {
+            "period": "2024-09",
+            "value": 558
+        },
+        {
+            "period": "2024-10",
+            "value": 607
+        },
+        {
+            "period": "2024-11",
+            "value": 710
+        },
+        {
+            "period": "2024-12",
+            "value": 445
+        }
+    ]
+}

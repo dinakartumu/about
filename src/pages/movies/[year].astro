@@ -1,0 +1,26 @@
+---
+import MoviesYear from '../../components/MoviesYear.astro';
+import Layout from '../../layouts/Layout.astro';
+import { rewindFetch, trendsFirstYear, wideTrendsPath } from '../../lib/rewind';
+
+export async function getStaticPaths() {
+  const currentYear = new Date().getUTCFullYear();
+  // Memoized — the page components reuse this exact probe for the charts.
+  const firstYear = trendsFirstYear(
+    await rewindFetch<Parameters<typeof trendsFirstYear>[0]>(wideTrendsPath('watching', currentYear))
+  );
+  const paths = [];
+  for (let year = firstYear; year <= currentYear; year++) {
+    paths.push({ params: { year: String(year) } });
+  }
+  return paths;
+}
+
+const year = Number(Astro.params.year);
+---
+<Layout
+  title={`Movies ${year} · Dinakar Tumu`}
+  description={`What Dinakar Tumu watched in ${year} — films with ratings and a monthly chart.`}
+>
+  <MoviesYear year={year} />
+</Layout>

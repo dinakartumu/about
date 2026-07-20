@@ -1,0 +1,50 @@
+{
+  "year": 2016,
+  "total_runs": 21,
+  "total_distance_mi": 19.04,
+  "total_elevation_ft": 456.37,
+  "total_duration_s": 11352,
+  "avg_pace": "9:56/mi",
+  "longest_run_mi": 1.03,
+  "race_count": 0,
+  "monthly": [
+    {
+      "month": "2016-04",
+      "runs": 8,
+      "distance_mi": 7.26,
+      "duration_s": 4409,
+      "elevation_ft": 184.71
+    },
+    {
+      "month": "2016-05",
+      "runs": 13,
+      "distance_mi": 11.78,
+      "duration_s": 6943,
+      "elevation_ft": 271.66
+    }
+  ],
+  "top_runs": [
+    {
+      "id": 1113441490,
+      "strava_id": 1113441490,
+      "name": "Evening Run",
+      "date": "2016-05-21T20:33:31Z",
+      "distance_mi": 1.03,
+      "duration": "9:47",
+      "duration_s": 587,
+      "pace": "9:32/mi",
+      "elevation_ft": 26.57,
+      "heartrate_avg": null,
+      "heartrate_max": null,
+      "cadence": null,
+      "calories": null,
+      "suffer_score": null,
+      "city": null,
+      "state": null,
+      "polyline": "erwwFzrscMtUvGlAmDxBHnAuGpa@lJnBuC[oEdAE",
+      "is_race": false,
+      "workout_type": "default",
+      "strava_url": "https://www.strava.com/activities/1113441490"
+    }
+  ]
+}

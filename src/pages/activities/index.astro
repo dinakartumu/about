@@ -1,0 +1,12 @@
+---
+import ActivitiesYear from '../../components/ActivitiesYear.astro';
+import Layout from '../../layouts/Layout.astro';
+
+const year = new Date().getUTCFullYear();
+---
+<Layout
+  title="Activities · Dinakar Tumu"
+  description="Dinakar Tumu's running log — recent runs with distance, pace, and a monthly chart."
+>
+  <ActivitiesYear year={year} global />
+</Layout>

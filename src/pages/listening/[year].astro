@@ -1,0 +1,22 @@
+---
+import ListeningYear from '../../components/ListeningYear.astro';
+import Layout from '../../layouts/Layout.astro';
+import { LISTENING_FIRST_YEAR } from '../../lib/rewind';
+
+export function getStaticPaths() {
+  const currentYear = new Date().getUTCFullYear();
+  const paths = [];
+  for (let year = LISTENING_FIRST_YEAR; year <= currentYear; year++) {
+    paths.push({ params: { year: String(year) } });
+  }
+  return paths;
+}
+
+const year = Number(Astro.params.year);
+---
+<Layout
+  title={`Listening ${year} · Dinakar Tumu`}
+  description={`What Dinakar Tumu was listening to in ${year} — top artists, albums, and tracks.`}
+>
+  <ListeningYear year={year} />
+</Layout>

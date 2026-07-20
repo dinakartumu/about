@@ -1,24 +1,54 @@
 ---
-import Layout from '../layouts/Layout.astro';
+/**
+ * One listening year: headline, year switcher, monthly-plays chart, and the
+ * top artists/albums/tracks lists. Rendered by both /listening (current year)
+ * and /listening/{year}.
+ *
+ * Only the current year gets the per-month dropdown and its JSON island —
+ * historical years show year-level lists only, which keeps the build at one
+ * top-list batch per past year instead of thirteen.
+ */
 import {
+  LISTENING_FIRST_YEAR,
   monthRanges,
   rewindFetch,
   shapeTopList,
+  shapeTrends,
+  trendsAriaLabel,
   yearHeadline,
   type TopItem,
 } from '../lib/rewind';
+import BarChart from './BarChart.astro';
+import YearNav from './YearNav.astro';
 
 type TopListJson = Parameters<typeof shapeTopList>[0];
+type TrendsJson = Parameters<typeof shapeTrends>[0];
 type YearJson = Parameters<typeof yearHeadline>[0];
 
+interface Props {
+  year: number;
+}
+const { year } = Astro.props;
+
 const now = new Date();
-const year = now.getUTCFullYear();
+const isCurrentYear = year === now.getUTCFullYear();
+
+const years: number[] = [];
+for (let y = now.getUTCFullYear(); y >= LISTENING_FIRST_YEAR; y--) years.push(y);
 
 const headline = yearHeadline(await rewindFetch<YearJson>(`/v1/listening/year/${year}`));
+
+const trendsQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59Z`)}`;
+const trendPoints = shapeTrends(
+  await rewindFetch<TrendsJson>(`/v1/listening/trends?${trendsQuery}`),
+  year,
+  now
+);
 
 // One batch per month (three parallel calls each), months in sequence to
 // stay well inside the API's per-key rate limit. Any failure throws and
 // fails the build — never publish a page with missing sections.
+// Historical years fetch only the year-spanning "All months" range.
 interface MonthData {
   label: string;
   artists: TopItem[];
@@ -26,8 +56,10 @@ interface MonthData {
   tracks: TopItem[];
 }
 
+const ranges = isCurrentYear ? monthRanges(year, now) : monthRanges(year, now).slice(0, 1);
+
 const months: MonthData[] = [];
-for (const { label, from, to } of monthRanges(year, now)) {
+for (const { label, from, to } of ranges) {
   const q = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
   const [artists, albums, tracks] = await Promise.all([
     rewindFetch<TopListJson>(`/v1/listening/top/artists?${q}&limit=10`).then(shapeTopList),
@@ -46,103 +78,113 @@ const linkAttrs = (link: string | null) =>
 // Guard against a literal </script> inside names breaking the JSON island.
 const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 ---
-<Layout
-  title="Listening · Dinakar Tumu"
-  description={`What Dinakar Tumu has been listening to in ${year} — top artists, albums, and tracks.`}
->
-  <section class="container head">
-    <h1>{plays(headline.totalPlays)} in {headline.year}</h1>
+<section class="container head">
+  <div>
+    <h1>
+      {headline.totalPlays > 0
+        ? `${plays(headline.totalPlays)} in ${headline.year}`
+        : `No plays in ${headline.year}`}
+    </h1>
+    <YearNav basePath="/listening" years={years} current={year} />
+  </div>
+  {isCurrentYear && (
     <select id="month-select" aria-label="Filter by month" hidden>
       {months.map((m, i) => <option value={i}>{m.label}</option>)}
     </select>
-  </section>
+  )}
+</section>
 
-  <section class="container">
-    <h2>Top Artists</h2>
-    <ol class="list" id="top-artists" role="list">
-      {all.artists.map((a) => (
-        <li>
-          <a class="row" {...linkAttrs(a.link)}>
-            <span class="rank">{a.rank}</span>
-            {a.image ? (
-              <img
-                class="thumb"
-                src={a.image.url}
-                alt=""
-                width="56"
-                height="56"
-                loading="lazy"
-                decoding="async"
-                style={`background:${a.image.dominantColor}`}
-              />
-            ) : (
-              <span class="thumb placeholder" aria-hidden="true"></span>
-            )}
-            <span class="meta">
-              <span class="name">{a.name}</span>
-              <span class="sub muted">{plays(a.playcount)}</span>
-            </span>
-          </a>
-        </li>
-      ))}
-      {all.artists.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
-    </ol>
-  </section>
+<section class="container chart">
+  <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'plays')} />
+</section>
 
-  <section class="container">
-    <h2>Top Albums</h2>
-    <ol class="shelf" id="top-albums" role="list">
-      {all.albums.map((a) => (
-        <li>
-          <a class="card" {...linkAttrs(a.link)}>
-            {a.image ? (
-              <img
-                class="cover"
-                src={a.image.url}
-                alt=""
-                width="160"
-                height="160"
-                loading="lazy"
-                decoding="async"
-                style={`background:${a.image.dominantColor}`}
-              />
-            ) : (
-              <span class="cover placeholder" aria-hidden="true"></span>
-            )}
+<section class="container">
+  <h2>Top Artists</h2>
+  <ol class="list" id="top-artists" role="list">
+    {all.artists.map((a) => (
+      <li>
+        <a class="row" {...linkAttrs(a.link)}>
+          <span class="rank">{a.rank}</span>
+          {a.image ? (
+            <img
+              class="thumb"
+              src={a.image.url}
+              alt=""
+              width="56"
+              height="56"
+              loading="lazy"
+              decoding="async"
+              style={`background:${a.image.dominantColor}`}
+            />
+          ) : (
+            <span class="thumb placeholder" aria-hidden="true"></span>
+          )}
+          <span class="meta">
             <span class="name">{a.name}</span>
-            <span class="sub muted">{a.detail}</span>
-          </a>
-        </li>
-      ))}
-      {all.albums.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
-    </ol>
-  </section>
+            <span class="sub muted">{plays(a.playcount)}</span>
+          </span>
+        </a>
+      </li>
+    ))}
+    {all.artists.length === 0 && <li class="empty muted">No plays for this period.</li>}
+  </ol>
+</section>
 
-  <section class="container">
-    <h2>Top Tracks</h2>
-    <ol class="list" id="top-tracks" role="list">
-      {all.tracks.map((t) => (
-        <li>
-          <a class="row" {...linkAttrs(t.link)}>
-            <span class="rank">{t.rank}</span>
-            <span class="meta">
-              <span class="name">{t.name}</span>
-              <span class="sub muted">{t.detail}</span>
-            </span>
-            <span class="plays muted">{plays(t.playcount)}</span>
-          </a>
-        </li>
-      ))}
-      {all.tracks.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
-    </ol>
-  </section>
+<section class="container">
+  <h2>Top Albums</h2>
+  <ol class="shelf" id="top-albums" role="list">
+    {all.albums.map((a) => (
+      <li>
+        <a class="card" {...linkAttrs(a.link)}>
+          {a.image ? (
+            <img
+              class="cover"
+              src={a.image.url}
+              alt=""
+              width="160"
+              height="160"
+              loading="lazy"
+              decoding="async"
+              style={`background:${a.image.dominantColor}`}
+            />
+          ) : (
+            <span class="cover placeholder" aria-hidden="true"></span>
+          )}
+          <span class="name">{a.name}</span>
+          <span class="sub muted">{a.detail}</span>
+        </a>
+      </li>
+    ))}
+    {all.albums.length === 0 && <li class="empty muted">No plays for this period.</li>}
+  </ol>
+</section>
 
-  <script type="application/json" id="listening-data" set:html={islandJson} />
-</Layout>
+<section class="container">
+  <h2>Top Tracks</h2>
+  <ol class="list" id="top-tracks" role="list">
+    {all.tracks.map((t) => (
+      <li>
+        <a class="row" {...linkAttrs(t.link)}>
+          <span class="rank">{t.rank}</span>
+          <span class="meta">
+            <span class="name">{t.name}</span>
+            <span class="sub muted">{t.detail}</span>
+          </span>
+          <span class="plays muted">{plays(t.playcount)}</span>
+        </a>
+      </li>
+    ))}
+    {all.tracks.length === 0 && <li class="empty muted">No plays for this period.</li>}
+  </ol>
+</section>
+
+{isCurrentYear && <script type="application/json" id="listening-data" set:html={islandJson} />}
 
 <script>
   // Progressive enhancement: the page ships fully rendered for "All months";
-  // this script only swaps the three lists when the dropdown changes.
+  // this script only swaps the three lists when the dropdown changes. On
+  // historical year pages neither the island nor the select exists, so it
+  // does nothing.
   type Img = { url: string; dominantColor: string } | null;
   type Item = {
     rank: number;
@@ -207,7 +249,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
       if (!el) return;
       el.innerHTML = items.length
         ? items.map(render).join('')
-        : '<li class="empty muted">No plays yet for this period.</li>';
+        : '<li class="empty muted">No plays for this period.</li>';
     };
 
     select.addEventListener('change', () => {
@@ -242,6 +284,8 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
     cursor: pointer;
   }
   #month-select:hover { color: var(--heading); }
+
+  .chart { margin-top: 1.75rem; }
 
   h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
 

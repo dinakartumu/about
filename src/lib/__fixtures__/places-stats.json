@@ -3,13 +3,33 @@
   "unique_venues": 264,
   "this_year": 0,
   "top_categories": [
-    { "category": "Bakery", "count": 159 },
-    { "category": "Coffee Shop", "count": 85 },
-    { "category": "Mexican Restaurant", "count": 51 }
+    {
+      "category": "Bakery",
+      "count": 159,
+      "icon": "https://ss3.4sqi.net/img/categories_v2/food/bakery_64.png"
+    },
+    {
+      "category": "Coffee Shop",
+      "count": 85,
+      "icon": "https://ss3.4sqi.net/img/categories_v2/food/coffeeshop_64.png"
+    },
+    {
+      "category": "Mexican Restaurant",
+      "count": 51
+    }
   ],
   "top_cities": [
-    { "city": "Harrison", "count": 225 },
-    { "city": "Staten Island", "count": 170 },
-    { "city": "New York", "count": 59 }
+    {
+      "city": "Harrison",
+      "count": 225
+    },
+    {
+      "city": "Staten Island",
+      "count": 170
+    },
+    {
+      "city": "New York",
+      "count": 59
+    }
   ]
 }

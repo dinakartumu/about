@@ -1,0 +1,224 @@
+---
+/**
+ * One places year: headline, year switcher, monthly check-ins chart, and the
+ * check-in list. Rendered by both /places (global headline, recent list plus
+ * top categories/cities) and /places/{year} (year-scoped headline and list).
+ *
+ * A single wide trends probe — memoized across every places page — supplies
+ * the first year with a check-in, the year navigation range, each year's
+ * chart, and the year headline (the sum of that year's monthly counts).
+ *
+ * Venue and category icons are Foursquare's 64px dark-gray-on-transparent
+ * glyphs; they are inverted on the dark theme only (see the .icon rules).
+ */
+import {
+  rewindFetch,
+  shapePlacesStats,
+  shapeRecentCheckins,
+  shapeTrends,
+  trendsAriaLabel,
+  trendsFirstYear,
+  wideTrendsPath,
+  type PlacesStats,
+  type RecentCheckin,
+} from '../lib/rewind';
+import BarChart from './BarChart.astro';
+import YearNav from './YearNav.astro';
+
+type StatsJson = Parameters<typeof shapePlacesStats>[0];
+type RecentJson = Parameters<typeof shapeRecentCheckins>[0];
+type TrendsJson = Parameters<typeof shapeTrends>[0];
+
+interface Props {
+  year: number;
+  global?: boolean;
+}
+const { year, global: isGlobal = false } = Astro.props;
+
+const now = new Date();
+const currentYear = now.getUTCFullYear();
+
+const trends = await rewindFetch<TrendsJson>(wideTrendsPath('places', currentYear));
+const firstYear = trendsFirstYear(trends);
+const years: number[] = [];
+for (let y = currentYear; y >= firstYear; y--) years.push(y);
+
+const trendPoints = shapeTrends(trends, year, now);
+const yearCheckinCount = trendPoints.reduce((sum, p) => sum + p.value, 0);
+
+const n = (v: number) => Math.round(v).toLocaleString('en-US');
+const checkinNoun = (count: number) => (count === 1 ? 'check-in' : 'check-ins');
+
+// Any failure throws and fails the build — never publish a page with
+// missing sections. Empty years skip the list fetch entirely.
+let headline: string;
+let stats: PlacesStats | null = null;
+if (isGlobal) {
+  stats = shapePlacesStats(await rewindFetch<StatsJson>('/v1/places/stats'));
+  headline = `${n(stats.total)} Check-ins · ${n(stats.uniqueVenues)} Venues · ${n(stats.thisYear)} This Year`;
+} else if (yearCheckinCount > 0) {
+  headline = `${n(yearCheckinCount)} ${checkinNoun(yearCheckinCount)} in ${year}`;
+} else {
+  headline = `No check-ins in ${year}`;
+}
+
+const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59Z`)}`;
+const listPath = isGlobal
+  ? '/v1/places/recent?limit=30'
+  : `/v1/places/recent?${yearQuery}&limit=30`;
+const checkins: RecentCheckin[] =
+  isGlobal || yearCheckinCount > 0
+    ? shapeRecentCheckins(await rewindFetch<RecentJson>(listPath))
+    : [];
+
+const listHeading = isGlobal ? 'Recent Check-ins' : `Recent Check-ins in ${year}`;
+const emptyText = isGlobal ? 'No check-ins yet.' : `No check-ins in ${year}.`;
+---
+<section class="container head">
+  <h1>{headline}</h1>
+  <YearNav basePath="/places" years={years} current={year} />
+</section>
+
+<section class="container chart">
+  <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'check-ins')} />
+</section>
+
+<section class="container">
+  <h2>{listHeading}</h2>
+  <ol class="list" role="list">
+    {checkins.map((c) => (
+      <li>
+        <div class="row">
+          <span class="meta">
+            <span class="name-row">
+              {c.icon && (
+                <img class="icon" src={c.icon} alt="" width="20" height="20" loading="lazy" decoding="async" />
+              )}
+              <span class="name">{c.venueName}</span>
+            </span>
+            <span class="sub muted">{c.place ? `${c.category} · ${c.place}` : c.category}</span>
+            {c.shout && <span class="shout sub">{c.shout}</span>}
+          </span>
+          <span class="date muted">{c.date}</span>
+        </div>
+      </li>
+    ))}
+    {checkins.length === 0 && <li class="empty muted">{emptyText}</li>}
+  </ol>
+</section>
+
+{stats && (
+  <section class="container">
+    <div class="cols">
+      <div>
+        <h2>Top Categories</h2>
+        <ol class="list compact" role="list">
+          {stats.topCategories.map((c) => (
+            <li>
+              <div class="row">
+                <span class="name-row">
+                  {c.icon && (
+                    <img class="icon" src={c.icon} alt="" width="20" height="20" loading="lazy" decoding="async" />
+                  )}
+                  <span class="name">{c.name}</span>
+                </span>
+                <span class="count muted">{n(c.count)}</span>
+              </div>
+            </li>
+          ))}
+          {stats.topCategories.length === 0 && <li class="empty muted">Nothing here yet.</li>}
+        </ol>
+      </div>
+      <div>
+        <h2>Top Cities</h2>
+        <ol class="list compact" role="list">
+          {stats.topCities.map((c) => (
+            <li>
+              <div class="row">
+                <span class="name">{c.name}</span>
+                <span class="count muted">{n(c.count)}</span>
+              </div>
+            </li>
+          ))}
+          {stats.topCities.length === 0 && <li class="empty muted">Nothing here yet.</li>}
+        </ol>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .head h1 { margin-bottom: 0.5rem; }
+
+  .chart { margin-top: 1.75rem; }
+
+  h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 44rem;
+  }
+  .list li + li { border-top: 1px solid var(--surface); }
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.55rem 0;
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  /* Foursquare glyphs are dark gray on transparent: invert on the dark
+     theme (the default), show as-is when the visitor picks light. */
+  .icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+    opacity: 0.7;
+  }
+  :global(:root[data-theme='light']) .icon { filter: none; }
+
+  .name {
+    color: var(--heading);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sub { font-size: 0.85rem; }
+  .shout { font-style: italic; }
+
+  .date,
+  .count {
+    margin-left: auto;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 2.5rem;
+    max-width: 44rem;
+  }
+  .compact .name { font-weight: 400; color: var(--text); }
+  @media (max-width: 540px) {
+    .cols { grid-template-columns: 1fr; }
+  }
+
+  .empty { padding: 0.55rem 0; }
+</style>

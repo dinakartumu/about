@@ -1,0 +1,17 @@
+{
+    "metric": "scrobbles",
+    "data": [
+        {
+            "period": "2017-10",
+            "value": 860
+        },
+        {
+            "period": "2017-11",
+            "value": 541
+        },
+        {
+            "period": "2017-12",
+            "value": 429
+        }
+    ]
+}
