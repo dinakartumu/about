@@ -71,7 +71,7 @@ const checkins: RecentCheckin[] =
     ? shapeRecentCheckins(await rewindFetch<RecentJson>(listPath))
     : [];
 
-const listHeading = isGlobal ? 'Recent Check-ins' : `Check-ins in ${year}`;
+const listHeading = isGlobal ? 'Recent Check-ins' : `Recent Check-ins in ${year}`;
 const emptyText = isGlobal ? 'No check-ins yet.' : `No check-ins in ${year}.`;
 ---
 <section class="container head">

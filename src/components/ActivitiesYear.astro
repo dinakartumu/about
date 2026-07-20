@@ -86,7 +86,7 @@ if (summary) {
   );
 }
 
-const listHeading = isGlobal ? 'Recent Runs' : `Runs in ${year}`;
+const listHeading = isGlobal ? 'Recent Runs' : `Recent Runs in ${year}`;
 const emptyText = isGlobal ? 'No runs yet this year.' : `No runs in ${year}.`;
 
 const linkAttrs = (link: string | null) =>
@@ -114,7 +114,7 @@ const linkAttrs = (link: string | null) =>
             <span class="name">{r.name}</span>
             <span class="sub muted">{r.date}</span>
           </span>
-          <span class="figures muted">{r.distanceMi} mi · {r.pace}</span>
+          <span class="figures muted">{r.distanceMi} mi{r.pace !== '0:00/mi' && ` · ${r.pace}`}</span>
         </a>
       </li>
     ))}

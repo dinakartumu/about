@@ -1,7 +1,8 @@
 name: Daily rebuild
 
-# Re-triggers the Cloudflare Pages production build so /listening and
-# /movies pick up fresh data from the Rewind API (build-time fetch).
+# Re-triggers the Cloudflare Pages production build so the data pages
+# (/listening, /movies, /places, /activities) pick up fresh data from the
+# Rewind API (build-time fetch).
 on:
   schedule:
     - cron: '0 12 * * *'

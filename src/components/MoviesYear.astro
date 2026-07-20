@@ -70,7 +70,7 @@ const watches: RecentWatch[] =
     ? shapeRecentWatches(await rewindFetch<RecentJson>(gridPath))
     : [];
 
-const gridHeading = isGlobal ? 'Recently Watched' : `Watched in ${year}`;
+const gridHeading = isGlobal ? 'Recently Watched' : `Recently Watched in ${year}`;
 const emptyText = isGlobal ? 'Nothing watched yet.' : `Nothing watched in ${year}.`;
 
 const linkAttrs = (link: string | null) =>

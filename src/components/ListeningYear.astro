@@ -80,7 +80,11 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 ---
 <section class="container head">
   <div>
-    <h1>{plays(headline.totalPlays)} in {headline.year}</h1>
+    <h1>
+      {headline.totalPlays > 0
+        ? `${plays(headline.totalPlays)} in ${headline.year}`
+        : `No plays in ${headline.year}`}
+    </h1>
     <YearNav basePath="/listening" years={years} current={year} />
   </div>
   {isCurrentYear && (
@@ -122,7 +126,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
         </a>
       </li>
     ))}
-    {all.artists.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
+    {all.artists.length === 0 && <li class="empty muted">No plays for this period.</li>}
   </ol>
 </section>
 
@@ -151,7 +155,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
         </a>
       </li>
     ))}
-    {all.albums.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
+    {all.albums.length === 0 && <li class="empty muted">No plays for this period.</li>}
   </ol>
 </section>
 
@@ -170,7 +174,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
         </a>
       </li>
     ))}
-    {all.tracks.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
+    {all.tracks.length === 0 && <li class="empty muted">No plays for this period.</li>}
   </ol>
 </section>
 
@@ -245,7 +249,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
       if (!el) return;
       el.innerHTML = items.length
         ? items.map(render).join('')
-        : '<li class="empty muted">No plays yet for this period.</li>';
+        : '<li class="empty muted">No plays for this period.</li>';
     };
 
     select.addEventListener('change', () => {

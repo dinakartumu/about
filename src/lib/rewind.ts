@@ -147,8 +147,12 @@ interface ApiTrendsResponse {
   data?: ApiTrendBucket[];
 }
 
-/** First year with a Last.fm account — the earliest listening year page. */
-export const LISTENING_FIRST_YEAR = 2016;
+/**
+ * Earliest listening year page. The Last.fm account was registered 2016-08
+ * but has no 2016 scrobbles, so the pages start at 2017 — bump this back
+ * if backfilled 2016 data ever appears.
+ */
+export const LISTENING_FIRST_YEAR = 2017;
 
 /**
  * Month options for the listening dropdown: an "All months" entry spanning
@@ -585,9 +589,11 @@ export function trendsAriaLabel(points: TrendPoint[], noun: string): string {
   return `Monthly ${noun}, peak ${fullMonth} ${peak.value.toLocaleString('en-US')}`;
 }
 
-// The API allows 60 requests per key per sliding 60s window. The year pages
-// make ~75 calls per build, so pace requests client-side: track recent send
-// times and wait for the window to open before exceeding a safety margin.
+// The API allows 60 requests per key per sliding 60s window. Builds make on
+// the order of 100-200 API calls (and the count grows with each new year
+// page), so pace requests client-side: track recent send times and wait for
+// the window to open before exceeding a safety margin. The 50-per-61s budget
+// stays under the key's 60 rpm limit.
 const RATE_LIMIT = 50;
 const RATE_WINDOW_MS = 61_000;
 const sentAt: number[] = [];
