@@ -218,6 +218,7 @@ describe('shapeRecentWatches', () => {
       year: 2026,
       image: null,
       stars: '★★½☆☆',
+      rating: 2.5,
       watchedDate: 'Watched Jul 19, 2026',
       tmdbUrl: 'https://www.themoviedb.org/movie/1628448',
       rewatch: false,

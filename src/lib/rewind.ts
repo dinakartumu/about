@@ -50,6 +50,7 @@ export interface RecentWatch {
   year: number | null;
   image: ShapedImage | null;
   stars: string;
+  rating: number | null;
   watchedDate: string;
   tmdbUrl: string | null;
   rewatch: boolean;
@@ -173,6 +174,7 @@ export function shapeRecentWatches(json: ApiRecentWatchesResponse): RecentWatch[
     year: entry.movie.year,
     image: shapeImage(entry.movie.image),
     stars: starsFor(entry.user_rating),
+    rating: entry.user_rating != null ? entry.user_rating / 2 : null,
     watchedDate: fmtWatchDate(entry.watched_at),
     tmdbUrl: entry.movie.tmdb_id
       ? `https://www.themoviedb.org/movie/${entry.movie.tmdb_id}`

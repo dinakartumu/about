@@ -26,7 +26,7 @@ const linkAttrs = (link: string | null) =>
 
   <section class="container">
     <h2>Recently Watched</h2>
-    <ol class="grid">
+    <ol class="grid" role="list">
       {watches.map((m) => (
         <li>
           <a class="tile" {...linkAttrs(m.tmdbUrl)}>
@@ -53,7 +53,9 @@ const linkAttrs = (link: string | null) =>
                 {m.year !== null && <span class="muted"> ({m.year})</span>}
               </span>
             )}
-            {m.stars && <span class="stars">{m.stars}</span>}
+            {m.stars && m.rating != null && (
+              <span class="stars" role="img" aria-label={`Rated ${m.rating} out of 5`}>{m.stars}</span>
+            )}
             <span class="sub muted">{m.watchedDate}{m.rewatch && ' · Rewatch'}</span>
           </a>
         </li>

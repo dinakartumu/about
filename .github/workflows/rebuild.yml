@@ -7,14 +7,18 @@ on:
     - cron: '0 12 * * *'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   rebuild:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Cloudflare Pages deploy hook
+        env:
+          PAGES_DEPLOY_HOOK: ${{ secrets.PAGES_DEPLOY_HOOK }}
         run: |
-          if [ -z "${{ secrets.PAGES_DEPLOY_HOOK }}" ]; then
+          if [ -z "$PAGES_DEPLOY_HOOK" ]; then
             echo "PAGES_DEPLOY_HOOK secret is not set" >&2
             exit 1
           fi
-          curl -fsS -X POST "${{ secrets.PAGES_DEPLOY_HOOK }}"
+          curl -fsS -X POST "$PAGES_DEPLOY_HOOK"

@@ -59,7 +59,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 
   <section class="container">
     <h2>Top Artists</h2>
-    <ol class="list" id="top-artists">
+    <ol class="list" id="top-artists" role="list">
       {all.artists.map((a) => (
         <li>
           <a class="row" {...linkAttrs(a.link)}>
@@ -91,7 +91,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 
   <section class="container">
     <h2>Top Albums</h2>
-    <ol class="shelf" id="top-albums">
+    <ol class="shelf" id="top-albums" role="list">
       {all.albums.map((a) => (
         <li>
           <a class="card" {...linkAttrs(a.link)}>
@@ -120,7 +120,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 
   <section class="container">
     <h2>Top Tracks</h2>
-    <ol class="list" id="top-tracks">
+    <ol class="list" id="top-tracks" role="list">
       {all.tracks.map((t) => (
         <li>
           <a class="row" {...linkAttrs(t.link)}>
