@@ -1,0 +1,65 @@
+{
+  "period": "7day",
+  "artist_id": null,
+  "data": [
+    {
+      "rank": 1,
+      "id": 606,
+      "name": "Sense and Change",
+      "detail": "Sebastian Plano",
+      "album_id": 412,
+      "album_name": "SOLO",
+      "album_apple_music_url": null,
+      "album_released_year": null,
+      "album_total_tracks": null,
+      "playcount": 41,
+      "image": null,
+      "url": "https://www.last.fm/music/Sebastian+Plano/_/Sense+and+Change",
+      "apple_music_url": null,
+      "preview_url": null
+    },
+    {
+      "rank": 2,
+      "id": 607,
+      "name": "Every Beginning",
+      "detail": "Sebastian Plano",
+      "album_id": 412,
+      "album_name": "SOLO",
+      "album_apple_music_url": null,
+      "album_released_year": null,
+      "album_total_tracks": null,
+      "playcount": 41,
+      "image": null,
+      "url": "https://www.last.fm/music/Sebastian+Plano/_/Every+Beginning",
+      "apple_music_url": null,
+      "preview_url": null
+    },
+    {
+      "rank": 4,
+      "id": 241,
+      "name": "Ennodu Nee Irundhaal - Reprise",
+      "detail": "A.R. Rahman",
+      "album_id": 97,
+      "album_name": "I (Original Motion Picture Soundtrack)",
+      "album_apple_music_url": null,
+      "album_released_year": null,
+      "album_total_tracks": null,
+      "playcount": 27,
+      "image": {
+        "cdn_url": "https://cdn.dinakartumu.com/cdn-cgi/image/width=300,height=300,fit=cover,format=auto,quality=85/listening/albums/97/original.jpg?v=1",
+        "thumbhash": "FQkGJwYoVIdqqHeAmbhpRXaHZvYpaa8F",
+        "dominant_color": "#7f6a31",
+        "accent_color": "#5a4923"
+      },
+      "url": "https://www.last.fm/music/A.R.+Rahman/_/Ennodu+Nee+Irundhaal+-+Reprise",
+      "apple_music_url": null,
+      "preview_url": null
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 3,
+    "total": 536,
+    "total_pages": 36
+  }
+}

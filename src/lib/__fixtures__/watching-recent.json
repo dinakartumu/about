@@ -1,0 +1,84 @@
+{
+  "data": [
+    {
+      "movie": {
+        "id": 1855,
+        "title": "Maa Behen",
+        "year": 2026,
+        "director": null,
+        "directors": [],
+        "genres": [],
+        "duration_min": null,
+        "rating": null,
+        "image": null,
+        "imdb_id": null,
+        "tmdb_id": 1628448,
+        "tmdb_rating": null,
+        "tagline": null,
+        "summary": null
+      },
+      "watched_at": "2026-07-19T18:31:00.000Z",
+      "source": "trakt",
+      "user_rating": 5,
+      "percent_complete": null,
+      "rewatch": false,
+      "review": null,
+      "review_url": null
+    },
+    {
+      "movie": {
+        "id": 1839,
+        "title": "Strange Days",
+        "year": 1995,
+        "director": null,
+        "directors": [],
+        "genres": [],
+        "duration_min": null,
+        "rating": null,
+        "image": {
+          "cdn_url": "https://cdn.dinakartumu.com/cdn-cgi/image/width=240,height=360,fit=cover,format=auto,quality=85/watching/movies/1839/original.jpg?v=1",
+          "thumbhash": "iSgOHwYJhHuId3h3iGmHiHiKl4B4CIgH",
+          "dominant_color": "#000000",
+          "accent_color": "#000000"
+        },
+        "imdb_id": null,
+        "tmdb_id": 281,
+        "tmdb_rating": null,
+        "tagline": null,
+        "summary": null
+      },
+      "watched_at": "2026-06-28T09:39:00.000Z",
+      "source": "trakt",
+      "user_rating": 8,
+      "percent_complete": null,
+      "rewatch": false,
+      "review": null,
+      "review_url": null
+    },
+    {
+      "movie": {
+        "id": 1837,
+        "title": "Maternal Instinct",
+        "year": 2026,
+        "director": null,
+        "directors": [],
+        "genres": [],
+        "duration_min": null,
+        "rating": null,
+        "image": null,
+        "imdb_id": null,
+        "tmdb_id": 1699155,
+        "tmdb_rating": null,
+        "tagline": null,
+        "summary": null
+      },
+      "watched_at": "2026-06-27T10:28:00.000Z",
+      "source": "trakt",
+      "user_rating": null,
+      "percent_complete": null,
+      "rewatch": false,
+      "review": null,
+      "review_url": null
+    }
+  ]
+}

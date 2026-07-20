@@ -1,0 +1,49 @@
+{
+  "period": "7day",
+  "data": [
+    {
+      "rank": 1,
+      "id": 92,
+      "name": "A.R. Rahman",
+      "detail": "",
+      "playcount": 189,
+      "genre": "Soundtrack",
+      "image": null,
+      "url": "",
+      "apple_music_url": null
+    },
+    {
+      "rank": 2,
+      "id": 327,
+      "name": "Sebastian Plano",
+      "detail": "",
+      "playcount": 123,
+      "genre": null,
+      "image": null,
+      "url": "",
+      "apple_music_url": null
+    },
+    {
+      "rank": 6,
+      "id": 145,
+      "name": "J Dilla",
+      "detail": "",
+      "playcount": 27,
+      "genre": null,
+      "image": {
+        "cdn_url": "https://cdn.dinakartumu.com/cdn-cgi/image/width=300,height=300,fit=cover,format=auto,quality=85/listening/artists/145/original.jpg?v=1",
+        "thumbhash": "3EkGDwQDJHV5hmeRdmqIZnh3E2335nYP",
+        "dominant_color": "#a06e3c",
+        "accent_color": "#b98f60"
+      },
+      "url": "",
+      "apple_music_url": null
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 3,
+    "total": 277,
+    "total_pages": 19
+  }
+}

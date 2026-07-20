@@ -1,0 +1,60 @@
+{
+  "year": 2026,
+  "total_scrobbles": 1095,
+  "unique_artists": 277,
+  "unique_albums": 435,
+  "unique_tracks": 536,
+  "top_artists": [
+    {
+      "id": 92,
+      "name": "A.R. Rahman",
+      "scrobbles": 189,
+      "apple_music_url": null,
+      "image": null
+    },
+    {
+      "id": 327,
+      "name": "Sebastian Plano",
+      "scrobbles": 123,
+      "apple_music_url": null,
+      "image": null
+    }
+  ],
+  "top_albums": [
+    {
+      "id": 412,
+      "name": "SOLO",
+      "artist": "Sebastian Plano",
+      "scrobbles": 123,
+      "apple_music_url": null,
+      "image": null
+    },
+    {
+      "id": 44,
+      "name": "Main Vaapas Aaunga (Original Motion Picture Soundtrack)",
+      "artist": "A.R. Rahman",
+      "scrobbles": 56,
+      "apple_music_url": null,
+      "image": null
+    }
+  ],
+  "top_tracks": [
+    {
+      "id": 606,
+      "name": "Sense and Change",
+      "artist": "Sebastian Plano",
+      "scrobbles": 41,
+      "apple_music_url": null,
+      "preview_url": null
+    },
+    {
+      "id": 607,
+      "name": "Every Beginning",
+      "artist": "Sebastian Plano",
+      "scrobbles": 41,
+      "apple_music_url": null,
+      "preview_url": null
+    }
+  ],
+  "monthly": []
+}

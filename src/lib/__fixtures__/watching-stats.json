@@ -1,0 +1,14 @@
+{
+  "data": {
+    "total_movies": 1946,
+    "total_watch_time_hours": 2440,
+    "movies_this_year": 95,
+    "avg_per_month": 11.8,
+    "top_genre": "Drama",
+    "top_decade": 2010,
+    "top_director": "Martin Scorsese",
+    "total_shows": 71,
+    "total_episodes_watched": 905,
+    "episodes_this_year": 21
+  }
+}
