@@ -52,7 +52,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 >
   <section class="container head">
     <h1>{plays(headline.totalPlays)} in {headline.year}</h1>
-    <select id="month-select" aria-label="Filter by month">
+    <select id="month-select" aria-label="Filter by month" hidden>
       {months.map((m, i) => <option value={i}>{m.label}</option>)}
     </select>
   </section>
@@ -68,7 +68,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
               <img
                 class="thumb"
                 src={a.image.url}
-                alt={`${a.name} artwork`}
+                alt=""
                 width="56"
                 height="56"
                 loading="lazy"
@@ -85,13 +85,13 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
           </a>
         </li>
       ))}
-      {all.artists.length === 0 && <li class="empty muted">No plays in {all.label}</li>}
+      {all.artists.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
     </ol>
   </section>
 
   <section class="container">
     <h2>Top Albums</h2>
-    <ul class="shelf" id="top-albums">
+    <ol class="shelf" id="top-albums">
       {all.albums.map((a) => (
         <li>
           <a class="card" {...linkAttrs(a.link)}>
@@ -99,7 +99,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
               <img
                 class="cover"
                 src={a.image.url}
-                alt={`${a.name} cover`}
+                alt=""
                 width="160"
                 height="160"
                 loading="lazy"
@@ -114,8 +114,8 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
           </a>
         </li>
       ))}
-      {all.albums.length === 0 && <li class="empty muted">No plays in {all.label}</li>}
-    </ul>
+      {all.albums.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
+    </ol>
   </section>
 
   <section class="container">
@@ -133,7 +133,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
           </a>
         </li>
       ))}
-      {all.tracks.length === 0 && <li class="empty muted">No plays in {all.label}</li>}
+      {all.tracks.length === 0 && <li class="empty muted">No plays yet for this period.</li>}
     </ol>
   </section>
 
@@ -158,6 +158,9 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
   const select = document.getElementById('month-select') as HTMLSelectElement | null;
 
   if (island?.textContent && select) {
+    // Server renders the select hidden so no-JS users never see an inert control.
+    select.hidden = false;
+
     const months: Month[] = JSON.parse(island.textContent);
 
     const esc = (s: string) =>
@@ -169,9 +172,10 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 
     const plays = (n: number) => `${n.toLocaleString('en-US')} ${n === 1 ? 'play' : 'plays'}`;
 
-    const img = (image: Img, cls: string, size: number, alt: string) =>
+    // alt="" — the item name is adjacent visible text inside the same anchor.
+    const img = (image: Img, cls: string, size: number) =>
       image
-        ? `<img class="${cls}" src="${esc(image.url)}" alt="${esc(alt)}" width="${size}" height="${size}" loading="lazy" decoding="async" style="background:${esc(image.dominantColor)}">`
+        ? `<img class="${cls}" src="${esc(image.url)}" alt="" width="${size}" height="${size}" loading="lazy" decoding="async" style="background:${esc(image.dominantColor)}">`
         : `<span class="${cls} placeholder" aria-hidden="true"></span>`;
 
     const wrap = (link: string | null, cls: string, inner: string) =>
@@ -181,14 +185,14 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
       `<li>${wrap(
         a.link,
         'row',
-        `<span class="rank">${a.rank}</span>${img(a.image, 'thumb', 56, `${a.name} artwork`)}<span class="meta"><span class="name">${esc(a.name)}</span><span class="sub muted">${plays(a.playcount)}</span></span>`
+        `<span class="rank">${a.rank}</span>${img(a.image, 'thumb', 56)}<span class="meta"><span class="name">${esc(a.name)}</span><span class="sub muted">${plays(a.playcount)}</span></span>`
       )}</li>`;
 
     const albumLi = (a: Item) =>
       `<li>${wrap(
         a.link,
         'card',
-        `${img(a.image, 'cover', 160, `${a.name} cover`)}<span class="name">${esc(a.name)}</span><span class="sub muted">${esc(a.detail)}</span>`
+        `${img(a.image, 'cover', 160)}<span class="name">${esc(a.name)}</span><span class="sub muted">${esc(a.detail)}</span>`
       )}</li>`;
 
     const trackLi = (t: Item) =>
@@ -198,20 +202,20 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
         `<span class="rank">${t.rank}</span><span class="meta"><span class="name">${esc(t.name)}</span><span class="sub muted">${esc(t.detail)}</span></span><span class="plays muted">${plays(t.playcount)}</span>`
       )}</li>`;
 
-    const fill = (id: string, items: Item[], render: (i: Item) => string, label: string) => {
+    const fill = (id: string, items: Item[], render: (i: Item) => string) => {
       const el = document.getElementById(id);
       if (!el) return;
       el.innerHTML = items.length
         ? items.map(render).join('')
-        : `<li class="empty muted">No plays in ${esc(label)}</li>`;
+        : '<li class="empty muted">No plays yet for this period.</li>';
     };
 
     select.addEventListener('change', () => {
       const m = months[Number(select.value)];
       if (!m) return;
-      fill('top-artists', m.artists, artistLi, m.label);
-      fill('top-albums', m.albums, albumLi, m.label);
-      fill('top-tracks', m.tracks, trackLi, m.label);
+      fill('top-artists', m.artists, artistLi);
+      fill('top-albums', m.albums, albumLi);
+      fill('top-tracks', m.tracks, trackLi);
     });
   }
 </script>
@@ -247,7 +251,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
     padding: 0;
     max-width: 44rem;
   }
-  .list li + li { border-top: 1px solid var(--surface); }
+  .list :global(li + li) { border-top: 1px solid var(--surface); }
   .list :global(.row) {
     display: flex;
     align-items: center;
@@ -289,7 +293,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
     gap: 1rem;
     overflow-x: auto;
   }
-  .shelf li { flex: 0 0 auto; width: 160px; }
+  .shelf :global(li) { flex: 0 0 auto; width: 160px; }
   .shelf :global(.card) { display: flex; flex-direction: column; }
   .shelf :global(a.card[href]:hover .name) { color: var(--accent); }
   .shelf :global(.cover) {

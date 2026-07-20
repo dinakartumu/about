@@ -67,6 +67,7 @@ interface ApiTopItem {
   detail: string;
   playcount: number;
   image: ApiImage | null;
+  url: string; // Last.fm URL; empty string on artists/albums
   apple_music_url: string | null;
 }
 
@@ -160,7 +161,8 @@ export function shapeTopList(json: ApiTopListResponse): TopItem[] {
     detail: item.detail,
     playcount: item.playcount,
     image: shapeImage(item.image),
-    link: item.apple_music_url ?? null,
+    // || deliberately: url is an empty string (not null) on artists/albums.
+    link: item.apple_music_url || item.url || null,
   }));
 }
 

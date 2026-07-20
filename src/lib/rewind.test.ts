@@ -137,6 +137,7 @@ describe('shapeTopList', () => {
           detail: '',
           playcount: 3,
           image: null,
+          url: '',
           apple_music_url: 'https://music.apple.com/us/artist/example/123',
         },
       ],
@@ -144,10 +145,43 @@ describe('shapeTopList', () => {
     expect(shaped[0].link).toBe('https://music.apple.com/us/artist/example/123');
   });
 
-  it('leaves items unlinked when apple_music_url is null', () => {
-    for (const item of shapeTopList(topTracks)) {
-      expect(item.link).toBeNull();
-    }
+  it('falls back to the item url when apple_music_url is null', () => {
+    const tracks = shapeTopList(topTracks);
+    expect(tracks[0].link).toBe('https://www.last.fm/music/Sebastian+Plano/_/Sense+and+Change');
+  });
+
+  it('leaves items unlinked when apple_music_url is null and url is empty', () => {
+    const shaped = shapeTopList({
+      data: [
+        {
+          rank: 1,
+          name: 'Example',
+          detail: '',
+          playcount: 3,
+          image: null,
+          url: '',
+          apple_music_url: null,
+        },
+      ],
+    });
+    expect(shaped[0].link).toBeNull();
+  });
+
+  it('prefers apple_music_url when both urls are present', () => {
+    const shaped = shapeTopList({
+      data: [
+        {
+          rank: 1,
+          name: 'Example',
+          detail: '',
+          playcount: 3,
+          image: null,
+          url: 'https://www.last.fm/music/Example',
+          apple_music_url: 'https://music.apple.com/us/artist/example/123',
+        },
+      ],
+    });
+    expect(shaped[0].link).toBe('https://music.apple.com/us/artist/example/123');
   });
 
   it('returns an empty array for an empty response', () => {
@@ -163,6 +197,7 @@ describe('shapeTopList', () => {
           detail: '',
           playcount: 2,
           image: { cdn_url: 'https://cdn.dinakartumu.com/x.jpg', dominant_color: null },
+          url: '',
           apple_music_url: null,
         },
       ],
