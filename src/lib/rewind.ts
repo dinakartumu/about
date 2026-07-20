@@ -267,8 +267,14 @@ export function shapePlacesStats(json: ApiPlacesStatsResponse): PlacesStats {
     total: json.total,
     uniqueVenues: json.unique_venues,
     thisYear: json.this_year,
-    topCategories: json.top_categories.map((c) => ({ name: c.category ?? '', count: c.count })),
-    topCities: json.top_cities.map((c) => ({ name: c.city ?? '', count: c.count })),
+    topCategories: json.top_categories.map((c) => {
+      if (!c.category) throw new Error('places stats category entry missing label');
+      return { name: c.category, count: c.count };
+    }),
+    topCities: json.top_cities.map((c) => {
+      if (!c.city) throw new Error('places stats city entry missing label');
+      return { name: c.city, count: c.count };
+    }),
   };
 }
 

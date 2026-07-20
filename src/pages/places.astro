@@ -54,6 +54,7 @@ const n = (v: number) => Math.round(v).toLocaleString('en-US');
               </div>
             </li>
           ))}
+          {stats.topCategories.length === 0 && <li class="empty muted">Nothing here yet.</li>}
         </ol>
       </div>
       <div>
@@ -67,6 +68,7 @@ const n = (v: number) => Math.round(v).toLocaleString('en-US');
               </div>
             </li>
           ))}
+          {stats.topCities.length === 0 && <li class="empty muted">Nothing here yet.</li>}
         </ol>
       </div>
     </div>
