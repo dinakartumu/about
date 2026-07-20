@@ -1,0 +1,20 @@
+name: Daily rebuild
+
+# Re-triggers the Cloudflare Pages production build so /listening and
+# /movies pick up fresh data from the Rewind API (build-time fetch).
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages deploy hook
+        run: |
+          if [ -z "${{ secrets.PAGES_DEPLOY_HOOK }}" ]; then
+            echo "PAGES_DEPLOY_HOOK secret is not set" >&2
+            exit 1
+          fi
+          curl -fsS -X POST "${{ secrets.PAGES_DEPLOY_HOOK }}"
