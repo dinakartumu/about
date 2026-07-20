@@ -5,42 +5,94 @@ interface Props {
   slug: string;
   title: string;
   cover: string;
+  coverWidth?: number;
+  coverHeight?: number;
   count: number;
   date: string;
 }
-const { slug, title, cover, count, date } = Astro.props;
+const { slug, title, cover, coverWidth, coverHeight, count, date } = Astro.props;
 const year = date.slice(0, 4);
+const ratio = coverWidth && coverHeight ? `${coverWidth} / ${coverHeight}` : '3 / 2';
+
+// Native aspect ratio: request by width and let height follow the source.
+const COVER_WIDTHS = [800, 1200, 1600, 2400];
+const src = photoUrl(cover, { width: 1600, fit: 'scale-down' });
+const srcset = COVER_WIDTHS.map(
+  (w) => `${photoUrl(cover, { width: w, fit: 'scale-down' })} ${w}w`
+).join(', ');
 ---
 <a class="card" href={`/photos/${slug}`}>
   <img
-    src={photoUrl(cover, { width: 800, height: 500, fit: 'cover' })}
-    alt=""
-    width="800"
-    height="500"
+    src={src}
+    srcset={srcset}
+    sizes="(max-width: 44rem) 100vw, 44rem"
+    alt={title}
+    width={coverWidth}
+    height={coverHeight}
+    style={`aspect-ratio: ${ratio};`}
     loading="lazy"
   />
+  <div class="scrim"></div>
   <div class="meta">
     <span class="title">{title}</span>
-    <span class="muted">{count} photos · {year}</span>
+    <span class="sub">{count} photos · {year}</span>
   </div>
 </a>
 
 <style>
-  .card { display: block; }
-  img {
-    width: 100%;
-    aspect-ratio: 8 / 5;
-    object-fit: cover;
-    border-radius: 6px;
+  .card {
+    position: relative;
+    display: block;
+    border-radius: 16px;
+    overflow: hidden;
     background: var(--surface);
+    isolation: isolate;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.72) 0%,
+      rgba(0, 0, 0, 0.28) 24%,
+      rgba(0, 0, 0, 0) 46%
+    );
+    pointer-events: none;
   }
   .meta {
+    position: absolute;
+    left: clamp(1.25rem, 3vw, 2.5rem);
+    bottom: clamp(1.25rem, 3vw, 2.25rem);
+    right: clamp(1.25rem, 3vw, 2.5rem);
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 0.5rem 0.1rem;
-    font-size: 0.9rem;
+    flex-direction: column;
+    gap: 0.15rem;
   }
-  .title { color: var(--heading); font-weight: 500; }
-  .card:hover img { opacity: 0.85; }
+  .title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.05;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .card:hover img {
+    transform: scale(1.03);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    img { transition: none; }
+    .card:hover img { transform: none; }
+  }
 </style>

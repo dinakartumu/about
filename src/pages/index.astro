@@ -24,27 +24,32 @@ const recent = (await getCollection('photosets'))
     <section class="container">
       <h2>Recent photos</h2>
       <div class="grid">
-        {recent.map(({ data }) => (
-          <PhotoSetCard
-            slug={data.slug}
-            title={data.title}
-            cover={data.cover}
-            count={data.photos.length}
-            date={data.date}
-          />
-        ))}
+        {recent.map(({ data }) => {
+          const coverPhoto = data.photos.find((p) => p.id === data.cover);
+          return (
+            <PhotoSetCard
+              slug={data.slug}
+              title={data.title}
+              cover={data.cover}
+              coverWidth={coverPhoto?.width}
+              coverHeight={coverPhoto?.height}
+              count={data.photos.length}
+              date={data.date}
+            />
+          );
+        })}
       </div>
     </section>
   )}
 </Layout>
 
 <style>
-  .intro p { max-width: 44rem; }
+  .container { max-width: 44rem; }
   h2 { font-size: 1.1rem; margin: 2rem 0 1rem; }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
-    gap: 1.5rem 1.25rem;
+    grid-template-columns: 1fr;
+    gap: clamp(1.25rem, 3vw, 2rem);
     margin-bottom: 2rem;
   }
 </style>
