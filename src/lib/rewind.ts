@@ -58,7 +58,7 @@ export interface RecentWatch {
 // Raw API shapes — only the fields we read.
 interface ApiImage {
   cdn_url: string;
-  dominant_color: string;
+  dominant_color: string | null; // null until color extraction has run
 }
 
 interface ApiTopItem {
@@ -88,6 +88,14 @@ interface ApiWatchEntry {
 
 interface ApiRecentWatchesResponse {
   data: ApiWatchEntry[];
+}
+
+interface ApiWatchingStatsResponse {
+  data?: {
+    total_movies: number;
+    movies_this_year: number;
+    total_watch_time_hours: number;
+  };
 }
 
 interface ApiYearRollup {
@@ -135,8 +143,13 @@ export function fmtWatchDate(iso: string): string {
   return `Watched ${MONTH_ABBREV[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
 }
 
+/** Neutral backdrop used until the API has extracted a dominant color. */
+const FALLBACK_DOMINANT_COLOR = '#1a1a1a';
+
 function shapeImage(image: ApiImage | null): ShapedImage | null {
-  return image ? { url: image.cdn_url, dominantColor: image.dominant_color } : null;
+  return image
+    ? { url: image.cdn_url, dominantColor: image.dominant_color ?? FALLBACK_DOMINANT_COLOR }
+    : null;
 }
 
 /** Narrow a /v1/listening/top/* response to the fields the page renders. */
@@ -164,6 +177,24 @@ export function shapeRecentWatches(json: ApiRecentWatchesResponse): RecentWatch[
       : null,
     rewatch: entry.rewatch,
   }));
+}
+
+export interface WatchingStats {
+  totalMovies: number;
+  moviesThisYear: number;
+  totalHours: number;
+}
+
+/** Headline numbers from /v1/watching/stats. */
+export function shapeWatchingStats(json: ApiWatchingStatsResponse): WatchingStats {
+  if (!json.data) {
+    throw new Error('watching stats response has no data object');
+  }
+  return {
+    totalMovies: json.data.total_movies,
+    moviesThisYear: json.data.movies_this_year,
+    totalHours: json.data.total_watch_time_hours,
+  };
 }
 
 /**

@@ -4,6 +4,7 @@ import {
   monthRanges,
   shapeRecentWatches,
   shapeTopList,
+  shapeWatchingStats,
   starsFor,
   yearHeadline,
 } from './rewind';
@@ -12,6 +13,7 @@ import topAlbums from './__fixtures__/top-albums.json';
 import topArtists from './__fixtures__/top-artists.json';
 import topTracks from './__fixtures__/top-tracks.json';
 import watchingRecent from './__fixtures__/watching-recent.json';
+import watchingStats from './__fixtures__/watching-stats.json';
 
 describe('monthRanges', () => {
   it('returns the all entry first, then elapsed months newest first', () => {
@@ -151,6 +153,25 @@ describe('shapeTopList', () => {
   it('returns an empty array for an empty response', () => {
     expect(shapeTopList(topAlbums)).toEqual([]);
   });
+
+  it('falls back to a neutral dominant color when extraction has not run', () => {
+    const shaped = shapeTopList({
+      data: [
+        {
+          rank: 1,
+          name: 'Unextracted',
+          detail: '',
+          playcount: 2,
+          image: { cdn_url: 'https://cdn.dinakartumu.com/x.jpg', dominant_color: null },
+          apple_music_url: null,
+        },
+      ],
+    });
+    expect(shaped[0].image).toEqual({
+      url: 'https://cdn.dinakartumu.com/x.jpg',
+      dominantColor: '#1a1a1a',
+    });
+  });
 });
 
 describe('shapeRecentWatches', () => {
@@ -198,6 +219,42 @@ describe('shapeRecentWatches', () => {
     });
     expect(shaped[0].tmdbUrl).toBeNull();
     expect(shaped[0].rewatch).toBe(true);
+  });
+
+  it('falls back to a neutral dominant color when extraction has not run', () => {
+    const shaped = shapeRecentWatches({
+      data: [
+        {
+          movie: {
+            title: 'Fresh Poster',
+            year: 2026,
+            image: { cdn_url: 'https://cdn.dinakartumu.com/p.jpg', dominant_color: null },
+            tmdb_id: 1,
+          },
+          watched_at: '2026-07-19T00:00:00.000Z',
+          user_rating: null,
+          rewatch: false,
+        },
+      ],
+    });
+    expect(shaped[0].image).toEqual({
+      url: 'https://cdn.dinakartumu.com/p.jpg',
+      dominantColor: '#1a1a1a',
+    });
+  });
+});
+
+describe('shapeWatchingStats', () => {
+  it('reads the headline numbers from the stats payload', () => {
+    expect(shapeWatchingStats(watchingStats)).toEqual({
+      totalMovies: 1946,
+      moviesThisYear: 95,
+      totalHours: 2440,
+    });
+  });
+
+  it('throws when the payload has no data object', () => {
+    expect(() => shapeWatchingStats({})).toThrow(/data/);
   });
 });
 
