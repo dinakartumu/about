@@ -65,3 +65,21 @@ Vitest (already in the repo) covers the pure shaping functions in
 `src/lib/rewind.ts` against fixture JSON: month bucketing, ranking, Apple
 Music link fallback. The page is verified with a local `astro build` against
 the live API before first push.
+
+## Addendum: /movies page
+
+Added at the user's direction, same architecture (build-time fetch, daily
+rebuild). Modeled on pdugan.com/watching, trimmed to the data this instance
+has (no written reviews — Trakt ratings only):
+
+1. Stats header — three metrics from `GET /v1/watching/stats`:
+   "{total_movies} Films · {movies_this_year} This Year ·
+   {total_watch_time_hours} Hours".
+2. Recently watched — poster grid from `GET /v1/watching/recent?limit=24`;
+   each tile shows the poster (image proxy URL, dominant-color background
+   while loading, title-card fallback when image is null), star rating
+   derived from user_rating (1-10 halved to a 5-star scale), and watch date.
+   Tiles link to TMDB via tmdb_id.
+3. No month dropdown on this page (recent grid is inherently fresh).
+
+Nav gains both entries: Listening, Movies.
