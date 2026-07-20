@@ -1,0 +1,15 @@
+{
+  "total": 753,
+  "unique_venues": 264,
+  "this_year": 0,
+  "top_categories": [
+    { "category": "Bakery", "count": 159 },
+    { "category": "Coffee Shop", "count": 85 },
+    { "category": "Mexican Restaurant", "count": 51 }
+  ],
+  "top_cities": [
+    { "city": "Harrison", "count": 225 },
+    { "city": "Staten Island", "count": 170 },
+    { "city": "New York", "count": 59 }
+  ]
+}

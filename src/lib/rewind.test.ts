@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   fmtWatchDate,
   monthRanges,
+  shapePlacesStats,
+  shapeRecentCheckins,
   shapeRecentWatches,
   shapeTopList,
   shapeWatchingStats,
@@ -9,6 +11,8 @@ import {
   yearHeadline,
 } from './rewind';
 import listeningYear from './__fixtures__/listening-year.json';
+import placesRecent from './__fixtures__/places-recent.json';
+import placesStats from './__fixtures__/places-stats.json';
 import topAlbums from './__fixtures__/top-albums.json';
 import topArtists from './__fixtures__/top-artists.json';
 import topTracks from './__fixtures__/top-tracks.json';
@@ -291,6 +295,84 @@ describe('shapeWatchingStats', () => {
 
   it('throws when the payload has no data object', () => {
     expect(() => shapeWatchingStats({})).toThrow(/data/);
+  });
+});
+
+describe('shapePlacesStats', () => {
+  it('reads headline numbers and top lists from the stats payload', () => {
+    expect(shapePlacesStats(placesStats)).toEqual({
+      total: 753,
+      uniqueVenues: 264,
+      thisYear: 0,
+      topCategories: [
+        { name: 'Bakery', count: 159 },
+        { name: 'Coffee Shop', count: 85 },
+        { name: 'Mexican Restaurant', count: 51 },
+      ],
+      topCities: [
+        { name: 'Harrison', count: 225 },
+        { name: 'Staten Island', count: 170 },
+        { name: 'New York', count: 59 },
+      ],
+    });
+  });
+
+  it('throws when the payload lacks the headline numbers', () => {
+    expect(() => shapePlacesStats({})).toThrow(/total/);
+  });
+
+  it('throws when the payload lacks the top lists', () => {
+    expect(() => shapePlacesStats({ total: 1, unique_venues: 1, this_year: 0 })).toThrow(
+      /top_categories/
+    );
+  });
+});
+
+describe('shapeRecentCheckins', () => {
+  it('shapes check-ins to the rendered fields', () => {
+    const checkins = shapeRecentCheckins(placesRecent);
+    expect(checkins).toHaveLength(3);
+    expect(checkins[0]).toEqual({
+      venueName: '9/11 Tribute Center',
+      category: 'Museum',
+      place: 'New York, United States',
+      date: 'Sep 11, 2016',
+      shout: null,
+    });
+  });
+
+  it('carries the shout through when present', () => {
+    const checkins = shapeRecentCheckins(placesRecent);
+    const withShout = checkins.find((c) => c.venueName === 'Sports Basement')!;
+    expect(withShout.shout).toBe('Tire Puncture');
+    expect(withShout.date).toBe('Jun 6, 2017');
+  });
+
+  it('omits null location parts when joining the place', () => {
+    const checkins = shapeRecentCheckins(placesRecent);
+    const noCity = checkins.find((c) => c.venueName === 'Alum Rock Creek Trail Trailhead')!;
+    expect(noCity.place).toBe('United States');
+  });
+
+  it('returns an empty place when both city and country are null', () => {
+    const shaped = shapeRecentCheckins({
+      data: [
+        {
+          venue_name: 'Nowhere',
+          venue_category: 'Mystery',
+          venue_city: null,
+          venue_country: null,
+          checked_in_at: '2016-01-02T00:00:00.000Z',
+          shout: null,
+        },
+      ],
+    });
+    expect(shaped[0].place).toBe('');
+    expect(shaped[0].date).toBe('Jan 2, 2016');
+  });
+
+  it('throws when the payload has no data array', () => {
+    expect(() => shapeRecentCheckins({})).toThrow(/data/);
   });
 });
 

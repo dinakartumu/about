@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "id": 807,
+      "venue_id": "4a6342b1f964a520a2c41fe3",
+      "venue_name": "9/11 Tribute Center",
+      "venue_category": "Museum",
+      "venue_city": "New York",
+      "venue_state": "NY",
+      "venue_country": "United States",
+      "lat": 40.71075651216583,
+      "lng": -74.0127896581637,
+      "checked_in_at": "2016-09-11T22:19:44.000Z",
+      "shout": null
+    },
+    {
+      "id": 1323,
+      "venue_id": "4a09ef9af964a52070741fe3",
+      "venue_name": "Sports Basement",
+      "venue_category": "Sporting Goods Retail",
+      "venue_city": "San Francisco",
+      "venue_state": "CA",
+      "venue_country": "United States",
+      "lat": 37.76710502023748,
+      "lng": -122.41108352436159,
+      "checked_in_at": "2017-06-06T23:03:29.000Z",
+      "shout": "Tire Puncture"
+    },
+    {
+      "id": 1631,
+      "venue_id": "4e29b817a809ec0663fb7818",
+      "venue_name": "Alum Rock Creek Trail Trailhead",
+      "venue_category": "Hiking Trail",
+      "venue_city": null,
+      "venue_state": null,
+      "venue_country": "United States",
+      "lat": 37.39529009645242,
+      "lng": -121.8257897009861,
+      "checked_in_at": "2017-09-16T17:42:07.000Z",
+      "shout": null
+    }
+  ],
+  "pagination": { "page": 1, "limit": 3, "total": 806, "total_pages": 269 }
+}

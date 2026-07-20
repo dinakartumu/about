@@ -100,6 +100,34 @@ interface ApiWatchingStatsResponse {
   };
 }
 
+interface ApiCountedName {
+  category?: string;
+  city?: string;
+  count: number;
+}
+
+// /v1/places/stats returns its fields at the top level — no `data` wrapper.
+interface ApiPlacesStatsResponse {
+  total?: number;
+  unique_venues?: number;
+  this_year?: number;
+  top_categories?: ApiCountedName[];
+  top_cities?: ApiCountedName[];
+}
+
+interface ApiCheckin {
+  venue_name: string;
+  venue_category: string;
+  venue_city: string | null;
+  venue_country: string | null;
+  checked_in_at: string;
+  shout: string | null;
+}
+
+interface ApiRecentCheckinsResponse {
+  data?: ApiCheckin[];
+}
+
 interface ApiYearRollup {
   year: number;
   total_scrobbles?: number;
@@ -139,10 +167,15 @@ export function starsFor(rating: number | null): string {
   return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - half);
 }
 
+/** "Jul 16, 2026" from an ISO timestamp, using the UTC date. */
+function fmtDate(iso: string): string {
+  const d = new Date(iso);
+  return `${MONTH_ABBREV[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+}
+
 /** "Watched Jul 16, 2026" from an ISO timestamp, using the UTC date. */
 export function fmtWatchDate(iso: string): string {
-  const d = new Date(iso);
-  return `Watched ${MONTH_ABBREV[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+  return `Watched ${fmtDate(iso)}`;
 }
 
 /** Neutral backdrop used until the API has extracted a dominant color. */
@@ -199,6 +232,66 @@ export function shapeWatchingStats(json: ApiWatchingStatsResponse): WatchingStat
     moviesThisYear: json.data.movies_this_year,
     totalHours: json.data.total_watch_time_hours,
   };
+}
+
+export interface CountedName {
+  name: string;
+  count: number;
+}
+
+export interface PlacesStats {
+  total: number;
+  uniqueVenues: number;
+  thisYear: number;
+  topCategories: CountedName[];
+  topCities: CountedName[];
+}
+
+/**
+ * Headline numbers and top lists from /v1/places/stats. The payload is a
+ * top-level object (no `data` wrapper); list items key their label as
+ * `category` / `city` rather than `name`.
+ */
+export function shapePlacesStats(json: ApiPlacesStatsResponse): PlacesStats {
+  if (
+    typeof json.total !== 'number' ||
+    typeof json.unique_venues !== 'number' ||
+    typeof json.this_year !== 'number'
+  ) {
+    throw new Error('places stats response is missing total/unique_venues/this_year');
+  }
+  if (!Array.isArray(json.top_categories) || !Array.isArray(json.top_cities)) {
+    throw new Error('places stats response is missing top_categories/top_cities');
+  }
+  return {
+    total: json.total,
+    uniqueVenues: json.unique_venues,
+    thisYear: json.this_year,
+    topCategories: json.top_categories.map((c) => ({ name: c.category ?? '', count: c.count })),
+    topCities: json.top_cities.map((c) => ({ name: c.city ?? '', count: c.count })),
+  };
+}
+
+export interface RecentCheckin {
+  venueName: string;
+  category: string;
+  place: string;
+  date: string;
+  shout: string | null;
+}
+
+/** Narrow a /v1/places/recent response to the fields the page renders. */
+export function shapeRecentCheckins(json: ApiRecentCheckinsResponse): RecentCheckin[] {
+  if (!Array.isArray(json.data)) {
+    throw new Error('places recent response has no data array');
+  }
+  return json.data.map((entry) => ({
+    venueName: entry.venue_name,
+    category: entry.venue_category,
+    place: [entry.venue_city, entry.venue_country].filter(Boolean).join(', '),
+    date: fmtDate(entry.checked_in_at),
+    shout: entry.shout,
+  }));
 }
 
 /**
