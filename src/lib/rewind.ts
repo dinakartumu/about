@@ -104,6 +104,7 @@ interface ApiCountedName {
   category?: string;
   city?: string;
   count: number;
+  icon?: string | null; // Foursquare category glyph on top_categories entries
 }
 
 // /v1/places/stats returns its fields at the top level — no `data` wrapper.
@@ -118,6 +119,7 @@ interface ApiPlacesStatsResponse {
 interface ApiCheckin {
   venue_name: string;
   venue_category: string;
+  venue_icon?: string | null; // 64px gray-on-transparent Foursquare PNG
   venue_city: string | null;
   venue_country: string | null;
   checked_in_at: string;
@@ -254,11 +256,15 @@ export interface CountedName {
   count: number;
 }
 
+export interface CountedCategory extends CountedName {
+  icon: string | null;
+}
+
 export interface PlacesStats {
   total: number;
   uniqueVenues: number;
   thisYear: number;
-  topCategories: CountedName[];
+  topCategories: CountedCategory[];
   topCities: CountedName[];
 }
 
@@ -284,7 +290,7 @@ export function shapePlacesStats(json: ApiPlacesStatsResponse): PlacesStats {
     thisYear: json.this_year,
     topCategories: json.top_categories.map((c) => {
       if (!c.category) throw new Error('places stats category entry missing label');
-      return { name: c.category, count: c.count };
+      return { name: c.category, count: c.count, icon: c.icon ?? null };
     }),
     topCities: json.top_cities.map((c) => {
       if (!c.city) throw new Error('places stats city entry missing label');
@@ -296,6 +302,7 @@ export function shapePlacesStats(json: ApiPlacesStatsResponse): PlacesStats {
 export interface RecentCheckin {
   venueName: string;
   category: string;
+  icon: string | null;
   place: string;
   date: string;
   shout: string | null;
@@ -309,6 +316,7 @@ export function shapeRecentCheckins(json: ApiRecentCheckinsResponse): RecentChec
   return json.data.map((entry) => ({
     venueName: entry.venue_name,
     category: entry.venue_category,
+    icon: entry.venue_icon ?? null,
     place: [entry.venue_city, entry.venue_country].filter(Boolean).join(', '),
     date: fmtDate(entry.checked_in_at),
     shout: entry.shout,
@@ -334,9 +342,11 @@ export interface TrendPoint {
 /**
  * Monthly points for the year chart from a trends response (the /v1 listening,
  * watching, and places trends endpoints share this shape). Normalizes
- * the `value` (listening) and `count` (watching, places) keys and zero-fills
- * every month of `year` — Jan..Dec for past years, Jan..the current UTC month
- * for the current year, nothing for years that have not started.
+ * the `value` (listening) and `count` (watching, places) keys, ignores
+ * buckets outside `year` (so a wide multi-year probe can be sliced per
+ * year), and zero-fills every month of `year` — Jan..Dec for past years,
+ * Jan..the current UTC month for the current year, nothing for years that
+ * have not started.
  */
 export function shapeTrends(json: ApiTrendsResponse, year: number, now: Date): TrendPoint[] {
   if (!Array.isArray(json.data)) {
@@ -347,6 +357,7 @@ export function shapeTrends(json: ApiTrendsResponse, year: number, now: Date): T
 
   const byMonth = new Map<number, number>();
   for (const bucket of json.data) {
+    if (Number(bucket.period.slice(0, 4)) !== year) continue;
     const month = Number(bucket.period.slice(5, 7)) - 1;
     if (month >= 0 && month <= 11) {
       byMonth.set(month, bucket.value ?? bucket.count ?? 0);
@@ -358,6 +369,206 @@ export function shapeTrends(json: ApiTrendsResponse, year: number, now: Date): T
     points.push({ label: MONTH_ABBREV[m], value: byMonth.get(m) ?? 0 });
   }
   return points;
+}
+
+/**
+ * Path of the wide trends probe for a domain: one request spanning 2000
+ * through the current year. Built by a shared helper so getStaticPaths and
+ * the page components produce the identical URL and hit the fetch memo.
+ */
+export function wideTrendsPath(domain: 'watching' | 'places', currentYear: number): string {
+  const from = encodeURIComponent('2000-01-01T00:00:00Z');
+  const to = encodeURIComponent(`${currentYear}-12-31T23:59:59Z`);
+  return `/v1/${domain}/trends?from=${from}&to=${to}`;
+}
+
+/**
+ * Earliest year present in a trends response. Used with a wide from/to probe
+ * to find a domain's first year of history for the year navigation.
+ */
+export function trendsFirstYear(json: ApiTrendsResponse): number {
+  if (!Array.isArray(json.data)) {
+    throw new Error('trends response has no data array');
+  }
+  if (json.data.length === 0) {
+    throw new Error('trends response is empty — cannot derive a first year');
+  }
+  return Math.min(...json.data.map((bucket) => Number(bucket.period.slice(0, 4))));
+}
+
+// /v1/watching/year/{year} rollup — only the fields we read. Its monthly
+// buckets key the month "YYYY-MM" as `month` rather than `period`.
+interface ApiWatchingYearResponse {
+  year: number;
+  total_movies?: number;
+  monthly?: { month: string; count: number }[];
+}
+
+export interface WatchingYear {
+  year: number;
+  totalMovies: number;
+  monthly: { period: string; count: number }[];
+}
+
+/**
+ * Film count and monthly buckets from the /v1/watching/year/{year} rollup.
+ * The buckets are normalized to the trends shape so shapeTrends can chart
+ * them directly.
+ */
+export function shapeWatchingYear(json: ApiWatchingYearResponse): WatchingYear {
+  if (typeof json.total_movies !== 'number') {
+    throw new Error('watching year rollup has no total_movies field');
+  }
+  if (!Array.isArray(json.monthly)) {
+    throw new Error('watching year rollup has no monthly array');
+  }
+  return {
+    year: json.year,
+    totalMovies: json.total_movies,
+    monthly: json.monthly.map((m) => ({ period: m.month, count: m.count })),
+  };
+}
+
+/** "3h 9m" / "45m" from a second count, minutes rounded. */
+export function fmtDuration(seconds: number): string {
+  const totalMinutes = Math.round(seconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
+// Raw running API shapes — only the fields we read.
+interface ApiRunningStatsResponse {
+  data?: {
+    total_runs: number;
+    total_distance_mi: number;
+    total_duration: string; // "68:18:44" (H:MM:SS) or "9:05" (M:SS)
+    avg_pace: string | null;
+  };
+}
+
+interface ApiRunningYearSummary {
+  year: number;
+  total_runs: number;
+  total_distance_mi: number;
+  total_duration_s: number;
+  avg_pace: string | null;
+}
+
+interface ApiRunningYearsResponse {
+  data?: ApiRunningYearSummary[];
+}
+
+interface ApiRunningYearRollup {
+  year: number;
+  monthly?: { month: string; runs: number }[];
+}
+
+interface ApiActivity {
+  name: string;
+  date: string;
+  distance_mi: number;
+  pace: string;
+  strava_url: string | null;
+}
+
+interface ApiActivitiesResponse {
+  data?: ApiActivity[];
+}
+
+export interface RunningStats {
+  totalRuns: number;
+  totalMiles: number;
+  totalDurationS: number;
+  avgPace: string | null;
+}
+
+/** Parse a "H:MM:SS" or "M:SS" duration string to seconds. */
+function parseDuration(duration: string): number {
+  const parts = duration.split(':').map(Number);
+  if (parts.length < 2 || parts.length > 3 || parts.some(Number.isNaN)) {
+    throw new Error(`unparseable running duration "${duration}"`);
+  }
+  return parts.reduce((total, part) => total * 60 + part, 0);
+}
+
+/** Lifetime headline numbers from /v1/running/stats. */
+export function shapeRunningStats(json: ApiRunningStatsResponse): RunningStats {
+  if (!json.data) {
+    throw new Error('running stats response has no data object');
+  }
+  return {
+    totalRuns: json.data.total_runs,
+    totalMiles: json.data.total_distance_mi,
+    totalDurationS: parseDuration(json.data.total_duration),
+    avgPace: json.data.avg_pace,
+  };
+}
+
+export interface RunningYearSummary {
+  year: number;
+  totalRuns: number;
+  totalMiles: number;
+  totalDurationS: number;
+  avgPace: string | null;
+}
+
+/**
+ * Per-year summaries from /v1/running/stats/years. Years without runs are
+ * absent from the list — a year page missing here renders its empty state.
+ */
+export function shapeRunningYears(json: ApiRunningYearsResponse): RunningYearSummary[] {
+  if (!Array.isArray(json.data)) {
+    throw new Error('running years response has no data array');
+  }
+  return json.data.map((y) => ({
+    year: y.year,
+    totalRuns: y.total_runs,
+    totalMiles: y.total_distance_mi,
+    totalDurationS: y.total_duration_s,
+    avgPace: y.avg_pace,
+  }));
+}
+
+/**
+ * Monthly run-count points from the /v1/running/year/{year} rollup, via
+ * shapeTrends for the same zero-filling as every other chart.
+ */
+export function runningMonthlyPoints(
+  json: ApiRunningYearRollup,
+  year: number,
+  now: Date
+): TrendPoint[] {
+  if (!Array.isArray(json.monthly)) {
+    throw new Error('running year rollup has no monthly array');
+  }
+  return shapeTrends(
+    { data: json.monthly.map((m) => ({ period: m.month, count: m.runs })) },
+    year,
+    now
+  );
+}
+
+export interface RunActivity {
+  name: string;
+  date: string;
+  distanceMi: number;
+  pace: string;
+  stravaUrl: string | null;
+}
+
+/** Narrow a /v1/running/activities response to the fields the page renders. */
+export function shapeActivities(json: ApiActivitiesResponse): RunActivity[] {
+  if (!Array.isArray(json.data)) {
+    throw new Error('running activities response has no data array');
+  }
+  return json.data.map((a) => ({
+    name: a.name,
+    date: fmtDate(a.date),
+    distanceMi: a.distance_mi,
+    pace: a.pace,
+    stravaUrl: a.strava_url,
+  }));
 }
 
 /**

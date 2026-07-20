@@ -1,0 +1,173 @@
+---
+/**
+ * One running year: headline, year switcher, monthly-runs chart, and the
+ * year's most recent runs. Rendered by both /activities (global lifetime
+ * headline) and /activities/{year} (year-scoped headline).
+ *
+ * /v1/running/stats/years — one memoized call — lists every year that has
+ * runs; a year absent from it renders its empty state without touching the
+ * per-year endpoints (the year rollup 404s when a year has no runs). The
+ * Strava backfill is still importing history, so empty years are expected.
+ */
+import {
+  fmtDuration,
+  rewindFetch,
+  runningMonthlyPoints,
+  shapeActivities,
+  shapeRunningStats,
+  shapeRunningYears,
+  shapeTrends,
+  trendsAriaLabel,
+  type RunActivity,
+  type TrendPoint,
+} from '../lib/rewind';
+import BarChart from './BarChart.astro';
+import YearNav from './YearNav.astro';
+
+type StatsJson = Parameters<typeof shapeRunningStats>[0];
+type YearsJson = Parameters<typeof shapeRunningYears>[0];
+type RollupJson = Parameters<typeof runningMonthlyPoints>[0];
+type ActivitiesJson = Parameters<typeof shapeActivities>[0];
+
+interface Props {
+  year: number;
+  global?: boolean;
+}
+const { year, global: isGlobal = false } = Astro.props;
+
+const now = new Date();
+const currentYear = now.getUTCFullYear();
+
+const summaries = shapeRunningYears(await rewindFetch<YearsJson>('/v1/running/stats/years'));
+const firstYear = summaries.length > 0 ? Math.min(...summaries.map((s) => s.year)) : currentYear;
+const years: number[] = [];
+for (let y = currentYear; y >= firstYear; y--) years.push(y);
+
+const summary = summaries.find((s) => s.year === year) ?? null;
+
+const n = (v: number) => Math.round(v).toLocaleString('en-US');
+const runNoun = (count: number) => (count === 1 ? 'run' : 'runs');
+
+// Any failure throws and fails the build — never publish a page with
+// missing sections. Years without runs skip the rollup and list fetches.
+let headline: string;
+let subline: string | null = null;
+if (isGlobal) {
+  const stats = shapeRunningStats(await rewindFetch<StatsJson>('/v1/running/stats'));
+  const parts = [
+    `${n(stats.totalRuns)} Runs`,
+    `${n(stats.totalMiles)} Miles`,
+    `${n(stats.totalDurationS / 3600)} Hours`,
+  ];
+  if (stats.avgPace) parts.push(`${stats.avgPace} Pace`);
+  headline = parts.join(' · ');
+} else if (summary) {
+  headline = `${n(summary.totalRuns)} ${runNoun(summary.totalRuns)} in ${year}`;
+  const parts = [`${n(summary.totalMiles)} ${summary.totalMiles === 1 ? 'mile' : 'miles'}`];
+  parts.push(fmtDuration(summary.totalDurationS));
+  if (summary.avgPace) parts.push(`${summary.avgPace} avg pace`);
+  subline = parts.join(' · ');
+} else {
+  headline = `No runs in ${year}`;
+}
+
+const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59Z`)}`;
+
+let trendPoints: TrendPoint[] = shapeTrends({ data: [] }, year, now);
+let runs: RunActivity[] = [];
+if (summary) {
+  trendPoints = runningMonthlyPoints(
+    await rewindFetch<RollupJson>(`/v1/running/year/${year}`),
+    year,
+    now
+  );
+  runs = shapeActivities(
+    await rewindFetch<ActivitiesJson>(`/v1/running/activities?${yearQuery}&limit=20`)
+  );
+}
+
+const listHeading = isGlobal ? 'Recent Runs' : `Runs in ${year}`;
+const emptyText = isGlobal ? 'No runs yet this year.' : `No runs in ${year}.`;
+
+const linkAttrs = (link: string | null) =>
+  link ? { href: link, target: '_blank', rel: 'noopener' } : {};
+---
+<section class="container head">
+  <div>
+    <h1>{headline}</h1>
+    {subline && <p class="subline muted">{subline}</p>}
+    <YearNav basePath="/activities" years={years} current={year} />
+  </div>
+</section>
+
+<section class="container chart">
+  <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'runs')} />
+</section>
+
+<section class="container">
+  <h2>{listHeading}</h2>
+  <ol class="list" role="list">
+    {runs.map((r) => (
+      <li>
+        <a class="row" {...linkAttrs(r.stravaUrl)}>
+          <span class="meta">
+            <span class="name">{r.name}</span>
+            <span class="sub muted">{r.date}</span>
+          </span>
+          <span class="figures muted">{r.distanceMi} mi · {r.pace}</span>
+        </a>
+      </li>
+    ))}
+    {runs.length === 0 && <li class="empty muted">{emptyText}</li>}
+  </ol>
+</section>
+
+<style>
+  .head h1 { margin-bottom: 0.5rem; }
+  .subline {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .chart { margin-top: 1.75rem; }
+
+  h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 44rem;
+  }
+  .list li + li { border-top: 1px solid var(--surface); }
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.55rem 0;
+  }
+  a.row[href]:hover .name { color: var(--accent); }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .name {
+    color: var(--heading);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sub { font-size: 0.85rem; }
+
+  .figures {
+    margin-left: auto;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .empty { padding: 0.55rem 0; }
+</style>

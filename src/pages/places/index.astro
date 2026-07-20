@@ -1,0 +1,12 @@
+---
+import PlacesYear from '../../components/PlacesYear.astro';
+import Layout from '../../layouts/Layout.astro';
+
+const year = new Date().getUTCFullYear();
+---
+<Layout
+  title="Places · Dinakar Tumu"
+  description="Where Dinakar Tumu has been — recent check-ins with top categories and cities."
+>
+  <PlacesYear year={year} global />
+</Layout>

@@ -1,0 +1,26 @@
+---
+import PlacesYear from '../../components/PlacesYear.astro';
+import Layout from '../../layouts/Layout.astro';
+import { rewindFetch, trendsFirstYear, wideTrendsPath } from '../../lib/rewind';
+
+export async function getStaticPaths() {
+  const currentYear = new Date().getUTCFullYear();
+  // Memoized — the page components reuse this exact probe for the charts.
+  const firstYear = trendsFirstYear(
+    await rewindFetch<Parameters<typeof trendsFirstYear>[0]>(wideTrendsPath('places', currentYear))
+  );
+  const paths = [];
+  for (let year = firstYear; year <= currentYear; year++) {
+    paths.push({ params: { year: String(year) } });
+  }
+  return paths;
+}
+
+const year = Number(Astro.params.year);
+---
+<Layout
+  title={`Places ${year} · Dinakar Tumu`}
+  description={`Where Dinakar Tumu went in ${year} — check-ins with a monthly chart.`}
+>
+  <PlacesYear year={year} />
+</Layout>

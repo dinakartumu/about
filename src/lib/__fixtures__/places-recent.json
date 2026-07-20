@@ -11,7 +11,8 @@
       "lat": 40.71075651216583,
       "lng": -74.0127896581637,
       "checked_in_at": "2016-09-11T22:19:44.000Z",
-      "shout": null
+      "shout": null,
+      "venue_icon": "https://ss3.4sqi.net/img/categories_v2/arts_entertainment/museum_64.png"
     },
     {
       "id": 1323,
@@ -24,7 +25,8 @@
       "lat": 37.76710502023748,
       "lng": -122.41108352436159,
       "checked_in_at": "2017-06-06T23:03:29.000Z",
-      "shout": "Tire Puncture"
+      "shout": "Tire Puncture",
+      "venue_icon": "https://ss3.4sqi.net/img/categories_v2/shops/sports_outdoors_64.png"
     },
     {
       "id": 1631,
@@ -40,5 +42,10 @@
       "shout": null
     }
   ],
-  "pagination": { "page": 1, "limit": 3, "total": 806, "total_pages": 269 }
+  "pagination": {
+    "page": 1,
+    "limit": 3,
+    "total": 806,
+    "total_pages": 269
+  }
 }
