@@ -133,6 +133,21 @@ interface ApiYearRollup {
   total_scrobbles?: number;
 }
 
+// /v1/*/trends bucket: listening keys the number `value`, watching and
+// places key it `count`. Exactly one of the two is present.
+interface ApiTrendBucket {
+  period: string; // "YYYY-MM"
+  value?: number;
+  count?: number;
+}
+
+interface ApiTrendsResponse {
+  data?: ApiTrendBucket[];
+}
+
+/** First year with a Last.fm account — the earliest listening year page. */
+export const LISTENING_FIRST_YEAR = 2016;
+
 /**
  * Month options for the listening dropdown: an "All months" entry spanning
  * the year, then each elapsed month of `year` newest first. UTC throughout.
@@ -311,17 +326,104 @@ export function yearHeadline(json: ApiYearRollup): { year: number; totalPlays: n
   return { year: json.year, totalPlays: json.total_scrobbles };
 }
 
+export interface TrendPoint {
+  label: string; // short month name, "Jan".."Dec"
+  value: number;
+}
+
+/**
+ * Monthly points for the year chart from a trends response (the /v1 listening,
+ * watching, and places trends endpoints share this shape). Normalizes
+ * the `value` (listening) and `count` (watching, places) keys and zero-fills
+ * every month of `year` — Jan..Dec for past years, Jan..the current UTC month
+ * for the current year, nothing for years that have not started.
+ */
+export function shapeTrends(json: ApiTrendsResponse, year: number, now: Date): TrendPoint[] {
+  if (!Array.isArray(json.data)) {
+    throw new Error('trends response has no data array');
+  }
+  const lastMonth =
+    year < now.getUTCFullYear() ? 11 : year > now.getUTCFullYear() ? -1 : now.getUTCMonth();
+
+  const byMonth = new Map<number, number>();
+  for (const bucket of json.data) {
+    const month = Number(bucket.period.slice(5, 7)) - 1;
+    if (month >= 0 && month <= 11) {
+      byMonth.set(month, bucket.value ?? bucket.count ?? 0);
+    }
+  }
+
+  const points: TrendPoint[] = [];
+  for (let m = 0; m <= lastMonth; m++) {
+    points.push({ label: MONTH_ABBREV[m], value: byMonth.get(m) ?? 0 });
+  }
+  return points;
+}
+
+/**
+ * Chart summary for the BarChart aria-label, e.g. "Monthly plays, peak May
+ * 835". Falls back to "no data" when every point is zero.
+ */
+export function trendsAriaLabel(points: TrendPoint[], noun: string): string {
+  let peak: TrendPoint | null = null;
+  for (const p of points) {
+    if (p.value > 0 && (!peak || p.value > peak.value)) peak = p;
+  }
+  if (!peak) return `Monthly ${noun}, no data`;
+  const fullMonth = MONTH_NAMES[MONTH_ABBREV.indexOf(peak.label)] ?? peak.label;
+  return `Monthly ${noun}, peak ${fullMonth} ${peak.value.toLocaleString('en-US')}`;
+}
+
+// The API allows 60 requests per key per sliding 60s window. The year pages
+// make ~75 calls per build, so pace requests client-side: track recent send
+// times and wait for the window to open before exceeding a safety margin.
+const RATE_LIMIT = 50;
+const RATE_WINDOW_MS = 61_000;
+const sentAt: number[] = [];
+
+async function waitForRateWindow(): Promise<void> {
+  for (;;) {
+    const now = Date.now();
+    while (sentAt.length > 0 && now - sentAt[0] >= RATE_WINDOW_MS) sentAt.shift();
+    if (sentAt.length < RATE_LIMIT) {
+      sentAt.push(now);
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, RATE_WINDOW_MS - (now - sentAt[0]) + 100));
+  }
+}
+
+// Build-time memo: /listening/ and /listening/{currentYear}/ render the same
+// data, so identical GETs are deduped for the life of the build process.
+const fetchCache = new Map<string, Promise<unknown>>();
+
 /** Build-time fetch: throws on a missing key or any non-200, naming the path. */
-export async function rewindFetch<T = unknown>(path: string): Promise<T> {
-  const key = import.meta.env.REWIND_API_KEY;
-  if (!key) {
-    throw new Error(`REWIND_API_KEY is not set (needed for ${path})`);
-  }
-  const res = await fetch(`${REWIND_BASE}${path}`, {
-    headers: { Authorization: `Bearer ${key}` },
-  });
-  if (!res.ok) {
-    throw new Error(`Rewind API ${res.status} on ${path}`);
-  }
-  return res.json() as Promise<T>;
+export function rewindFetch<T = unknown>(path: string): Promise<T> {
+  const cached = fetchCache.get(path);
+  if (cached) return cached as Promise<T>;
+
+  const request = (async () => {
+    const key = import.meta.env.REWIND_API_KEY;
+    if (!key) {
+      throw new Error(`REWIND_API_KEY is not set (needed for ${path})`);
+    }
+    await waitForRateWindow();
+    const res = await fetch(`${REWIND_BASE}${path}`, {
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    if (!res.ok) {
+      throw new Error(`Rewind API ${res.status} on ${path}`);
+    }
+    return res.json() as Promise<T>;
+  })();
+
+  // A failed request is not cached — a retry within the same build may succeed.
+  fetchCache.set(
+    path,
+    request.catch((err) => {
+      fetchCache.delete(path);
+      throw err;
+    })
+  );
+  return fetchCache.get(path) as Promise<T>;
 }

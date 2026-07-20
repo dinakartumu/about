@@ -1,0 +1,74 @@
+---
+/**
+ * Build-time inline SVG bar chart: accent-colored bars with muted short-month
+ * labels, responsive via viewBox. No client JS. When every value is zero the
+ * chart is replaced by a muted "No data" line.
+ */
+interface Point {
+  label: string;
+  value: number;
+}
+interface Props {
+  points: Point[];
+  ariaLabel: string;
+}
+const { points, ariaLabel } = Astro.props;
+
+// viewBox geometry — the SVG scales to its container width at ~4:1.
+const WIDTH = 480;
+const HEIGHT = 120;
+const TOP_PAD = 4;
+const LABEL_BAND = 16;
+const CHART_HEIGHT = HEIGHT - TOP_PAD - LABEL_BAND;
+
+const max = Math.max(0, ...points.map((p) => p.value));
+const hasData = max > 0;
+
+const step = points.length > 0 ? WIDTH / points.length : WIDTH;
+const barWidth = Math.min(28, step * 0.62);
+
+const bars = points.map((point, i) => {
+  const height = hasData ? (point.value / max) * CHART_HEIGHT : 0;
+  return {
+    label: point.label,
+    x: i * step + (step - barWidth) / 2,
+    y: TOP_PAD + CHART_HEIGHT - height,
+    height,
+    labelX: i * step + step / 2,
+  };
+});
+---
+{hasData ? (
+  <svg
+    class="bar-chart"
+    viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+    role="img"
+    aria-label={ariaLabel}
+  >
+    {bars.map((bar) => (
+      <>
+        <rect x={bar.x} y={bar.y} width={barWidth} height={bar.height} rx="2" />
+        <text x={bar.labelX} y={HEIGHT - 4}>{bar.label}</text>
+      </>
+    ))}
+  </svg>
+) : (
+  <p class="muted no-data">No data</p>
+)}
+
+<style>
+  .bar-chart {
+    display: block;
+    width: 100%;
+    max-width: 44rem;
+    height: auto;
+  }
+  rect { fill: var(--accent); }
+  text {
+    fill: var(--muted);
+    font-family: inherit;
+    font-size: 10px;
+    text-anchor: middle;
+  }
+  .no-data { margin: 0; padding: 0.55rem 0; }
+</style>

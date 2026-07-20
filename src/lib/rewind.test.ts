@@ -6,10 +6,14 @@ import {
   shapeRecentCheckins,
   shapeRecentWatches,
   shapeTopList,
+  shapeTrends,
   shapeWatchingStats,
   starsFor,
+  trendsAriaLabel,
   yearHeadline,
 } from './rewind';
+import listeningTrends2017 from './__fixtures__/listening-trends-2017.json';
+import listeningTrends2024 from './__fixtures__/listening-trends-2024.json';
 import listeningYear from './__fixtures__/listening-year.json';
 import placesRecent from './__fixtures__/places-recent.json';
 import placesStats from './__fixtures__/places-stats.json';
@@ -373,6 +377,91 @@ describe('shapeRecentCheckins', () => {
 
   it('throws when the payload has no data array', () => {
     expect(() => shapeRecentCheckins({})).toThrow(/data/);
+  });
+});
+
+describe('shapeTrends', () => {
+  const now = new Date('2026-07-20T12:00:00Z');
+
+  it('maps a full historical year to twelve labeled points', () => {
+    const points = shapeTrends(listeningTrends2024, 2024, now);
+    expect(points).toHaveLength(12);
+    expect(points[0]).toEqual({ label: 'Jan', value: 581 });
+    expect(points[4]).toEqual({ label: 'May', value: 835 });
+    expect(points[11]).toEqual({ label: 'Dec', value: 445 });
+  });
+
+  it('zero-fills months missing from a historical year', () => {
+    const points = shapeTrends(listeningTrends2017, 2017, now);
+    expect(points).toHaveLength(12);
+    expect(points[0]).toEqual({ label: 'Jan', value: 0 });
+    expect(points[8]).toEqual({ label: 'Sep', value: 0 });
+    expect(points[9]).toEqual({ label: 'Oct', value: 860 });
+    expect(points[11]).toEqual({ label: 'Dec', value: 429 });
+  });
+
+  it('runs the current year only through the current month', () => {
+    const points = shapeTrends(
+      {
+        data: [
+          { period: '2026-01', value: 719 },
+          { period: '2026-07', value: 606 },
+        ],
+      },
+      2026,
+      now
+    );
+    expect(points.map((p) => p.label)).toEqual(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']);
+    expect(points[1].value).toBe(0);
+    expect(points[6].value).toBe(606);
+  });
+
+  it('uses the UTC month for the current-year cutoff', () => {
+    // 00:30 UTC on Jul 1 is still June in every western-hemisphere zone.
+    const points = shapeTrends({ data: [] }, 2026, new Date('2026-07-01T00:30:00Z'));
+    expect(points).toHaveLength(7);
+  });
+
+  it('normalizes count-keyed responses like watching and places trends', () => {
+    const points = shapeTrends({ data: [{ period: '2024-03', count: 12 }] }, 2024, now);
+    expect(points[2]).toEqual({ label: 'Mar', value: 12 });
+  });
+
+  it('returns all zeros for a year with no data', () => {
+    const points = shapeTrends({ data: [] }, 2016, now);
+    expect(points).toHaveLength(12);
+    expect(points.every((p) => p.value === 0)).toBe(true);
+  });
+
+  it('returns no points for a year that has not started', () => {
+    expect(shapeTrends({ data: [] }, 2027, now)).toEqual([]);
+  });
+
+  it('throws when the payload has no data array', () => {
+    expect(() => shapeTrends({}, 2024, now)).toThrow(/data/);
+  });
+});
+
+describe('trendsAriaLabel', () => {
+  const now = new Date('2026-07-20T12:00:00Z');
+
+  it('summarizes the peak month with the full month name', () => {
+    const points = shapeTrends(listeningTrends2024, 2024, now);
+    expect(trendsAriaLabel(points, 'plays')).toBe('Monthly plays, peak May 835');
+  });
+
+  it('formats thousands with separators', () => {
+    expect(trendsAriaLabel([{ label: 'Jun', value: 1019 }], 'plays')).toBe(
+      'Monthly plays, peak June 1,019'
+    );
+  });
+
+  it('reports no data for an all-zero year', () => {
+    expect(trendsAriaLabel([{ label: 'Jan', value: 0 }], 'plays')).toBe('Monthly plays, no data');
+  });
+
+  it('reports no data for an empty point list', () => {
+    expect(trendsAriaLabel([], 'watches')).toBe('Monthly watches, no data');
   });
 });
 

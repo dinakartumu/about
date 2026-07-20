@@ -1,0 +1,12 @@
+---
+import ListeningYear from '../../components/ListeningYear.astro';
+import Layout from '../../layouts/Layout.astro';
+
+const year = new Date().getUTCFullYear();
+---
+<Layout
+  title="Listening · Dinakar Tumu"
+  description={`What Dinakar Tumu has been listening to in ${year} — top artists, albums, and tracks.`}
+>
+  <ListeningYear year={year} />
+</Layout>
