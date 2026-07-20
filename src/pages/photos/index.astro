@@ -30,13 +30,11 @@ const sets = (await getCollection('photosets')).sort((a, b) =>
 </Layout>
 
 <style>
-  /* Match the About page's 44rem reading column. */
-  h1 { max-width: 44rem; margin-inline: auto; }
+  .container { max-width: 44rem; }
   .grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: clamp(1.25rem, 3vw, 2rem);
-    max-width: 44rem;
-    margin: 0 auto;
+    margin: 0;
   }
 </style>
