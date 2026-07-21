@@ -2,16 +2,13 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PhotoSetCard from '../components/PhotoSetCard.astro';
-import { photoUrl } from '../lib/images';
 
 const recent = (await getCollection('photosets'))
   .sort((a, b) => b.data.date.localeCompare(a.data.date))
   .slice(0, 4);
-const ogImage = recent.length
-  ? photoUrl(recent[0].data.cover, { width: 1200, height: 630, fit: 'cover' })
-  : undefined;
+const ogImage = new URL('/portrait.jpg', Astro.site).href;
 ---
-<Layout title="Dinakar Tumu" image={ogImage}>
+<Layout title="Dinakar Tumu" image={ogImage} imageWidth={1400} imageHeight={1400}>
   <section class="container intro">
     <h1>Dinakar Tumu</h1>
     <p>
