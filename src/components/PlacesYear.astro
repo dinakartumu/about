@@ -223,10 +223,14 @@ const emptyText = isGlobal ? 'No check-ins yet.' : `No check-ins in ${year}.`;
      theme (the default), show as-is when the visitor picks light. */
   .icon {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    filter: invert(1);
-    opacity: 0.7;
+    width: 26px;
+    height: 26px;
+    padding: 4px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    /* Fixed warm chip: the Foursquare glyphs are dark gray, so a light
+       background reads correctly on both themes without filters. */
+    background: #e9e4da;
   }
   :global(:root[data-theme='light']) .icon { filter: none; }
 
