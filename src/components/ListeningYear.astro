@@ -45,6 +45,22 @@ const trendPoints = shapeTrends(
   now
 );
 
+// Top genres for the year: /v1/listening/genres returns monthly buckets
+// keyed YYYY-MM; aggregate the year's months and keep the top six.
+type GenresJson = { data: { period: string; genres: Record<string, number> }[] };
+const genresJson = await rewindFetch<GenresJson>('/v1/listening/genres');
+const genreTotals = new Map<string, number>();
+for (const bucket of genresJson.data) {
+  if (!bucket.period.startsWith(String(year))) continue;
+  for (const [name, count] of Object.entries(bucket.genres)) {
+    genreTotals.set(name, (genreTotals.get(name) ?? 0) + count);
+  }
+}
+const topGenres = [...genreTotals.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 6)
+  .map(([name, count]) => ({ name, count }));
+
 // One batch per month (three parallel calls each), months in sequence to
 // stay well inside the API's per-key rate limit. Any failure throws and
 // fails the build — never publish a page with missing sections.
@@ -97,6 +113,16 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 <section class="container chart">
   <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'plays')} />
 </section>
+
+{topGenres.length > 0 && (
+  <section class="container">
+    <ol class="genres" role="list">
+      {topGenres.map((g) => (
+        <li class="genre-chip">{g.name} <span class="muted">{g.count.toLocaleString('en-US')}</span></li>
+      ))}
+    </ol>
+  </section>
+)}
 
 <section class="container">
   <h2>Top Artists</h2>
@@ -263,6 +289,21 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 </script>
 
 <style>
+  .genres {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 1.25rem 0 0;
+  }
+  .genre-chip {
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.85rem;
+  }
+
   .container { max-width: 44rem; }
   .head {
     display: flex;
