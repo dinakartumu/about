@@ -4,6 +4,9 @@ interface TransformOpts {
   width?: number;
   height?: number;
   fit?: 'cover' | 'contain' | 'scale-down';
+  /** Defaults to 'auto'. Force 'jpeg' for social/OG images — crawlers like
+   * Twitter/X reject the AVIF that 'auto' serves to modern Accept headers. */
+  format?: 'auto' | 'jpeg' | 'webp' | 'png';
 }
 
 /** URL for a photo by manifest id (e.g. "la-mesa/DSC04812"), optionally resized. */
@@ -13,7 +16,7 @@ export function photoUrl(id: string, opts: TransformOpts = {}): string {
   if (!TRANSFORMS_ENABLED || (!opts.width && !opts.height)) {
     return `${PHOTOS_BASE}/${path}`;
   }
-  const params = Object.entries({ ...opts, quality: 82, format: 'auto' })
+  const params = Object.entries({ quality: 82, format: 'auto', ...opts })
     .filter(([, v]) => v !== undefined)
     .map(([k, v]) => `${k}=${v}`)
     .join(',');

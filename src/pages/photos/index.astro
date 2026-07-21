@@ -8,7 +8,7 @@ const sets = (await getCollection('photosets')).sort((a, b) =>
   b.data.date.localeCompare(a.data.date)
 );
 const ogImage = sets.length
-  ? photoUrl(sets[0].data.cover, { width: 1200, height: 630, fit: 'cover' })
+  ? photoUrl(sets[0].data.cover, { width: 1200, height: 630, fit: 'cover', format: 'jpeg' })
   : undefined;
 ---
 <Layout title="Photos · Dinakar Tumu" description="Photosets by Dinakar Tumu." image={ogImage}>
