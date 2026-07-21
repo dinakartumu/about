@@ -6,8 +6,11 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  /** Absolute URL for the link-preview image (Open Graph / Twitter). */
+  image?: string;
 }
-const { title, description = 'Dinakar Tumu — engineer and photographer.' } = Astro.props;
+const { title, description = 'Dinakar Tumu — engineer and photographer.', image } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 <!doctype html>
 <html lang="en">
@@ -15,7 +18,26 @@ const { title, description = 'Dinakar Tumu — engineer and photographer.' } = A
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Open Graph / Twitter link previews -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Dinakar Tumu" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    {image && (
+      <Fragment>
+        <meta property="og:image" content={image} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:image" content={image} />
+      </Fragment>
+    )}
     <script is:inline>
       // Set theme before first paint: saved choice, else system preference.
       (() => {
