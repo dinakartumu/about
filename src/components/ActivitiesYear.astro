@@ -1,17 +1,23 @@
 ---
 /**
- * One running year: headline, year switcher, monthly-runs chart, and the
- * year's most recent activities — each row carries a muted sport label, and
- * pace shows only for run-type sports. Rendered by both /activities (global
- * lifetime headline across every sport) and /activities/{year} (year-scoped
- * headline).
+ * One activities year: headline, year switcher, monthly-runs chart, and the
+ * activity list — each row carries a circular sport-glyph chip, and the
+ * figures adapt to the sport: distance sports show miles (plus pace for
+ * runs), stationary sports show duration and calories. Rendered by both
+ * /activities (global lifetime headline, recent 20) and /activities/{year}
+ * (year-scoped headline and every activity of the year).
  *
  * /v1/running/stats/years — one memoized call — lists every year that has
- * runs; a year absent from it renders its empty state without touching the
- * per-year endpoints (the year rollup 404s when a year has no runs). The
+ * activities; a year absent from it renders its empty state without touching
+ * the per-year endpoints (the year rollup 404s when a year has no runs). The
  * Strava backfill is still importing history, so empty years are expected.
+ *
+ * Year pages list the complete year: /v1/running/activities caps limit at
+ * 100 and returns a pagination envelope, so the build walks page=1.. until a
+ * short page arrives (the busiest year is ~150 activities, so 1-2 pages).
  */
 import {
+  activityFigures,
   fmtDuration,
   rewindFetch,
   runningMonthlyPoints,
@@ -24,6 +30,7 @@ import {
   type TrendPoint,
 } from '../lib/rewind';
 import BarChart from './BarChart.astro';
+import SportIcon from './SportIcon.astro';
 import YearNav from './YearNav.astro';
 
 type StatsJson = Parameters<typeof shapeRunningStats>[0];
@@ -48,10 +55,47 @@ for (let y = currentYear; y >= firstYear; y--) years.push(y);
 const summary = summaries.find((s) => s.year === year) ?? null;
 
 const n = (v: number) => Math.round(v).toLocaleString('en-US');
-const runNoun = (count: number) => (count === 1 ? 'run' : 'runs');
+
+// Millisecond-precision bounds: the API compares timestamp strings, and the
+// stored values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z"
+// and would drop activities logged at midnight on Jan 1.
+const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00.000Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59.999Z`)}`;
+const PAGE_LIMIT = 100; // the API's hard cap on /v1/running/activities
+const MAX_PAGES = 30; // safety stop well past the busiest year (~150 activities)
 
 // Any failure throws and fails the build — never publish a page with
-// missing sections. Years without runs skip the rollup and list fetches.
+// missing sections. Years without activities skip the rollup and list
+// fetches. The global page shows the current year's 20 most recent; year
+// pages walk the pagination envelope for the complete year.
+let trendPoints: TrendPoint[] = shapeTrends({ data: [] }, year, now);
+const runs: RunActivity[] = [];
+if (summary) {
+  trendPoints = runningMonthlyPoints(
+    await rewindFetch<RollupJson>(`/v1/running/year/${year}`),
+    year,
+    now
+  );
+  if (isGlobal) {
+    runs.push(
+      ...shapeActivities(
+        await rewindFetch<ActivitiesJson>(`/v1/running/activities?${yearQuery}&limit=20`)
+      )
+    );
+  } else {
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const batch = shapeActivities(
+        await rewindFetch<ActivitiesJson>(
+          `/v1/running/activities?${yearQuery}&limit=${PAGE_LIMIT}&page=${page}`
+        )
+      );
+      runs.push(...batch);
+      if (batch.length < PAGE_LIMIT) break;
+    }
+  }
+}
+
+// The year headline counts every fetched activity — the year summary's
+// total_runs only counts run-type sports, which undercounts gym-heavy years.
 let headline: string;
 let subline: string | null = null;
 if (isGlobal) {
@@ -63,50 +107,17 @@ if (isGlobal) {
   ];
   headline = parts.join(' · ');
 } else if (summary) {
-  headline = `${n(summary.totalRuns)} ${runNoun(summary.totalRuns)} in ${year}`;
+  headline = `${n(runs.length)} ${runs.length === 1 ? 'activity' : 'activities'} in ${year}`;
   const parts = [`${n(summary.totalMiles)} ${summary.totalMiles === 1 ? 'mile' : 'miles'}`];
   parts.push(fmtDuration(summary.totalDurationS));
   if (summary.avgPace) parts.push(`${summary.avgPace} avg pace`);
   subline = parts.join(' · ');
 } else {
-  headline = `No runs in ${year}`;
+  headline = `No activities in ${year}`;
 }
 
-// Millisecond-precision bounds: the API compares timestamp strings, and the
-// stored values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z"
-// and would drop activities logged at midnight on Jan 1.
-const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00.000Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59.999Z`)}`;
-
-let trendPoints: TrendPoint[] = shapeTrends({ data: [] }, year, now);
-let runs: RunActivity[] = [];
-if (summary) {
-  trendPoints = runningMonthlyPoints(
-    await rewindFetch<RollupJson>(`/v1/running/year/${year}`),
-    year,
-    now
-  );
-  runs = shapeActivities(
-    await rewindFetch<ActivitiesJson>(`/v1/running/activities?${yearQuery}&limit=20`)
-  );
-}
-
-const SPORT_ICONS: Record<string, string> = {
-  Run: '\u{1F3C3}',
-  TrailRun: '\u{1F3C3}',
-  VirtualRun: '\u{1F3C3}',
-  Ride: '\u{1F6B4}',
-  VirtualRide: '\u{1F6B4}',
-  Walk: '\u{1F6B6}',
-  Hike: '\u{1F97E}',
-  WeightTraining: '\u{1F3CB}\uFE0F',
-  Workout: '\u{1F4AA}',
-  Swim: '\u{1F3CA}',
-  Yoga: '\u{1F9D8}',
-};
-const sportIcon = (sport: string): string => SPORT_ICONS[sport] ?? '\u{1F4CD}';
-
-const listHeading = isGlobal ? 'Recent Runs' : `Recent Runs in ${year}`;
-const emptyText = isGlobal ? 'No runs yet this year.' : `No runs in ${year}.`;
+const listHeading = isGlobal ? 'Recent Activities' : `Activities in ${year}`;
+const emptyText = isGlobal ? 'No activities yet this year.' : `No activities in ${year}.`;
 
 const linkAttrs = (link: string | null) =>
   link ? { href: link, target: '_blank', rel: 'noopener' } : {};
@@ -131,12 +142,12 @@ const linkAttrs = (link: string | null) =>
         <a class="row" {...linkAttrs(r.stravaUrl)}>
           <span class="meta">
             <span class="name-row">
-              <span class="icon" aria-hidden="true">{sportIcon(r.sport)}</span>
+              <SportIcon sport={r.sport} />
               <span class="name">{r.name}</span>
             </span>
             <span class="sub muted">{r.date}</span>
           </span>
-          <span class="figures muted">{r.sport} · {r.distanceMi} mi{r.isRun && r.pace !== '0:00/mi' && ` · ${r.pace}`}</span>
+          <span class="figures muted">{activityFigures(r)}</span>
         </a>
       </li>
     ))}
@@ -150,18 +161,6 @@ const linkAttrs = (link: string | null) =>
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-  }
-  :global(.list) .icon {
-    flex-shrink: 0;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: #e9e4da;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    line-height: 1;
   }
 
   .head h1 { margin-bottom: 0.5rem; }

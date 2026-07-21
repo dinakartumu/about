@@ -499,7 +499,9 @@ interface ApiActivity {
   sport_type: string; // Strava sport, e.g. "Run", "TrailRun", "Ride", "Walk"
   date: string;
   distance_mi: number;
+  duration_s: number;
   pace: string;
+  calories: number | null;
   strava_url: string | null;
 }
 
@@ -589,7 +591,9 @@ export interface RunActivity {
   name: string;
   date: string;
   distanceMi: number;
+  durationS: number;
   pace: string;
+  calories: number | null;
   sport: string; // display label, e.g. "Ride", "Trail Run"
   isRun: boolean; // pace is only meaningful for run-type sports
   stravaUrl: string | null;
@@ -612,11 +616,47 @@ export function shapeActivities(json: ApiActivitiesResponse): RunActivity[] {
     name: a.name,
     date: fmtDate(a.date),
     distanceMi: a.distance_mi,
+    durationS: a.duration_s,
     pace: a.pace,
+    calories: a.calories,
     sport: sportLabel(a.sport_type),
     isRun: RUN_SPORTS.has(a.sport_type),
     stravaUrl: a.strava_url,
   }));
+}
+
+// Below this a distance is display noise — gym sessions sometimes log a few
+// GPS yards, and "Weight Training · 0 mi" reads like a bug.
+const MIN_DISPLAY_MI = 0.05;
+
+/**
+ * "45 min" under an hour, "1h 7m" past it, "20s" under a minute (a stray
+ * 20-second workout would otherwise read "0 min") — a stationary activity's
+ * figure.
+ */
+function fmtStationaryDuration(seconds: number): string {
+  const totalMinutes = Math.round(seconds / 60);
+  if (totalMinutes === 0) return `${Math.round(seconds)}s`;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes} min`;
+}
+
+/**
+ * The right-hand figures for an activity row. Distance sports show
+ * "Sport · mi[ · pace]" (pace only for runs with a real pace); stationary
+ * sports show "Sport · duration[ · cal]" — e.g. "Weight Training · 45 min
+ * · 320 cal" — since "0 mi" carries no information.
+ */
+export function activityFigures(a: RunActivity): string {
+  if (a.distanceMi < MIN_DISPLAY_MI) {
+    const parts = [a.sport, fmtStationaryDuration(a.durationS)];
+    if (a.calories !== null && a.calories > 0) parts.push(`${Math.round(a.calories)} cal`);
+    return parts.join(' · ');
+  }
+  const parts = [a.sport, `${a.distanceMi} mi`];
+  if (a.isRun && a.pace !== '0:00/mi') parts.push(a.pace);
+  return parts.join(' · ');
 }
 
 /**

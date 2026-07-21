@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  activityFigures,
   fmtDuration,
   fmtWatchDate,
   monthRanges,
@@ -740,6 +741,8 @@ describe('shapeActivities', () => {
       name: 'Afternoon Ride',
       date: 'Dec 26, 2016',
       distanceMi: 5.22,
+      durationS: 2065,
+      calories: 136.4,
       pace: '6:36/mi',
       sport: 'Ride',
       isRun: false,
@@ -755,7 +758,9 @@ describe('shapeActivities', () => {
           sport_type: 'TrailRun',
           date: '2016-01-02T10:00:00Z',
           distance_mi: 3.1,
+          duration_s: 1860,
           pace: '10:00/mi',
+          calories: 350,
           strava_url: null,
         },
         {
@@ -763,7 +768,9 @@ describe('shapeActivities', () => {
           sport_type: 'VirtualRun',
           date: '2016-01-03T10:00:00Z',
           distance_mi: 2,
+          duration_s: 1080,
           pace: '9:00/mi',
+          calories: null,
           strava_url: null,
         },
         {
@@ -771,7 +778,9 @@ describe('shapeActivities', () => {
           sport_type: 'WeightTraining',
           date: '2016-01-04T10:00:00Z',
           distance_mi: 0,
+          duration_s: 2700,
           pace: '0:00/mi',
+          calories: 320,
           strava_url: null,
         },
       ],
@@ -792,7 +801,9 @@ describe('shapeActivities', () => {
           sport_type: 'Run',
           date: '2016-01-02T10:00:00Z',
           distance_mi: 1.5,
+          duration_s: 900,
           pace: '10:00/mi',
+          calories: null,
           strava_url: null,
         },
       ],
@@ -801,10 +812,134 @@ describe('shapeActivities', () => {
     expect(runs[0].date).toBe('Jan 2, 2016');
     expect(runs[0].sport).toBe('Run');
     expect(runs[0].isRun).toBe(true);
+    expect(runs[0].calories).toBeNull();
+    expect(runs[0].durationS).toBe(900);
   });
 
   it('throws when the payload has no data array', () => {
     expect(() => shapeActivities({})).toThrow(/data/);
+  });
+});
+
+describe('activityFigures', () => {
+  const base = {
+    name: 'x',
+    date: 'Jan 2, 2016',
+    stravaUrl: null,
+  };
+
+  it('shows sport, distance, and pace for runs with distance', () => {
+    const figures = activityFigures({
+      ...base,
+      sport: 'Run',
+      isRun: true,
+      distanceMi: 4.49,
+      durationS: 2162,
+      calories: 525,
+      pace: '8:02/mi',
+    });
+    expect(figures).toBe('Run · 4.49 mi · 8:02/mi');
+  });
+
+  it('omits pace for non-run sports with distance', () => {
+    const figures = activityFigures({
+      ...base,
+      sport: 'Ride',
+      isRun: false,
+      distanceMi: 5.22,
+      durationS: 2065,
+      calories: 136.4,
+      pace: '6:36/mi',
+    });
+    expect(figures).toBe('Ride · 5.22 mi');
+  });
+
+  it('omits a zeroed pace even for runs', () => {
+    const figures = activityFigures({
+      ...base,
+      sport: 'Run',
+      isRun: true,
+      distanceMi: 1.5,
+      durationS: 900,
+      calories: null,
+      pace: '0:00/mi',
+    });
+    expect(figures).toBe('Run · 1.5 mi');
+  });
+
+  it('shows duration and calories for zero-distance activities', () => {
+    const figures = activityFigures({
+      ...base,
+      sport: 'Weight Training',
+      isRun: false,
+      distanceMi: 0,
+      durationS: 2700,
+      calories: 320,
+      pace: '0:00/mi',
+    });
+    expect(figures).toBe('Weight Training · 45 min · 320 cal');
+  });
+
+  it('formats hour-long zero-distance durations as hours and minutes', () => {
+    const figures = activityFigures({
+      ...base,
+      sport: 'Weight Training',
+      isRun: false,
+      distanceMi: 0,
+      durationS: 4013,
+      calories: 322.4,
+      pace: '0:00/mi',
+    });
+    expect(figures).toBe('Weight Training · 1h 7m · 322 cal');
+  });
+
+  it('shows only the duration when calories are missing or zero', () => {
+    const noCal = activityFigures({
+      ...base,
+      sport: 'Workout',
+      isRun: false,
+      distanceMi: 0,
+      durationS: 2520,
+      calories: null,
+      pace: '0:00/mi',
+    });
+    expect(noCal).toBe('Workout · 42 min');
+    const zeroCal = activityFigures({
+      ...base,
+      sport: 'Workout',
+      isRun: false,
+      distanceMi: 0,
+      durationS: 252,
+      calories: 0,
+      pace: '0:00/mi',
+    });
+    expect(zeroCal).toBe('Workout · 4 min');
+  });
+
+  it('shows seconds for sub-minute durations instead of "0 min"', () => {
+    const figures = activityFigures({
+      ...base,
+      sport: 'Workout',
+      isRun: false,
+      distanceMi: 0,
+      durationS: 20,
+      calories: 0,
+      pace: '0:00/mi',
+    });
+    expect(figures).toBe('Workout · 20s');
+  });
+
+  it('treats near-zero distances as zero-distance activities', () => {
+    const figures = activityFigures({
+      ...base,
+      sport: 'Yoga',
+      isRun: false,
+      distanceMi: 0.04,
+      durationS: 1800,
+      calories: 90,
+      pace: '0:00/mi',
+    });
+    expect(figures).toBe('Yoga · 30 min · 90 cal');
   });
 });
 
