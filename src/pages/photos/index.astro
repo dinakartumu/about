@@ -2,12 +2,16 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PhotoSetCard from '../../components/PhotoSetCard.astro';
+import { photoUrl } from '../../lib/images';
 
 const sets = (await getCollection('photosets')).sort((a, b) =>
   b.data.date.localeCompare(a.data.date)
 );
+const ogImage = sets.length
+  ? photoUrl(sets[0].data.cover, { width: 1200, height: 630, fit: 'cover' })
+  : undefined;
 ---
-<Layout title="Photos · Dinakar Tumu" description="Photosets by Dinakar Tumu.">
+<Layout title="Photos · Dinakar Tumu" description="Photosets by Dinakar Tumu." image={ogImage}>
   <section class="container">
     <h1>Photos</h1>
     <div class="grid">

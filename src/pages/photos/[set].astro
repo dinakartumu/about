@@ -10,7 +10,8 @@ export async function getStaticPaths() {
 }
 
 const { set } = Astro.props;
-const { title, description, photos } = set.data;
+const { title, description, photos, cover } = set.data;
+const ogImage = photoUrl(cover, { width: 1200, height: 630, fit: 'cover' });
 
 // Group adjacent portraits into pairs; landscapes stand alone.
 type P = (typeof photos)[number];
@@ -31,7 +32,7 @@ const lightboxItems = photos.map((p) => ({
   h: p.height,
 }));
 ---
-<Layout title={`${title} · Photos · Dinakar Tumu`} description={description || `${title} photoset.`}>
+<Layout title={`${title} · Photos · Dinakar Tumu`} description={description || `${title} photoset.`} image={ogImage}>
   <article class="container">
     <header>
       <h1>{title}</h1>
