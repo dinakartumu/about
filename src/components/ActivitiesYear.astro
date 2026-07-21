@@ -1,8 +1,10 @@
 ---
 /**
  * One running year: headline, year switcher, monthly-runs chart, and the
- * year's most recent runs. Rendered by both /activities (global lifetime
- * headline) and /activities/{year} (year-scoped headline).
+ * year's most recent activities — each row carries a muted sport label, and
+ * pace shows only for run-type sports. Rendered by both /activities (global
+ * lifetime headline across every sport) and /activities/{year} (year-scoped
+ * headline).
  *
  * /v1/running/stats/years — one memoized call — lists every year that has
  * runs; a year absent from it renders its empty state without touching the
@@ -55,11 +57,11 @@ let subline: string | null = null;
 if (isGlobal) {
   const stats = shapeRunningStats(await rewindFetch<StatsJson>('/v1/running/stats'));
   const parts = [
-    `${n(stats.totalRuns)} Runs`,
+    `${n(stats.totalActivities)} Activities`,
     `${n(stats.totalMiles)} Miles`,
     `${n(stats.totalDurationS / 3600)} Hours`,
   ];
-  if (stats.avgPace) parts.push(`${stats.avgPace} Pace`);
+  if (stats.avgPace) parts.push(`${stats.avgPace} Avg run pace`);
   headline = parts.join(' · ');
 } else if (summary) {
   headline = `${n(summary.totalRuns)} ${runNoun(summary.totalRuns)} in ${year}`;
@@ -71,7 +73,10 @@ if (isGlobal) {
   headline = `No runs in ${year}`;
 }
 
-const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59Z`)}`;
+// Millisecond-precision bounds: the API compares timestamp strings, and the
+// stored values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z"
+// and would drop activities logged at midnight on Jan 1.
+const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00.000Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59.999Z`)}`;
 
 let trendPoints: TrendPoint[] = shapeTrends({ data: [] }, year, now);
 let runs: RunActivity[] = [];
@@ -114,7 +119,7 @@ const linkAttrs = (link: string | null) =>
             <span class="name">{r.name}</span>
             <span class="sub muted">{r.date}</span>
           </span>
-          <span class="figures muted">{r.distanceMi} mi{r.pace !== '0:00/mi' && ` · ${r.pace}`}</span>
+          <span class="figures muted">{r.sport} · {r.distanceMi} mi{r.isRun && r.pace !== '0:00/mi' && ` · ${r.pace}`}</span>
         </a>
       </li>
     ))}

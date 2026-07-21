@@ -319,28 +319,65 @@ describe('shapeWatchingStats', () => {
 describe('shapePlacesStats', () => {
   it('reads headline numbers and top lists from the stats payload', () => {
     expect(shapePlacesStats(placesStats)).toEqual({
-      total: 753,
-      uniqueVenues: 264,
-      thisYear: 0,
+      total: 905,
+      uniqueVenues: 442,
+      thisYear: 204,
       topCategories: [
         {
-          name: 'Bakery',
-          count: 159,
-          icon: 'https://ss3.4sqi.net/img/categories_v2/food/bakery_64.png',
+          name: 'Structure',
+          count: 97,
+          icon: 'https://cdn.dinakartumu.com/places/icons/building-default_64.png',
         },
         {
-          name: 'Coffee Shop',
-          count: 85,
-          icon: 'https://ss3.4sqi.net/img/categories_v2/food/coffeeshop_64.png',
+          name: 'South Indian Restaurant',
+          count: 66,
+          icon: 'https://cdn.dinakartumu.com/places/icons/food-default_64.png',
         },
-        { name: 'Mexican Restaurant', count: 51, icon: null },
+        {
+          name: 'Grocery Store',
+          count: 55,
+          icon: 'https://cdn.dinakartumu.com/places/icons/shops-food_grocery_64.png',
+        },
       ],
       topCities: [
-        { name: 'Harrison', count: 225 },
-        { name: 'Staten Island', count: 170 },
-        { name: 'New York', count: 59 },
+        { name: 'Dublin', count: 198 },
+        { name: 'Union City', count: 181 },
+        { name: 'Fremont', count: 93 },
+      ],
+      topVenues: [
+        {
+          name: '580 Executive Center',
+          city: 'Dublin',
+          count: 87,
+          icon: 'https://cdn.dinakartumu.com/places/icons/building-default_64.png',
+        },
+        {
+          name: 'Union City BART Station',
+          city: 'Union City',
+          count: 50,
+          icon: 'https://cdn.dinakartumu.com/places/icons/travel-subway_64.png',
+        },
+        {
+          name: 'Sri Vasantha Bhavan',
+          city: 'Dublin',
+          count: 39,
+          icon: 'https://cdn.dinakartumu.com/places/icons/food-default_64.png',
+        },
       ],
     });
+  });
+
+  it('leaves icons null when a category or venue has none', () => {
+    const shaped = shapePlacesStats({
+      total: 2,
+      unique_venues: 1,
+      this_year: 0,
+      top_categories: [{ category: 'Mystery', count: 2 }],
+      top_cities: [],
+      top_venues: [{ venue_name: 'Somewhere', count: 2, city: null }],
+    });
+    expect(shaped.topCategories[0].icon).toBeNull();
+    expect(shaped.topVenues[0]).toEqual({ name: 'Somewhere', city: null, count: 2, icon: null });
   });
 
   it('throws when the payload lacks the headline numbers', () => {
@@ -351,6 +388,18 @@ describe('shapePlacesStats', () => {
     expect(() => shapePlacesStats({ total: 1, unique_venues: 1, this_year: 0 })).toThrow(
       /top_categories/
     );
+  });
+
+  it('throws when the payload lacks the venue list', () => {
+    expect(() =>
+      shapePlacesStats({
+        total: 1,
+        unique_venues: 1,
+        this_year: 0,
+        top_categories: [],
+        top_cities: [],
+      })
+    ).toThrow(/top_venues/);
   });
 });
 
@@ -595,8 +644,9 @@ describe('shapeRunningStats', () => {
   it('reads the lifetime numbers and parses the duration to seconds', () => {
     expect(shapeRunningStats(runningStats)).toEqual({
       totalRuns: 182,
-      totalMiles: 348.74,
-      totalDurationS: 245924,
+      totalActivities: 1331,
+      totalMiles: 690.73,
+      totalDurationS: 930026,
       avgPace: '11:45/mi',
     });
   });
@@ -605,11 +655,25 @@ describe('shapeRunningStats', () => {
     expect(() => shapeRunningStats({})).toThrow(/data/);
   });
 
+  it('throws when the payload lacks an activity total', () => {
+    expect(() =>
+      shapeRunningStats({
+        data: {
+          total_runs: 1,
+          total_distance_mi: 1,
+          total_duration: '9:05',
+          avg_pace: null,
+        },
+      })
+    ).toThrow(/total_activities/);
+  });
+
   it('throws on an unparseable duration', () => {
     expect(() =>
       shapeRunningStats({
         data: {
           total_runs: 1,
+          total_activities: 1,
           total_distance_mi: 1,
           total_duration: 'soon',
           avg_pace: null,
@@ -673,12 +737,51 @@ describe('shapeActivities', () => {
     const runs = shapeActivities(runningActivities2016);
     expect(runs).toHaveLength(3);
     expect(runs[0]).toEqual({
-      name: 'Night Run',
-      date: 'May 26, 2016',
-      distanceMi: 0.88,
-      pace: '10:16/mi',
-      stravaUrl: 'https://www.strava.com/activities/1113441499',
+      name: 'Afternoon Ride',
+      date: 'Dec 26, 2016',
+      distanceMi: 5.22,
+      pace: '6:36/mi',
+      sport: 'Ride',
+      isRun: false,
+      stravaUrl: 'https://www.strava.com/activities/1113442572',
     });
+  });
+
+  it('marks run-type sports and spaces out camel-cased labels', () => {
+    const runs = shapeActivities({
+      data: [
+        {
+          name: 'Hill repeats',
+          sport_type: 'TrailRun',
+          date: '2016-01-02T10:00:00Z',
+          distance_mi: 3.1,
+          pace: '10:00/mi',
+          strava_url: null,
+        },
+        {
+          name: 'Zwift',
+          sport_type: 'VirtualRun',
+          date: '2016-01-03T10:00:00Z',
+          distance_mi: 2,
+          pace: '9:00/mi',
+          strava_url: null,
+        },
+        {
+          name: 'Gym',
+          sport_type: 'WeightTraining',
+          date: '2016-01-04T10:00:00Z',
+          distance_mi: 0,
+          pace: '0:00/mi',
+          strava_url: null,
+        },
+      ],
+    });
+    expect(runs[0].sport).toBe('Trail Run');
+    expect(runs[0].isRun).toBe(true);
+    expect(runs[1].sport).toBe('Virtual Run');
+    expect(runs[1].isRun).toBe(true);
+    expect(runs[2].sport).toBe('Weight Training');
+    expect(runs[2].isRun).toBe(false);
   });
 
   it('leaves the strava link null when the API has none', () => {
@@ -686,6 +789,7 @@ describe('shapeActivities', () => {
       data: [
         {
           name: 'Treadmill',
+          sport_type: 'Run',
           date: '2016-01-02T10:00:00Z',
           distance_mi: 1.5,
           pace: '10:00/mi',
@@ -695,6 +799,8 @@ describe('shapeActivities', () => {
     });
     expect(runs[0].stravaUrl).toBeNull();
     expect(runs[0].date).toBe('Jan 2, 2016');
+    expect(runs[0].sport).toBe('Run');
+    expect(runs[0].isRun).toBe(true);
   });
 
   it('throws when the payload has no data array', () => {

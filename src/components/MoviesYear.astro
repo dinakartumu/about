@@ -1,12 +1,16 @@
 ---
 /**
  * One movies year: headline, year switcher, monthly-watches chart, and the
- * poster grid. Rendered by both /movies (global headline, recent grid) and
- * /movies/{year} (year-scoped headline and grid).
+ * poster grid. Rendered by both /movies (global headline, recent 24-tile
+ * grid) and /movies/{year} (year-scoped headline and every film of the year).
  *
  * A single wide trends probe — memoized across every movies page — supplies
  * the first year with a watch, the year navigation range, and each year's
  * chart, so year pages only add the rollup headline and their poster grid.
+ *
+ * Year grids show the complete year: /v1/watching/recent caps limit at 50
+ * and returns no pagination envelope, so the build walks page=1.. until a
+ * short page arrives (the busiest year is ~200 films, so a handful of pages).
  */
 import {
   rewindFetch,
@@ -61,16 +65,29 @@ if (isGlobal) {
   headline = `No films in ${year}`;
 }
 
-const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59Z`)}`;
-const gridPath = isGlobal
-  ? '/v1/watching/recent?limit=24'
-  : `/v1/watching/recent?${yearQuery}&limit=24`;
-const watches: RecentWatch[] =
-  isGlobal || yearWatchCount > 0
-    ? shapeRecentWatches(await rewindFetch<RecentJson>(gridPath))
-    : [];
+// Millisecond-precision bounds: the API compares timestamp strings, and the
+// stored values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z"
+// and would drop watches logged at midnight on Jan 1.
+const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00.000Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59.999Z`)}`;
+const PAGE_LIMIT = 50; // the API's hard cap on /v1/watching/recent
+const MAX_PAGES = 20; // safety stop well past the busiest year (~200 films)
 
-const gridHeading = isGlobal ? 'Recently Watched' : `Recently Watched in ${year}`;
+const watches: RecentWatch[] = [];
+if (isGlobal) {
+  watches.push(...shapeRecentWatches(await rewindFetch<RecentJson>('/v1/watching/recent?limit=24')));
+} else if (yearWatchCount > 0) {
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const batch = shapeRecentWatches(
+      await rewindFetch<RecentJson>(
+        `/v1/watching/recent?${yearQuery}&limit=${PAGE_LIMIT}&page=${page}`
+      )
+    );
+    watches.push(...batch);
+    if (batch.length < PAGE_LIMIT) break;
+  }
+}
+
+const gridHeading = isGlobal ? 'Recently Watched' : `Watched in ${year}`;
 const emptyText = isGlobal ? 'Nothing watched yet.' : `Nothing watched in ${year}.`;
 
 const linkAttrs = (link: string | null) =>

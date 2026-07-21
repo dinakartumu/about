@@ -107,13 +107,22 @@ interface ApiCountedName {
   icon?: string | null; // Foursquare category glyph on top_categories entries
 }
 
+interface ApiTopVenue {
+  venue_name: string;
+  count: number;
+  icon?: string | null;
+  city: string | null;
+}
+
 // /v1/places/stats returns its fields at the top level — no `data` wrapper.
+// Accepts from/to query params; the top lists then cover only that range.
 interface ApiPlacesStatsResponse {
   total?: number;
   unique_venues?: number;
   this_year?: number;
   top_categories?: ApiCountedName[];
   top_cities?: ApiCountedName[];
+  top_venues?: ApiTopVenue[];
 }
 
 interface ApiCheckin {
@@ -264,18 +273,27 @@ export interface CountedCategory extends CountedName {
   icon: string | null;
 }
 
+export interface TopVenue {
+  name: string;
+  city: string | null;
+  count: number;
+  icon: string | null;
+}
+
 export interface PlacesStats {
   total: number;
   uniqueVenues: number;
   thisYear: number;
   topCategories: CountedCategory[];
   topCities: CountedName[];
+  topVenues: TopVenue[];
 }
 
 /**
- * Headline numbers and top lists from /v1/places/stats. The payload is a
- * top-level object (no `data` wrapper); list items key their label as
- * `category` / `city` rather than `name`.
+ * Headline numbers and top lists from /v1/places/stats — optionally
+ * year-scoped via from/to query params. The payload is a top-level object
+ * (no `data` wrapper); list items key their label as `category` / `city` /
+ * `venue_name` rather than `name`.
  */
 export function shapePlacesStats(json: ApiPlacesStatsResponse): PlacesStats {
   if (
@@ -288,6 +306,9 @@ export function shapePlacesStats(json: ApiPlacesStatsResponse): PlacesStats {
   if (!Array.isArray(json.top_categories) || !Array.isArray(json.top_cities)) {
     throw new Error('places stats response is missing top_categories/top_cities');
   }
+  if (!Array.isArray(json.top_venues)) {
+    throw new Error('places stats response is missing top_venues');
+  }
   return {
     total: json.total,
     uniqueVenues: json.unique_venues,
@@ -299,6 +320,10 @@ export function shapePlacesStats(json: ApiPlacesStatsResponse): PlacesStats {
     topCities: json.top_cities.map((c) => {
       if (!c.city) throw new Error('places stats city entry missing label');
       return { name: c.city, count: c.count };
+    }),
+    topVenues: json.top_venues.map((v) => {
+      if (!v.venue_name) throw new Error('places stats venue entry missing label');
+      return { name: v.venue_name, city: v.city ?? null, count: v.count, icon: v.icon ?? null };
     }),
   };
 }
@@ -445,6 +470,7 @@ export function fmtDuration(seconds: number): string {
 interface ApiRunningStatsResponse {
   data?: {
     total_runs: number;
+    total_activities?: number; // every sport, not just runs
     total_distance_mi: number;
     total_duration: string; // "68:18:44" (H:MM:SS) or "9:05" (M:SS)
     avg_pace: string | null;
@@ -470,6 +496,7 @@ interface ApiRunningYearRollup {
 
 interface ApiActivity {
   name: string;
+  sport_type: string; // Strava sport, e.g. "Run", "TrailRun", "Ride", "Walk"
   date: string;
   distance_mi: number;
   pace: string;
@@ -482,6 +509,7 @@ interface ApiActivitiesResponse {
 
 export interface RunningStats {
   totalRuns: number;
+  totalActivities: number;
   totalMiles: number;
   totalDurationS: number;
   avgPace: string | null;
@@ -501,8 +529,12 @@ export function shapeRunningStats(json: ApiRunningStatsResponse): RunningStats {
   if (!json.data) {
     throw new Error('running stats response has no data object');
   }
+  if (typeof json.data.total_activities !== 'number') {
+    throw new Error('running stats response has no total_activities field');
+  }
   return {
     totalRuns: json.data.total_runs,
+    totalActivities: json.data.total_activities,
     totalMiles: json.data.total_distance_mi,
     totalDurationS: parseDuration(json.data.total_duration),
     avgPace: json.data.avg_pace,
@@ -558,7 +590,17 @@ export interface RunActivity {
   date: string;
   distanceMi: number;
   pace: string;
+  sport: string; // display label, e.g. "Ride", "Trail Run"
+  isRun: boolean; // pace is only meaningful for run-type sports
   stravaUrl: string | null;
+}
+
+/** Strava sport types where a min/mi pace is the natural figure. */
+const RUN_SPORTS = new Set(['Run', 'TrailRun', 'VirtualRun']);
+
+/** "TrailRun" → "Trail Run": space out Strava's camel-cased sport types. */
+function sportLabel(sportType: string): string {
+  return sportType.replace(/([a-z])([A-Z])/g, '$1 $2');
 }
 
 /** Narrow a /v1/running/activities response to the fields the page renders. */
@@ -571,6 +613,8 @@ export function shapeActivities(json: ApiActivitiesResponse): RunActivity[] {
     date: fmtDate(a.date),
     distanceMi: a.distance_mi,
     pace: a.pace,
+    sport: sportLabel(a.sport_type),
+    isRun: RUN_SPORTS.has(a.sport_type),
     stravaUrl: a.strava_url,
   }));
 }
