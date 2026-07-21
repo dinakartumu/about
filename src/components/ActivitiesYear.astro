@@ -90,6 +90,21 @@ if (summary) {
   );
 }
 
+const SPORT_ICONS: Record<string, string> = {
+  Run: '\u{1F3C3}',
+  TrailRun: '\u{1F3C3}',
+  VirtualRun: '\u{1F3C3}',
+  Ride: '\u{1F6B4}',
+  VirtualRide: '\u{1F6B4}',
+  Walk: '\u{1F6B6}',
+  Hike: '\u{1F97E}',
+  WeightTraining: '\u{1F3CB}\uFE0F',
+  Workout: '\u{1F4AA}',
+  Swim: '\u{1F3CA}',
+  Yoga: '\u{1F9D8}',
+};
+const sportIcon = (sport: string): string => SPORT_ICONS[sport] ?? '\u{1F4CD}';
+
 const listHeading = isGlobal ? 'Recent Runs' : `Recent Runs in ${year}`;
 const emptyText = isGlobal ? 'No runs yet this year.' : `No runs in ${year}.`;
 
@@ -115,7 +130,10 @@ const linkAttrs = (link: string | null) =>
       <li>
         <a class="row" {...linkAttrs(r.stravaUrl)}>
           <span class="meta">
-            <span class="name">{r.name}</span>
+            <span class="name-row">
+              <span class="icon" aria-hidden="true">{sportIcon(r.sport)}</span>
+              <span class="name">{r.name}</span>
+            </span>
             <span class="sub muted">{r.date}</span>
           </span>
           <span class="figures muted">{r.sport} · {r.distanceMi} mi{r.isRun && r.pace !== '0:00/mi' && ` · ${r.pace}`}</span>
@@ -127,6 +145,24 @@ const linkAttrs = (link: string | null) =>
 </section>
 
 <style>
+  .name-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  :global(.list) .icon {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e9e4da;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+  }
+
   .head h1 { margin-bottom: 0.5rem; }
   .subline {
     margin: 0 0 0.5rem;
