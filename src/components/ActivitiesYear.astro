@@ -61,7 +61,6 @@ if (isGlobal) {
     `${n(stats.totalMiles)} Miles`,
     `${n(stats.totalDurationS / 3600)} Hours`,
   ];
-  if (stats.avgPace) parts.push(`${stats.avgPace} Avg run pace`);
   headline = parts.join(' · ');
 } else if (summary) {
   headline = `${n(summary.totalRuns)} ${runNoun(summary.totalRuns)} in ${year}`;
