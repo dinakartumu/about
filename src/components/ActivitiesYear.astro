@@ -1,9 +1,12 @@
 ---
 /**
  * One activities year: headline, year switcher, monthly-runs chart, and the
- * activity list — each row carries a circular sport-glyph chip, and the
- * figures adapt to the sport: distance sports show miles (plus pace for
- * runs), stationary sports show duration and calories. Rendered by both
+ * activity list — each row carries a circular sport-glyph chip, GPS
+ * activities add a small route thumbnail after it (rows without a route
+ * keep the plain chip+name layout), the sub line joins the date with the
+ * activity's city/state, and the figures adapt to the sport: distance
+ * sports show miles (plus pace for runs), stationary sports show duration
+ * and calories. Rendered by both
  * /activities (global lifetime headline, recent 20) and /activities/{year}
  * (year-scoped headline and every activity of the year).
  *
@@ -143,9 +146,21 @@ const linkAttrs = (link: string | null) =>
           <span class="meta">
             <span class="name-row">
               <SportIcon sport={r.sport} />
+              {r.routePath && (
+                <svg class="route" viewBox="0 0 64 40" width="42" height="26" aria-hidden="true">
+                  <path
+                    d={r.routePath}
+                    fill="none"
+                    stroke="var(--accent)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              )}
               <span class="name">{r.name}</span>
             </span>
-            <span class="sub muted">{r.date}</span>
+            <span class="sub muted">{[r.date, r.place].filter(Boolean).join(' · ')}</span>
           </span>
           <span class="figures muted">{activityFigures(r)}</span>
         </a>
@@ -161,6 +176,15 @@ const linkAttrs = (link: string | null) =>
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+  }
+
+  /* GPS route thumbnail — absent entirely on routeless rows, so they keep
+     the plain chip+name layout with no empty gap. */
+  .route {
+    flex-shrink: 0;
+    display: block;
+    background: var(--surface);
+    border-radius: 6px;
   }
 
   .head h1 { margin-bottom: 0.5rem; }

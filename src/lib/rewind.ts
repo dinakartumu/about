@@ -6,6 +6,8 @@
  * runs solely in Astro frontmatter at build time.
  */
 
+import { decodePolyline, polylineToSvgPath } from './polyline';
+
 const REWIND_BASE = 'https://rewind.dinakartumu.com';
 
 const MONTH_NAMES = [
@@ -502,6 +504,9 @@ interface ApiActivity {
   duration_s: number;
   pace: string;
   calories: number | null;
+  city?: string | null; // reverse-geocoded from the route start
+  state?: string | null;
+  polyline?: string | null; // Google encoded route; null for gym sessions
   strava_url: string | null;
 }
 
@@ -596,6 +601,8 @@ export interface RunActivity {
   calories: number | null;
   sport: string; // display label, e.g. "Ride", "Trail Run"
   isRun: boolean; // pace is only meaningful for run-type sports
+  place: string | null; // "City, State" — whichever parts exist
+  routePath: string | null; // 64x40 SVG path of the GPS route, null without one
   stravaUrl: string | null;
 }
 
@@ -621,6 +628,8 @@ export function shapeActivities(json: ApiActivitiesResponse): RunActivity[] {
     calories: a.calories,
     sport: sportLabel(a.sport_type),
     isRun: RUN_SPORTS.has(a.sport_type),
+    place: [a.city, a.state].filter(Boolean).join(', ') || null,
+    routePath: a.polyline ? polylineToSvgPath(decodePolyline(a.polyline)) : null,
     stravaUrl: a.strava_url,
   }));
 }

@@ -747,7 +747,60 @@ describe('shapeActivities', () => {
       sport: 'Ride',
       isRun: false,
       stravaUrl: 'https://www.strava.com/activities/1113442572',
+      place: 'Mira Mesa, California',
+      routePath: expect.stringMatching(/^M \d+(\.\d)?,\d+(\.\d)? L /),
     });
+  });
+
+  it('joins city and state into a place, null when both are missing', () => {
+    const base = {
+      name: 'x',
+      sport_type: 'Run',
+      date: '2016-01-02T10:00:00Z',
+      distance_mi: 1,
+      duration_s: 600,
+      pace: '10:00/mi',
+      calories: null,
+      strava_url: null,
+      polyline: null,
+    };
+    const runs = shapeActivities({
+      data: [
+        { ...base, city: 'Union City', state: 'California' },
+        { ...base, city: 'Ongole', state: null },
+        { ...base, city: null, state: 'California' },
+        { ...base, city: null, state: null },
+      ],
+    });
+    expect(runs.map((r) => r.place)).toEqual([
+      'Union City, California',
+      'Ongole',
+      'California',
+      null,
+    ]);
+  });
+
+  it('leaves the route path null without a decodable polyline', () => {
+    const base = {
+      name: 'x',
+      sport_type: 'WeightTraining',
+      date: '2016-01-02T10:00:00Z',
+      distance_mi: 0,
+      duration_s: 2700,
+      pace: '0:00/mi',
+      calories: null,
+      strava_url: null,
+      city: null,
+      state: null,
+    };
+    const runs = shapeActivities({
+      data: [
+        { ...base, polyline: null },
+        { ...base }, // field absent entirely — older cached payloads
+        { ...base, polyline: '' }, // empty string decodes to zero points
+      ],
+    });
+    expect(runs.map((r) => r.routePath)).toEqual([null, null, null]);
   });
 
   it('marks run-type sports and spaces out camel-cased labels', () => {
@@ -826,6 +879,8 @@ describe('activityFigures', () => {
     name: 'x',
     date: 'Jan 2, 2016',
     stravaUrl: null,
+    place: null,
+    routePath: null,
   };
 
   it('shows sport, distance, and pace for runs with distance', () => {
