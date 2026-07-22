@@ -1,0 +1,141 @@
+---
+/**
+ * Build-time inline SVG horizontal stacked bar chart of monthly plays, one row
+ * per month (Jan..Dec). Each bar is stacked by that month's top artists (blue
+ * ramp) plus an "Other" segment. Months with no plays yet render as faint
+ * "ghost" bars at the previous year's total, if available. No client JS.
+ */
+import type { StackMonth } from '../lib/rewind';
+
+interface Props {
+  months: StackMonth[]; // 12 entries, Jan..Dec
+  ghostTotals?: number[]; // 12 entries, previous-year monthly totals
+  ariaLabel: string;
+}
+const { months, ghostTotals = [], ariaLabel } = Astro.props;
+
+// viewBox geometry — scales to container width.
+const W = 620;
+const LEFT = 50; // room for month labels
+const RIGHT = 16;
+const TOP = 8;
+const AXIS = 40; // bottom band for ticks + "plays"
+const ROW_H = 24;
+const PLOT_W = W - LEFT - RIGHT;
+const H = TOP + months.length * ROW_H + AXIS;
+const BAR_H = ROW_H * 0.6;
+
+// Nice x-axis max + tick step from the largest value shown (current or ghost).
+const rawMax = Math.max(
+  1,
+  ...months.map((m) => m.total),
+  ...ghostTotals.filter((n) => Number.isFinite(n))
+);
+const STEPS = [100, 200, 250, 500, 1000, 2000, 5000];
+const step = STEPS.find((s) => rawMax / s <= 5) ?? 5000;
+const niceMax = Math.ceil(rawMax / step) * step;
+const ticks: number[] = [];
+for (let t = 0; t <= niceMax; t += step) ticks.push(t);
+
+const xOf = (v: number) => LEFT + (v / niceMax) * PLOT_W;
+const rowY = (i: number) => TOP + i * ROW_H;
+
+interface Rect {
+  x: number;
+  w: number;
+  fill: string;
+  ghost: boolean;
+}
+const rows = months.map((m, i) => {
+  const y = rowY(i) + (ROW_H - BAR_H) / 2;
+  const rects: Rect[] = [];
+  if (m.total > 0) {
+    let cx = LEFT;
+    for (const seg of m.segments) {
+      const w = (seg.value / niceMax) * PLOT_W;
+      rects.push({ x: cx, w, fill: seg.color, ghost: false });
+      cx += w;
+    }
+  } else if ((ghostTotals[i] ?? 0) > 0) {
+    rects.push({ x: LEFT, w: (ghostTotals[i] / niceMax) * PLOT_W, fill: '', ghost: true });
+  }
+  return { label: m.label, y, cy: rowY(i) + ROW_H / 2, rects };
+});
+---
+<svg
+  class="chart"
+  viewBox={`0 0 ${W} ${H}`}
+  role="img"
+  aria-label={ariaLabel}
+  preserveAspectRatio="xMidYMid meet"
+>
+  <!-- vertical gridlines -->
+  {ticks.map((t) => (
+    <line class="grid" x1={xOf(t)} x2={xOf(t)} y1={TOP} y2={TOP + months.length * ROW_H} />
+  ))}
+
+  <!-- rows -->
+  {rows.map((r) => (
+    <>
+      <text class="ylabel" x={LEFT - 10} y={r.cy}>{r.label}</text>
+      {r.rects.map((rect) => (
+        <rect
+          class={rect.ghost ? 'bar ghost' : 'bar'}
+          x={rect.x}
+          y={r.y}
+          width={Math.max(0, rect.w)}
+          height={BAR_H}
+          fill={rect.ghost ? undefined : rect.fill}
+          rx="2"
+        />
+      ))}
+    </>
+  ))}
+
+  <!-- x-axis ticks + caption -->
+  {ticks.map((t) => (
+    <text class="xlabel" x={xOf(t)} y={TOP + months.length * ROW_H + 18}>{t}</text>
+  ))}
+  <text class="caption" x={LEFT + PLOT_W / 2} y={H - 4}>plays</text>
+</svg>
+
+<style>
+  .chart {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .grid {
+    stroke: var(--surface);
+    stroke-width: 1;
+  }
+  .bar {
+    shape-rendering: crispEdges;
+  }
+  /* Faint reference bars (previous-year totals) for months with no data yet.
+     Uses --muted at low opacity so they read as a subtle gray on both the
+     light and dark card surface, distinct from the card background. */
+  .bar.ghost {
+    fill: var(--muted);
+    opacity: 0.18;
+  }
+  .ylabel {
+    fill: var(--muted);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    text-anchor: end;
+    dominant-baseline: central;
+  }
+  .xlabel {
+    fill: var(--muted);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+  .caption {
+    fill: var(--muted);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+</style>

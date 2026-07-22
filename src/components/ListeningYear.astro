@@ -1,12 +1,14 @@
 ---
 /**
- * One listening year: headline, year switcher, monthly-plays chart, and the
- * top artists/albums/tracks lists. Rendered by both /listening (current year)
- * and /listening/{year}.
+ * One listening year: header (inline year + month dropdowns), a stacked
+ * monthly-plays chart colored by top artists, and the top artists / albums /
+ * tracks lists. Rendered by both /listening (current year) and
+ * /listening/{year}.
  *
- * Only the current year gets the per-month dropdown and its JSON island —
- * historical years show year-level lists only, which keeps the build at one
- * top-list batch per past year instead of thirteen.
+ * Per-month top artists are fetched for every year to power the stacked chart
+ * and the per-artist sparklines. Per-month albums + tracks (for the month
+ * dropdown) are only fetched for the current year — historical years show
+ * year-level lists, keeping the build cost bounded.
  */
 import {
   LISTENING_FIRST_YEAR,
@@ -14,12 +16,15 @@ import {
   rewindFetch,
   shapeTopList,
   shapeTrends,
-  trendsAriaLabel,
+  buildMonthlyStacks,
+  buildArtistSparklines,
+  sparklinePath,
   yearHeadline,
   type TopItem,
+  type StackMonth,
 } from '../lib/rewind';
-import BarChart from './BarChart.astro';
-import YearNav from './YearNav.astro';
+import StackedMonthlyChart from './StackedMonthlyChart.astro';
+import Sparkline from './Sparkline.astro';
 
 type TopListJson = Parameters<typeof shapeTopList>[0];
 type TrendsJson = Parameters<typeof shapeTrends>[0];
@@ -35,6 +40,8 @@ const isCurrentYear = year === now.getUTCFullYear();
 
 const years: number[] = [];
 for (let y = now.getUTCFullYear(); y >= LISTENING_FIRST_YEAR; y--) years.push(y);
+const newestYear = years[0];
+const hrefForYear = (y: number) => (y === newestYear ? '/listening' : `/listening/${y}/`);
 
 const headline = yearHeadline(await rewindFetch<YearJson>(`/v1/listening/year/${year}`));
 
@@ -44,111 +51,159 @@ const trendPoints = shapeTrends(
   year,
   now
 );
+// Monthly totals indexed Jan(0)..Dec(11); shapeTrends returns Jan..lastMonth.
+const monthlyTotals: number[] = Array.from({ length: 12 }, (_, m) => trendPoints[m]?.value ?? 0);
 
-// Top genres for the year: /v1/listening/genres returns monthly buckets
-// keyed YYYY-MM; aggregate the year's months and keep the top six.
-type GenresJson = { data: { period: string; genres: Record<string, number> }[] };
-const genresJson = await rewindFetch<GenresJson>('/v1/listening/genres');
-const genreTotals = new Map<string, number>();
-for (const bucket of genresJson.data) {
-  if (!bucket.period.startsWith(String(year))) continue;
-  for (const [name, count] of Object.entries(bucket.genres)) {
-    genreTotals.set(name, (genreTotals.get(name) ?? 0) + count);
+// Previous-year monthly totals — faint "ghost" bars for months not reached yet.
+let ghostTotals: number[] = [];
+if (year - 1 >= LISTENING_FIRST_YEAR) {
+  try {
+    const prevQuery = `from=${encodeURIComponent(`${year - 1}-01-01T00:00:00Z`)}&to=${encodeURIComponent(`${year - 1}-12-31T23:59:59Z`)}`;
+    const prev = shapeTrends(
+      await rewindFetch<TrendsJson>(`/v1/listening/trends?${prevQuery}`),
+      year - 1,
+      now
+    );
+    ghostTotals = Array.from({ length: 12 }, (_, m) => prev[m]?.value ?? 0);
+  } catch {
+    ghostTotals = [];
   }
 }
-const topGenres = [...genreTotals.entries()]
-  .sort((a, b) => b[1] - a[1])
-  .slice(0, 6)
-  .map(([name, count]) => ({ name, count }));
 
-// One batch per month (three parallel calls each), months in sequence to
-// stay well inside the API's per-key rate limit. Any failure throws and
-// fails the build — never publish a page with missing sections.
-// Historical years fetch only the year-spanning "All months" range.
+// One batch per range (months in sequence; rewindFetch self-throttles to the
+// API rate window). Artists are fetched for every range to feed the chart +
+// sparklines; albums/tracks per-month only for the current year's dropdown.
 interface MonthData {
   label: string;
+  monthIndex: number | null; // 0..11, or null for "All months"
   artists: TopItem[];
   albums: TopItem[];
   tracks: TopItem[];
 }
 
-const ranges = isCurrentYear ? monthRanges(year, now) : monthRanges(year, now).slice(0, 1);
+const ranges = monthRanges(year, now);
+const monthlyArtists: (TopItem[] | undefined)[] = new Array(12);
 
 const months: MonthData[] = [];
 for (const { label, from, to } of ranges) {
   const q = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
-  const [artists, albums, tracks] = await Promise.all([
-    rewindFetch<TopListJson>(`/v1/listening/top/artists?${q}&limit=10`).then(shapeTopList),
-    rewindFetch<TopListJson>(`/v1/listening/top/albums?${q}&limit=12`).then(shapeTopList),
-    rewindFetch<TopListJson>(`/v1/listening/top/tracks?${q}&limit=10`).then(shapeTopList),
-  ]);
-  months.push({ label, artists, albums, tracks });
+  const isAll = label === 'All months';
+  const monthIndex = isAll ? null : new Date(from).getUTCMonth();
+
+  const artists = await rewindFetch<TopListJson>(`/v1/listening/top/artists?${q}&limit=12`).then(
+    shapeTopList
+  );
+
+  let albums: TopItem[] = [];
+  let tracks: TopItem[] = [];
+  if (isCurrentYear || isAll) {
+    [albums, tracks] = await Promise.all([
+      rewindFetch<TopListJson>(`/v1/listening/top/albums?${q}&limit=12`).then(shapeTopList),
+      rewindFetch<TopListJson>(`/v1/listening/top/tracks?${q}&limit=10`).then(shapeTopList),
+    ]);
+  }
+
+  if (monthIndex !== null) monthlyArtists[monthIndex] = artists;
+  months.push({ label, monthIndex, artists, albums, tracks });
 }
 
 const [all] = months;
+
+// Stacked chart rows + per-artist year sparklines.
+const stacks: StackMonth[] = buildMonthlyStacks(monthlyArtists, monthlyTotals);
+
+// Sparkline for every artist that appears in any list (year or a month), so
+// the client-side month swap can render a sparkline for whatever it shows.
+const sparkNames = new Set<string>();
+for (const m of months) for (const a of m.artists) sparkNames.add(a.name);
+const sparkSeries = buildArtistSparklines(monthlyArtists, [...sparkNames]);
+const sparkPathByName: Record<string, string> = {};
+for (const [name, series] of Object.entries(sparkSeries)) {
+  sparkPathByName[name] = sparklinePath(series);
+}
+
+const chartHasData = stacks.some((s) => s.total > 0);
 
 const plays = (n: number) => `${n.toLocaleString('en-US')} ${n === 1 ? 'play' : 'plays'}`;
 const linkAttrs = (link: string | null) =>
   link ? { href: link, target: '_blank', rel: 'noopener' } : {};
 
-// Guard against a literal </script> inside names breaking the JSON island.
-const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
+// Island: months augmented with each artist's sparkline path, for the swap.
+const islandMonths = months.map((m) => ({
+  label: m.label,
+  artists: m.artists.map((a) => ({ ...a, spark: sparkPathByName[a.name] ?? '' })),
+  albums: m.albums,
+  tracks: m.tracks,
+}));
+const islandJson = JSON.stringify(islandMonths).replace(/</g, '\\u003c');
 ---
 <section class="container head">
-  <div>
-    <h1>
-      {headline.totalPlays > 0
-        ? `${plays(headline.totalPlays)} in ${headline.year}`
-        : `No plays in ${headline.year}`}
-    </h1>
-    <YearNav basePath="/listening" years={years} current={year} />
-  </div>
-  {isCurrentYear && (
-    <select id="month-select" aria-label="Filter by month" hidden>
-      {months.map((m, i) => <option value={i}>{m.label}</option>)}
-    </select>
-  )}
+  <h1>Listening</h1>
+  <p class="summary">
+    <strong>{headline.totalPlays.toLocaleString('en-US')}</strong> {headline.totalPlays === 1 ? 'play' : 'plays'} in{' '}
+    <span class="control">
+      <select id="year-select" aria-label="Year">
+        {years.map((y) => (
+          <option value={hrefForYear(y)} selected={y === year}>{y}</option>
+        ))}
+      </select>
+    </span>
+    {isCurrentYear ? (
+      <>
+        {' '}showing{' '}
+        <span class="control">
+          <select id="month-select" aria-label="Filter by month">
+            {months.map((m, i) => <option value={i}>{m.label.toLowerCase()}</option>)}
+          </select>
+        </span>
+      </>
+    ) : (
+      <> showing <span class="muted">all months</span></>
+    )}
+  </p>
 </section>
 
 <section class="container chart">
-  <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'plays')} />
+  {chartHasData ? (
+    <div class="chart-card">
+      <StackedMonthlyChart
+        months={stacks}
+        ghostTotals={ghostTotals}
+        ariaLabel={`Monthly plays in ${year}, stacked by top artists`}
+      />
+    </div>
+  ) : (
+    <p class="muted no-data">No plays in {year}.</p>
+  )}
 </section>
 
-{topGenres.length > 0 && (
-  <section class="container">
-    <ol class="genres" role="list">
-      {topGenres.map((g) => (
-        <li class="genre-chip">{g.name} <span class="muted">{g.count.toLocaleString('en-US')}</span></li>
-      ))}
-    </ol>
-  </section>
-)}
-
 <section class="container">
-  <h2>Top Artists</h2>
-  <ol class="list" id="top-artists" role="list">
+  <h2>Top Artists <span class="year-tag muted">· {year}</span></h2>
+  <ol class="list artists" id="top-artists" role="list">
     {all.artists.map((a) => (
       <li>
         <a class="row" {...linkAttrs(a.link)}>
           <span class="rank">{a.rank}</span>
           {a.image ? (
             <img
-              class="thumb"
+              class="avatar"
               src={a.image.url}
               alt=""
-              width="56"
-              height="56"
+              width="40"
+              height="40"
               loading="lazy"
               decoding="async"
               style={`background:${a.image.dominantColor}`}
             />
           ) : (
-            <span class="thumb placeholder" aria-hidden="true"></span>
+            <span class="avatar placeholder" aria-hidden="true"></span>
           )}
-          <span class="meta">
-            <span class="name">{a.name}</span>
-            <span class="sub muted">{plays(a.playcount)}</span>
-          </span>
+          <span class="name">{a.name}</span>
+          <Sparkline
+            values={sparkSeries[a.name] ?? []}
+            ariaLabel={`Plays over time for ${a.name}`}
+          />
+          <span class="plays muted">{plays(a.playcount)}</span>
         </a>
       </li>
     ))}
@@ -157,8 +212,8 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 </section>
 
 <section class="container">
-  <h2>Top Albums</h2>
-  <ol class="shelf" id="top-albums" role="list">
+  <h2>Top Albums <span class="year-tag muted">· {year}</span></h2>
+  <ol class="grid" id="top-albums" role="list">
     {all.albums.map((a) => (
       <li>
         <a class="card" {...linkAttrs(a.link)}>
@@ -186,7 +241,7 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 </section>
 
 <section class="container">
-  <h2>Top Tracks</h2>
+  <h2>Top Tracks <span class="year-tag muted">· {year}</span></h2>
   <ol class="list" id="top-tracks" role="list">
     {all.tracks.map((t) => (
       <li>
@@ -204,13 +259,18 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
   </ol>
 </section>
 
-{isCurrentYear && <script type="application/json" id="listening-data" set:html={islandJson} />}
+<script type="application/json" id="listening-data" set:html={islandJson} />
 
 <script>
-  // Progressive enhancement: the page ships fully rendered for "All months";
-  // this script only swaps the three lists when the dropdown changes. On
-  // historical year pages neither the island nor the select exists, so it
-  // does nothing.
+  // Progressive enhancement. Year select navigates; month select (current
+  // year only) swaps the three lists from the island.
+  const yearSel = document.getElementById('year-select') as HTMLSelectElement | null;
+  if (yearSel) {
+    yearSel.addEventListener('change', () => {
+      if (yearSel.value) window.location.href = yearSel.value;
+    });
+  }
+
   type Img = { url: string; dominantColor: string } | null;
   type Item = {
     rank: number;
@@ -219,16 +279,14 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
     playcount: number;
     image: Img;
     link: string | null;
+    spark?: string;
   };
   type Month = { label: string; artists: Item[]; albums: Item[]; tracks: Item[] };
 
   const island = document.getElementById('listening-data');
-  const select = document.getElementById('month-select') as HTMLSelectElement | null;
+  const monthSel = document.getElementById('month-select') as HTMLSelectElement | null;
 
-  if (island?.textContent && select) {
-    // Server renders the select hidden so no-JS users never see an inert control.
-    select.hidden = false;
-
+  if (island?.textContent && monthSel) {
     const months: Month[] = JSON.parse(island.textContent);
 
     const esc = (s: string) =>
@@ -240,11 +298,20 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 
     const plays = (n: number) => `${n.toLocaleString('en-US')} ${n === 1 ? 'play' : 'plays'}`;
 
-    // alt="" — the item name is adjacent visible text inside the same anchor.
-    const img = (image: Img, cls: string, size: number) =>
+    const avatar = (image: Img) =>
       image
-        ? `<img class="${cls}" src="${esc(image.url)}" alt="" width="${size}" height="${size}" loading="lazy" decoding="async" style="background:${esc(image.dominantColor)}">`
-        : `<span class="${cls} placeholder" aria-hidden="true"></span>`;
+        ? `<img class="avatar" src="${esc(image.url)}" alt="" width="40" height="40" loading="lazy" decoding="async" style="background:${esc(image.dominantColor)}">`
+        : `<span class="avatar placeholder" aria-hidden="true"></span>`;
+
+    const cover = (image: Img) =>
+      image
+        ? `<img class="cover" src="${esc(image.url)}" alt="" width="160" height="160" loading="lazy" decoding="async" style="background:${esc(image.dominantColor)}">`
+        : `<span class="cover placeholder" aria-hidden="true"></span>`;
+
+    const spark = (a: Item) =>
+      a.spark
+        ? `<svg class="spark" viewBox="0 0 96 16" width="96" height="16" role="img" aria-label="Plays over time for ${esc(a.name)}" preserveAspectRatio="none" style="display:block;overflow:visible"><path d="${a.spark}" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        : '';
 
     const wrap = (link: string | null, cls: string, inner: string) =>
       `<a class="${cls}"${link ? ` href="${esc(link)}" target="_blank" rel="noopener"` : ''}>${inner}</a>`;
@@ -253,14 +320,14 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
       `<li>${wrap(
         a.link,
         'row',
-        `<span class="rank">${a.rank}</span>${img(a.image, 'thumb', 56)}<span class="meta"><span class="name">${esc(a.name)}</span><span class="sub muted">${plays(a.playcount)}</span></span>`
+        `<span class="rank">${a.rank}</span>${avatar(a.image)}<span class="name">${esc(a.name)}</span>${spark(a)}<span class="plays muted">${plays(a.playcount)}</span>`
       )}</li>`;
 
     const albumLi = (a: Item) =>
       `<li>${wrap(
         a.link,
         'card',
-        `${img(a.image, 'cover', 160)}<span class="name">${esc(a.name)}</span><span class="sub muted">${esc(a.detail)}</span>`
+        `${cover(a.image)}<span class="name">${esc(a.name)}</span><span class="sub muted">${esc(a.detail)}</span>`
       )}</li>`;
 
     const trackLi = (t: Item) =>
@@ -278,8 +345,8 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
         : '<li class="empty muted">No plays for this period.</li>';
     };
 
-    select.addEventListener('change', () => {
-      const m = months[Number(select.value)];
+    monthSel.addEventListener('change', () => {
+      const m = months[Number(monthSel.value)];
       if (!m) return;
       fill('top-artists', m.artists, artistLi);
       fill('top-albums', m.albums, albumLi);
@@ -289,46 +356,62 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
 </script>
 
 <style>
-  .genres {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0;
-    margin: 1.25rem 0 0;
-  }
-  .genre-chip {
-    background: var(--surface);
-    border-radius: 999px;
-    padding: 0.3rem 0.85rem;
-    font-size: 0.85rem;
-  }
-
   .container { max-width: 44rem; }
-  .head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
+  .head h1 { margin-bottom: 0.4rem; }
+  .summary {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--muted);
   }
-  .head h1 { margin-bottom: 0.5rem; }
+  .summary strong { color: var(--heading); font-weight: 600; }
 
-  #month-select {
+  /* Inline underlined dropdowns in the summary line */
+  .control {
+    position: relative;
+    display: inline-block;
+  }
+  .control select {
+    appearance: none;
+    -webkit-appearance: none;
     font: inherit;
-    font-size: 0.9rem;
-    color: var(--text);
-    background: var(--surface);
+    color: var(--heading);
+    background: transparent;
     border: 0;
-    border-radius: 6px;
-    padding: 0.4rem 0.7rem;
+    border-bottom: 1px solid var(--muted);
+    padding: 0 1.1em 1px 0.1em;
     cursor: pointer;
+    line-height: 1.3;
   }
-  #month-select:hover { color: var(--heading); }
+  .control::after {
+    content: '';
+    position: absolute;
+    right: 0.25em;
+    top: 50%;
+    width: 0.42em;
+    height: 0.42em;
+    border-right: 1.5px solid var(--muted);
+    border-bottom: 1.5px solid var(--muted);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .control select:hover { border-color: var(--heading); }
 
-  .chart { margin-top: 1.75rem; }
+  .chart { margin-top: 1.5rem; }
+  .chart-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.25rem 1rem 0.75rem;
+  }
+  .no-data { margin: 1rem 0 0; }
 
-  h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
+  h2 {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2.5rem 0 1rem;
+  }
+  h2 .year-tag { text-transform: none; letter-spacing: 0; font-weight: 400; }
 
   /* Ranked rows shared by artists and tracks */
   .list {
@@ -337,12 +420,11 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
     padding: 0;
     max-width: 44rem;
   }
-  .list :global(li + li) { border-top: 1px solid var(--surface); }
   .list :global(.row) {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.55rem 0;
+    padding: 0.5rem 0;
   }
   .list :global(a.row[href]:hover .name) { color: var(--accent); }
   .list :global(.rank) {
@@ -352,11 +434,11 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
-  .list :global(.thumb) {
+  .list :global(.avatar) {
     flex-shrink: 0;
-    width: 56px;
-    height: 56px;
-    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     object-fit: cover;
   }
   .list :global(.meta) {
@@ -364,27 +446,39 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
     flex-direction: column;
     min-width: 0;
   }
+  /* Artist rows: name takes the slack, sparkline + plays sit at the right */
+  .artists :global(.row) > :global(.name) {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .artists :global(.spark) {
+    flex: 0 0 auto;
+    width: 96px;
+    height: 16px;
+    color: var(--muted);
+  }
   .list :global(.plays) {
+    flex-shrink: 0;
     margin-left: auto;
     white-space: nowrap;
     font-size: 0.9rem;
   }
+  .artists :global(.plays) { margin-left: 0; width: 5.5rem; text-align: right; }
 
-  /* Horizontally scrollable album shelf */
-  .shelf {
+  /* Album grid */
+  .grid {
     list-style: none;
     margin: 0;
-    padding: 0 0 0.5rem;
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem 0.9rem;
   }
-  .shelf :global(li) { flex: 0 0 auto; width: 160px; }
-  .shelf :global(.card) { display: flex; flex-direction: column; }
-  .shelf :global(a.card[href]:hover .name) { color: var(--accent); }
-  .shelf :global(.cover) {
-    width: 160px;
-    height: 160px;
+  .grid :global(.card) { display: flex; flex-direction: column; }
+  .grid :global(a.card[href]:hover .name) { color: var(--accent); }
+  .grid :global(.cover) {
+    width: 100%;
+    aspect-ratio: 1;
     border-radius: 6px;
     object-fit: cover;
     margin-bottom: 0.4rem;
@@ -400,5 +494,10 @@ const islandJson = JSON.stringify(months).replace(/</g, '\\u003c');
   }
   section :global(.sub) { font-size: 0.85rem; }
   section :global(.placeholder) { display: block; background: var(--surface); }
-  section :global(.empty) { padding: 0.55rem 0; }
+  section :global(.empty) { padding: 0.55rem 0; list-style: none; }
+
+  @media (max-width: 34rem) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .artists :global(.spark) { width: 64px; }
+  }
 </style>

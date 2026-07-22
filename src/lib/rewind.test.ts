@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
   activityFigures,
+  buildArtistSparklines,
+  buildMonthlyStacks,
   fmtDuration,
   fmtWatchDate,
+  LISTENING_OTHER_COLOR,
+  LISTENING_RAMP,
   monthRanges,
+  sparklinePath,
   runningMonthlyPoints,
   shapeActivities,
   shapePlacesStats,
@@ -1005,5 +1010,74 @@ describe('yearHeadline', () => {
 
   it('throws when the rollup lacks a total', () => {
     expect(() => yearHeadline({ year: 2026 })).toThrow(/total_scrobbles/);
+  });
+});
+
+describe('buildMonthlyStacks', () => {
+  const artist = (name: string, playcount: number) => ({
+    rank: 1,
+    name,
+    detail: '',
+    playcount,
+    image: null,
+    link: null,
+  });
+
+  it('stacks top artists by ramp color and adds an Other segment for the tail', () => {
+    const jan = [artist('A', 100), artist('B', 60)];
+    const stacks = buildMonthlyStacks([jan], [200]); // total 200, named 160
+    const janStack = stacks[0];
+    expect(janStack.label).toBe('Jan');
+    expect(janStack.total).toBe(200);
+    expect(janStack.segments.map((s) => s.color)).toEqual([
+      LISTENING_RAMP[0],
+      LISTENING_RAMP[1],
+      LISTENING_OTHER_COLOR,
+    ]);
+    expect(janStack.segments.at(-1)).toMatchObject({ name: 'Other', value: 40 });
+  });
+
+  it('returns 12 months and leaves data-less months empty', () => {
+    const stacks = buildMonthlyStacks([], []);
+    expect(stacks).toHaveLength(12);
+    expect(stacks.every((s) => s.total === 0 && s.segments.length === 0)).toBe(true);
+    expect(stacks.map((s) => s.label)).toEqual([
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ]);
+  });
+
+  it('never clips its own data when segments exceed the reported total', () => {
+    const jan = [artist('A', 300)];
+    const stacks = buildMonthlyStacks([jan], [100]);
+    expect(stacks[0].total).toBe(300); // trusts the segment sum
+    expect(stacks[0].segments).toHaveLength(1); // no negative Other
+  });
+});
+
+describe('buildArtistSparklines', () => {
+  const a = (name: string, playcount: number) => ({
+    rank: 1, name, detail: '', playcount, image: null, link: null,
+  });
+
+  it('builds a 12-point monthly series per name, zero when absent', () => {
+    const monthly = [[a('X', 5)], undefined, [a('X', 9), a('Y', 2)]];
+    const series = buildArtistSparklines(monthly, ['X', 'Y']);
+    expect(series.X).toHaveLength(12);
+    expect(series.X.slice(0, 3)).toEqual([5, 0, 9]);
+    expect(series.Y.slice(0, 3)).toEqual([0, 0, 2]);
+  });
+});
+
+describe('sparklinePath', () => {
+  it('starts with a move command and stays within the box height', () => {
+    const d = sparklinePath([0, 10, 5, 20], 96, 16);
+    expect(d.startsWith('M ')).toBe(true);
+    const ys = [...d.matchAll(/[ML] [\d.]+,([\d.]+)/g)].map((m) => Number(m[1]));
+    expect(Math.min(...ys)).toBeGreaterThanOrEqual(0);
+    expect(Math.max(...ys)).toBeLessThanOrEqual(16);
+  });
+
+  it('renders a centered flat line for an empty series', () => {
+    expect(sparklinePath([], 96, 16)).toBe('M 0,8.00 L 96,8.00');
   });
 });

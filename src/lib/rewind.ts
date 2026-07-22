@@ -737,3 +737,120 @@ export function rewindFetch<T = unknown>(path: string): Promise<T> {
   );
   return fetchCache.get(path) as Promise<T>;
 }
+
+// --- Listening chart + sparkline helpers -----------------------------------
+// Pure transforms feeding the stacked monthly chart and per-artist sparklines.
+// Kept here (not in the .astro component) so they're unit-tested.
+
+/**
+ * Blue ramp for the stacked monthly chart, lightest (rank 1) to darkest. Eight
+ * shades (Tailwind blue-200..blue-900); artists past the eighth roll into a
+ * single darker "Other" segment. Matches the reference listening chart.
+ */
+export const LISTENING_RAMP = [
+  '#bfdbfe',
+  '#93c5fd',
+  '#60a5fa',
+  '#3b82f6',
+  '#2563eb',
+  '#1d4ed8',
+  '#1e40af',
+  '#1e3a8a',
+] as const;
+
+/** Darker-than-the-ramp fill for the "Other" (long-tail) segment. */
+export const LISTENING_OTHER_COLOR = '#1e3a5f';
+
+export interface StackSegment {
+  name: string;
+  value: number;
+  color: string;
+}
+
+export interface StackMonth {
+  /** Short month name, "Jan".."Dec". */
+  label: string;
+  /** Total plays that month (0 → a "ghost" month with no data yet). */
+  total: number;
+  /** Top-artist segments (ramp-colored) plus an optional trailing "Other". */
+  segments: StackSegment[];
+}
+
+/**
+ * Build the 12 stacked month rows. `monthlyArtists[m]` is that month's top
+ * artists (0 = Jan .. 11 = Dec; undefined/empty for months with no data);
+ * `monthlyTotals[m]` is the month's total plays. Each month stacks the top
+ * `LISTENING_RAMP.length` artists (colored by rank), then a single "Other"
+ * segment for the remaining plays so the bar length equals the month total.
+ */
+export function buildMonthlyStacks(
+  monthlyArtists: (TopItem[] | undefined)[],
+  monthlyTotals: number[]
+): StackMonth[] {
+  const topN = LISTENING_RAMP.length;
+  const out: StackMonth[] = [];
+  for (let m = 0; m < 12; m++) {
+    const artists = (monthlyArtists[m] ?? []).slice(0, topN);
+    const total = monthlyTotals[m] ?? 0;
+    const segments: StackSegment[] = artists.map((a, i) => ({
+      name: a.name,
+      value: a.playcount,
+      color: LISTENING_RAMP[i],
+    }));
+    const named = artists.reduce((sum, a) => sum + a.playcount, 0);
+    const other = Math.max(0, total - named);
+    if (other > 0) {
+      segments.push({ name: 'Other', value: other, color: LISTENING_OTHER_COLOR });
+    }
+    // If we somehow have artist data exceeding the reported total, trust the
+    // segment sum so the bar never clips its own data.
+    out.push({ label: MONTH_ABBREV[m], total: Math.max(total, named), segments });
+  }
+  return out;
+}
+
+/**
+ * Per-artist monthly play series for sparklines. For each name, returns a
+ * 12-length array (Jan..Dec) of that artist's plays, looked up from each
+ * month's top-artist list (0 when the artist isn't in that month's list).
+ */
+export function buildArtistSparklines(
+  monthlyArtists: (TopItem[] | undefined)[],
+  names: string[]
+): Record<string, number[]> {
+  const series: Record<string, number[]> = {};
+  for (const name of names) {
+    const arr: number[] = [];
+    for (let m = 0; m < 12; m++) {
+      const found = (monthlyArtists[m] ?? []).find((a) => a.name === name);
+      arr.push(found ? found.playcount : 0);
+    }
+    series[name] = arr;
+  }
+  return series;
+}
+
+/**
+ * SVG path `d` for a smoothed sparkline over `values`, fit to a `w`×`h` box.
+ * Quadratic segments through the points (higher value → higher on screen).
+ * Flat/empty series render as a centered horizontal line.
+ */
+export function sparklinePath(values: number[], w = 96, h = 16, pad = 1): string {
+  if (values.length === 0) return `M 0,${(h / 2).toFixed(2)} L ${w},${(h / 2).toFixed(2)}`;
+  const max = Math.max(1, ...values);
+  const n = values.length;
+  const x = (i: number) => (n === 1 ? w / 2 : (i / (n - 1)) * w);
+  const y = (v: number) => h - pad - (v / max) * (h - 2 * pad);
+  const pts = values.map((v, i) => [x(i), y(v)] as const);
+  let d = `M ${pts[0][0].toFixed(2)},${pts[0][1].toFixed(2)}`;
+  for (let i = 1; i < pts.length; i++) {
+    const [px, py] = pts[i - 1];
+    const [cx, cy] = pts[i];
+    const mx = (px + cx) / 2;
+    const my = (py + cy) / 2;
+    d += ` Q ${px.toFixed(2)},${py.toFixed(2)} ${mx.toFixed(2)},${my.toFixed(2)}`;
+  }
+  const last = pts[pts.length - 1];
+  d += ` L ${last[0].toFixed(2)},${last[1].toFixed(2)}`;
+  return d;
+}

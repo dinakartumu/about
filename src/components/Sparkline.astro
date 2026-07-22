@@ -1,0 +1,36 @@
+---
+/**
+ * Tiny inline SVG line sparkline for a numeric series (e.g. an artist's plays
+ * across the year). Build-time only, no client JS. Inherits color from
+ * currentColor so callers set it via CSS.
+ */
+import { sparklinePath } from '../lib/rewind';
+
+interface Props {
+  values: number[];
+  ariaLabel: string;
+  width?: number;
+  height?: number;
+}
+const { values, ariaLabel, width = 96, height = 16 } = Astro.props;
+const d = sparklinePath(values, width, height);
+---
+<svg
+  class="spark"
+  viewBox={`0 0 ${width} ${height}`}
+  width={width}
+  height={height}
+  role="img"
+  aria-label={ariaLabel}
+  preserveAspectRatio="none"
+>
+  <path d={d} fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+
+<style>
+  .spark {
+    display: block;
+    overflow: visible;
+    color: var(--muted);
+  }
+</style>
