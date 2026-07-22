@@ -250,6 +250,40 @@ export function shapeRecentWatches(json: ApiRecentWatchesResponse): RecentWatch[
   }));
 }
 
+export interface WatchedShow {
+  title: string;
+  year: number | null;
+  image: ShapedImage | null;
+  episodesWatched: number;
+  totalEpisodes: number;
+  tmdbUrl: string | null;
+}
+
+interface ApiShow {
+  id: number;
+  title: string;
+  year: number | null;
+  tmdb_id: number | null;
+  image: ApiImage | null;
+  total_episodes: number;
+  episodes_watched: number;
+}
+interface ApiShowsResponse {
+  data: ApiShow[];
+}
+
+export function shapeShows(json: ApiShowsResponse): WatchedShow[] {
+  if (!Array.isArray(json.data)) return [];
+  return json.data.map((s) => ({
+    title: s.title,
+    year: s.year,
+    image: shapeImage(s.image),
+    episodesWatched: s.episodes_watched,
+    totalEpisodes: s.total_episodes,
+    tmdbUrl: s.tmdb_id ? `https://www.themoviedb.org/tv/${s.tmdb_id}` : null,
+  }));
+}
+
 export interface WatchingStats {
   totalMovies: number;
   moviesThisYear: number;

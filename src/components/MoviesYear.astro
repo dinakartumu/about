@@ -15,11 +15,13 @@ import {
   MOVIES_PALETTE,
   rewindFetch,
   shapeRecentWatches,
+  shapeShows,
   shapeTrends,
   trendsFirstYear,
   wideTrendsPath,
   type RecentWatch,
   type StackMonth,
+  type WatchedShow,
 } from '../lib/rewind';
 import StackedMonthlyChart from './StackedMonthlyChart.astro';
 import MonthYearHeader from './MonthYearHeader.astro';
@@ -80,6 +82,17 @@ for (const bucket of genresJson.data) {
 const stacks: StackMonth[] = buildGenreStacks(monthlyGenres, countByMonth, MOVIES_PALETTE);
 const chartHasData = stacks.some((s) => s.total > 0);
 const monthsAvailable = year === currentYear ? now.getUTCMonth() + 1 : 12;
+
+// TV shows are tracked all-time (the API's /shows list isn't year-scoped), so
+// the section only appears on the current-year page — the movies landing.
+// Sorted by episodes watched, most-watched first.
+const isCurrent = year === currentYear;
+const shows: WatchedShow[] = isCurrent
+  ? shapeShows(await rewindFetch(`/v1/watching/shows?limit=100`))
+      .filter((s) => s.episodesWatched > 0)
+      .sort((a, b) => b.episodesWatched - a.episodesWatched)
+      .slice(0, 18)
+  : [];
 
 const linkAttrs = (link: string | null) =>
   link ? { href: link, target: '_blank', rel: 'noopener' } : {};
@@ -149,6 +162,41 @@ const linkAttrs = (link: string | null) =>
     {watches.length === 0 && <li class="empty muted">Nothing watched in {year}.</li>}
   </ol>
 </section>
+
+{shows.length > 0 && (
+  <section class="container">
+    <h2>TV Shows</h2>
+    <ol class="grid" role="list">
+      {shows.map((s) => (
+        <li>
+          <a class="tile" {...linkAttrs(s.tmdbUrl)}>
+            {s.image ? (
+              <img
+                class="poster"
+                src={s.image.url}
+                alt=""
+                width="200"
+                height="300"
+                loading="lazy"
+                decoding="async"
+                style={`background:${s.image.dominantColor}`}
+              />
+            ) : (
+              <span class="poster fallback">
+                <span class="title">{s.title}</span>
+              </span>
+            )}
+            <span class="title">
+              {s.title}
+              {s.year !== null && <span class="muted"> ({s.year})</span>}
+            </span>
+            <span class="sub muted">{s.episodesWatched} of {s.totalEpisodes} episodes</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+)}
 
 <style>
   .container { max-width: 44rem; }
