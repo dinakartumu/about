@@ -248,6 +248,7 @@ describe('shapeRecentWatches', () => {
       stars: '★★½☆☆',
       rating: 2.5,
       watchedDate: 'Watched Jul 19, 2026',
+      monthIndex: 6,
       tmdbUrl: 'https://www.themoviedb.org/movie/1628448',
       rewatch: false,
     });
@@ -745,6 +746,7 @@ describe('shapeActivities', () => {
     expect(runs[0]).toEqual({
       name: 'Afternoon Ride',
       date: 'Dec 26, 2016',
+      monthIndex: 11,
       distanceMi: 5.22,
       durationS: 2065,
       calories: 136.4,

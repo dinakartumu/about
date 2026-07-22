@@ -1,0 +1,172 @@
+---
+/**
+ * Shared header for the domain year pages (movies, places, activities): a
+ * title plus an inline "N <noun> in [year ▾] showing [month ▾]" summary, mirror
+ * of the listening header. The year select navigates; the month select and the
+ * stacked chart drive one shared selection.
+ *
+ * Coordination: the chart dispatches raw `chart:selectMonth` on a bar click;
+ * this header owns the selected-month state (toggling off on re-click), updates
+ * the headline count from `countByMonth`, and dispatches the resolved
+ * `chart:setMonth` that the chart (dimming) and the page (item filtering) both
+ * listen to.
+ */
+interface Props {
+  title: string;
+  basePath: string; // e.g. "/movies"
+  year: number;
+  years: number[]; // newest first
+  total: number; // all-months count
+  countByMonth: number[]; // length 12, calendar-indexed (0 = Jan)
+  nounSingular: string;
+  nounPlural: string;
+  /** How many months to offer (current year → up to current month). */
+  monthsAvailable: number;
+}
+const {
+  title,
+  basePath,
+  year,
+  years,
+  total,
+  countByMonth,
+  nounSingular,
+  nounPlural,
+  monthsAvailable,
+} = Astro.props;
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const newest = Math.max(...years);
+const hrefForYear = (y: number) => (y === newest ? basePath : `${basePath}/${y}/`);
+
+const noun = (n: number) => (n === 1 ? nounSingular : nounPlural);
+
+const config = JSON.stringify({
+  total,
+  countByMonth,
+  nounSingular,
+  nounPlural,
+}).replace(/</g, '\\u003c');
+---
+<section class="container head">
+  <h1>{title}</h1>
+  <p class="summary">
+    <strong id="chart-count">{total.toLocaleString('en-US')}</strong>{' '}
+    <span id="chart-noun">{noun(total)}</span> in{' '}
+    <span class="control">
+      <select id="year-select" aria-label="Year">
+        {years.map((y) => (
+          <option value={hrefForYear(y)} selected={y === year}>{y}</option>
+        ))}
+      </select>
+    </span>
+    {' '}showing{' '}
+    <span class="control">
+      <select id="month-select" aria-label="Filter by month">
+        <option value="">all months</option>
+        {MONTHS.slice(0, monthsAvailable).map((m, i) => (
+          <option value={i}>{m.toLowerCase()}</option>
+        ))}
+      </select>
+    </span>
+  </p>
+</section>
+
+<script type="application/json" id="chart-header-config" set:html={config} />
+
+<script>
+  const cfgEl = document.getElementById('chart-header-config');
+  const yearSel = document.getElementById('year-select') as HTMLSelectElement | null;
+  const monthSel = document.getElementById('month-select') as HTMLSelectElement | null;
+  const countEl = document.getElementById('chart-count');
+  const nounEl = document.getElementById('chart-noun');
+
+  if (cfgEl?.textContent && monthSel && countEl && nounEl) {
+    const cfg = JSON.parse(cfgEl.textContent) as {
+      total: number;
+      countByMonth: number[];
+      nounSingular: string;
+      nounPlural: string;
+    };
+
+    let selected: number | null = null;
+
+    const apply = (month: number | null) => {
+      selected = month;
+      monthSel.value = month == null ? '' : String(month);
+      const n = month == null ? cfg.total : (cfg.countByMonth[month] ?? 0);
+      countEl.textContent = n.toLocaleString('en-US');
+      nounEl.textContent = n === 1 ? cfg.nounSingular : cfg.nounPlural;
+      document.dispatchEvent(new CustomEvent('chart:setMonth', { detail: { month } }));
+    };
+
+    yearSel?.addEventListener('change', () => {
+      if (yearSel.value) window.location.href = yearSel.value;
+    });
+
+    monthSel.addEventListener('change', () => {
+      apply(monthSel.value === '' ? null : Number(monthSel.value));
+    });
+
+    // A bar click toggles: pick that month, or clear if it's already active.
+    document.addEventListener('chart:selectMonth', (e) => {
+      const month = (e as CustomEvent).detail?.month as number;
+      apply(selected === month ? null : month);
+    });
+  }
+</script>
+
+<style>
+  .container { max-width: 44rem; }
+  .head h1 { margin-bottom: 0.4rem; }
+  .summary {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+  .summary strong { color: var(--heading); font-weight: 600; }
+
+  .control {
+    position: relative;
+    display: inline-block;
+  }
+  .control select {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    color: var(--heading);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--muted);
+    padding: 0 1.1em 1px 0.1em;
+    cursor: pointer;
+    line-height: 1.3;
+  }
+  .control::after {
+    content: '';
+    position: absolute;
+    right: 0.25em;
+    top: 50%;
+    width: 0.42em;
+    height: 0.42em;
+    border-right: 1.5px solid var(--muted);
+    border-bottom: 1.5px solid var(--muted);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .control select:hover { border-color: var(--heading); }
+</style>

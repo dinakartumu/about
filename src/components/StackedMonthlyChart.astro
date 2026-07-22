@@ -6,7 +6,7 @@
  * "ghost" bars at the previous year's total, if available.
  *
  * Interactive (progressive enhancement): hovering a segment shows a
- * "GENRE: count" tooltip; clicking a month dispatches a `listening:selectMonth`
+ * "GENRE: count" tooltip; clicking a month dispatches a `chart:selectMonth`
  * event (the page filters to that month) and the chart dims the other months.
  */
 import type { StackMonth } from '../lib/rewind';
@@ -15,8 +15,9 @@ interface Props {
   months: StackMonth[]; // 12 entries, Jan..Dec
   ghostTotals?: number[]; // 12 entries, previous-year monthly totals
   ariaLabel: string;
+  caption?: string; // x-axis caption, e.g. "plays" / "films" / "check-ins"
 }
-const { months, ghostTotals = [], ariaLabel } = Astro.props;
+const { months, ghostTotals = [], ariaLabel, caption = 'plays' } = Astro.props;
 
 // viewBox geometry — scales to container width.
 const W = 620;
@@ -34,11 +35,16 @@ const rawMax = Math.max(
   ...months.map((m) => m.total),
   ...ghostTotals.filter((n) => Number.isFinite(n))
 );
-const STEPS = [100, 200, 250, 500, 1000, 2000, 5000];
-const step = STEPS.find((s) => rawMax / s <= 5) ?? 5000;
+// Nice axis scaled to the data's max: aim for ~5 ticks and pick a 1/2/5×10ⁿ
+// step, so small-count charts (a few plays/films a month) don't get rounded
+// up to a fixed 100 with the bars squished into a sliver.
+const rough = Math.max(rawMax / 5, 1);
+const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+const norm = rough / mag;
+const step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag;
 const niceMax = Math.ceil(rawMax / step) * step;
 const ticks: number[] = [];
-for (let t = 0; t <= niceMax; t += step) ticks.push(t);
+for (let t = 0; t <= niceMax + 1e-9; t += step) ticks.push(t);
 
 const xOf = (v: number) => LEFT + (v / niceMax) * PLOT_W;
 const rowY = (i: number) => TOP + i * ROW_H;
@@ -114,7 +120,7 @@ const rows = months.map((m, i) => {
     {ticks.map((t) => (
       <text class="xlabel" x={xOf(t)} y={TOP + months.length * ROW_H + 18}>{t}</text>
     ))}
-    <text class="caption" x={LEFT + PLOT_W / 2} y={H - 4}>plays</text>
+    <text class="caption" x={LEFT + PLOT_W / 2} y={H - 4}>{caption}</text>
   </svg>
   <div class="tip" id="chart-tip" role="status" hidden></div>
 </div>
@@ -156,12 +162,12 @@ const rows = months.map((m, i) => {
       const g = (e.target as Element).closest?.('.row.clickable') as SVGGElement | null;
       if (!g) return;
       const month = Number(g.getAttribute('data-month'));
-      document.dispatchEvent(new CustomEvent('listening:selectMonth', { detail: { month } }));
+      document.dispatchEvent(new CustomEvent('chart:selectMonth', { detail: { month } }));
     });
 
     // The page tells the chart which calendar month (0..11) is active so the
     // others dim; null clears the selection.
-    document.addEventListener('listening:highlightMonth', (e) => {
+    document.addEventListener('chart:setMonth', (e) => {
       const month = (e as CustomEvent).detail?.month as number | null;
       svg.querySelectorAll<SVGGElement>('.row').forEach((g) => {
         const i = Number(g.getAttribute('data-month'));

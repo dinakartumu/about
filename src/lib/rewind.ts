@@ -54,6 +54,7 @@ export interface RecentWatch {
   stars: string;
   rating: number | null;
   watchedDate: string;
+  monthIndex: number; // 0..11 (UTC), for the month filter
   tmdbUrl: string | null;
   rewatch: boolean;
 }
@@ -241,6 +242,7 @@ export function shapeRecentWatches(json: ApiRecentWatchesResponse): RecentWatch[
     stars: starsFor(entry.user_rating),
     rating: entry.user_rating != null ? entry.user_rating / 2 : null,
     watchedDate: fmtWatchDate(entry.watched_at),
+    monthIndex: new Date(entry.watched_at).getUTCMonth(),
     tmdbUrl: entry.movie.tmdb_id
       ? `https://www.themoviedb.org/movie/${entry.movie.tmdb_id}`
       : null,
@@ -595,6 +597,7 @@ export function runningMonthlyPoints(
 export interface RunActivity {
   name: string;
   date: string;
+  monthIndex: number; // 0..11 (UTC), for the monthly chart + month filter
   distanceMi: number;
   durationS: number;
   pace: string;
@@ -622,6 +625,7 @@ export function shapeActivities(json: ApiActivitiesResponse): RunActivity[] {
   return json.data.map((a) => ({
     name: a.name,
     date: fmtDate(a.date),
+    monthIndex: new Date(a.date).getUTCMonth(),
     distanceMi: a.distance_mi,
     durationS: a.duration_s,
     pace: a.pace,
@@ -761,6 +765,62 @@ export const LISTENING_RAMP = [
 /** Darker-than-the-ramp fill for the "Other" (long-tail) segment. */
 export const LISTENING_OTHER_COLOR = '#1e3a5f';
 
+/** A stacked-chart color palette: an 8-shade light→dark ramp + an Other fill. */
+export interface StackPalette {
+  ramp: readonly string[];
+  other: string;
+}
+
+export const LISTENING_PALETTE: StackPalette = {
+  ramp: LISTENING_RAMP,
+  other: LISTENING_OTHER_COLOR,
+};
+
+/** Trakt red — movies. */
+export const MOVIES_PALETTE: StackPalette = {
+  ramp: [
+    '#fbd2d4',
+    '#f5a0a4',
+    '#f06e74',
+    '#ed3c44',
+    '#ed1c24',
+    '#c4141b',
+    '#951015',
+    '#66090d',
+  ],
+  other: '#4d070a',
+};
+
+/** Swarm amber — places. */
+export const PLACES_PALETTE: StackPalette = {
+  ramp: [
+    '#ffeccc',
+    '#ffd699',
+    '#ffc266',
+    '#ffb84d',
+    '#ffa633',
+    '#e08a1e',
+    '#b36d13',
+    '#80490b',
+  ],
+  other: '#663a08',
+};
+
+/** Strava orange — activities. */
+export const ACTIVITIES_PALETTE: StackPalette = {
+  ramp: [
+    '#ffe2d4',
+    '#fdb999',
+    '#fc9366',
+    '#fc6e33',
+    '#fc4c02',
+    '#d63f02',
+    '#a63102',
+    '#732201',
+  ],
+  other: '#5c1b01',
+};
+
 export interface StackSegment {
   name: string;
   value: number;
@@ -790,9 +850,11 @@ export interface StackMonth {
  */
 export function buildGenreStacks(
   monthlyGenres: (Record<string, number> | undefined)[],
-  monthlyTotals: number[]
+  monthlyTotals: number[],
+  palette: StackPalette = LISTENING_PALETTE
 ): StackMonth[] {
-  const topN = LISTENING_RAMP.length;
+  const { ramp, other: otherColor } = palette;
+  const topN = ramp.length;
   const out: StackMonth[] = [];
   for (let m = 0; m < 12; m++) {
     const genres = monthlyGenres[m] ?? {};
@@ -805,7 +867,7 @@ export function buildGenreStacks(
     const segments: StackSegment[] = top.map(([name, value], i) => ({
       name,
       value,
-      color: LISTENING_RAMP[i],
+      color: ramp[i],
     }));
     const topSum = top.reduce((sum, [, v]) => sum + v, 0);
     const genreSum = named.reduce((sum, [, v]) => sum + v, 0) + (genres['Other'] ?? 0);
@@ -813,7 +875,7 @@ export function buildGenreStacks(
     const total = Math.max(monthlyTotals[m] ?? 0, genreSum);
     const otherValue = total - topSum;
     if (otherValue > 0) {
-      segments.push({ name: 'Other', value: otherValue, color: LISTENING_OTHER_COLOR });
+      segments.push({ name: 'Other', value: otherValue, color: otherColor });
     }
     out.push({ label: MONTH_ABBREV[m], total, segments });
   }

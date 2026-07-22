@@ -383,19 +383,21 @@ const islandJson = JSON.stringify(islandMonths).replace(/</g, '\\u003c');
       if (countEl) countEl.textContent = m.total.toLocaleString('en-US');
       if (nounEl) nounEl.textContent = m.total === 1 ? 'play' : 'plays';
       document.dispatchEvent(
-        new CustomEvent('listening:highlightMonth', { detail: { month: m.monthIndex } })
+        new CustomEvent('chart:setMonth', { detail: { month: m.monthIndex } })
       );
     };
 
     monthSel.addEventListener('change', () => applyMonth(Number(monthSel.value)));
 
-    // Clicking a chart bar selects that calendar month (0..11 → island index).
-    document.addEventListener('listening:selectMonth', (e) => {
+    // Clicking a chart bar selects that calendar month (0..11 → island index),
+    // or unselects it (back to "all months") when it's already the active one.
+    document.addEventListener('chart:selectMonth', (e) => {
       const month = (e as CustomEvent).detail?.month as number;
       const index = months.findIndex((mm) => mm.monthIndex === month);
       if (index < 0) return;
-      monthSel.value = String(index);
-      applyMonth(index);
+      const next = String(index) === monthSel.value ? 0 : index;
+      monthSel.value = String(next);
+      applyMonth(next);
     });
 
     // If the browser restored a non-default month (reload/bfcache), sync the
@@ -523,8 +525,8 @@ const islandJson = JSON.stringify(islandMonths).replace(/</g, '\\u003c');
     /* minmax(0, 1fr), not 1fr: a nowrap album name would otherwise set a huge
        min-content width on its column, making the columns uneven and the grid
        overflow. minmax(0,…) forces equal columns and lets names ellipsis. */
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 1rem 0.9rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.1rem 1rem;
   }
   .grid :global(li) { min-width: 0; }
   .grid :global(.card) { display: flex; flex-direction: column; }

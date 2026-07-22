@@ -1,13 +1,15 @@
 ---
 /**
- * One places year: headline, year switcher, monthly check-ins chart, and the
- * year's top categories/cities/venues (year-scoped /v1/places/stats via
- * from/to). Rendered by both /places (global all-time headline, current-year
- * top lists) and /places/{year} (year-scoped headline and lists).
+ * One places year: inline year/month header, a monthly check-ins chart stacked
+ * by venue category, and the year's top categories/cities/venues (year-scoped
+ * /v1/places/stats via from/to). Rendered by /places (current year) and
+ * /places/{year}. Clicking a chart bar (or the month dropdown) dims the other
+ * months; the header owns the selection. Places has no per-month item list, so
+ * only the chart reacts.
  *
- * The recent check-in list appears only on the index and the current-year
- * page — five entries. Historical years show just the headline, chart, and
- * the three top lists.
+ * The recent check-in list appears only on the current-year page — five
+ * entries. Historical years show just the header, chart, and the three top
+ * lists.
  *
  * A single wide trends probe — memoized across every places page — supplies
  * the first year with a check-in, the year navigation range, each year's
@@ -17,18 +19,20 @@
  * glyphs; they are inverted on the dark theme only (see the .icon rules).
  */
 import {
+  buildGenreStacks,
+  PLACES_PALETTE,
   rewindFetch,
   shapePlacesStats,
   shapeRecentCheckins,
   shapeTrends,
-  trendsAriaLabel,
   trendsFirstYear,
   wideTrendsPath,
   type PlacesStats,
   type RecentCheckin,
+  type StackMonth,
 } from '../lib/rewind';
-import BarChart from './BarChart.astro';
-import YearNav from './YearNav.astro';
+import StackedMonthlyChart from './StackedMonthlyChart.astro';
+import MonthYearHeader from './MonthYearHeader.astro';
 
 type StatsJson = Parameters<typeof shapePlacesStats>[0];
 type RecentJson = Parameters<typeof shapeRecentCheckins>[0];
@@ -36,9 +40,8 @@ type TrendsJson = Parameters<typeof shapeTrends>[0];
 
 interface Props {
   year: number;
-  global?: boolean;
 }
-const { year, global: isGlobal = false } = Astro.props;
+const { year } = Astro.props;
 
 const now = new Date();
 const currentYear = now.getUTCFullYear();
@@ -52,55 +55,79 @@ const trendPoints = shapeTrends(trends, year, now);
 const yearCheckinCount = trendPoints.reduce((sum, p) => sum + p.value, 0);
 
 const n = (v: number) => Math.round(v).toLocaleString('en-US');
-const checkinNoun = (count: number) => (count === 1 ? 'check-in' : 'check-ins');
 
-// Any failure throws and fails the build — never publish a page with
-// missing sections. Empty years skip the year-scoped fetches entirely.
-let headline: string;
-if (isGlobal) {
-  // The index headline stays global all-time; only the top lists below are
-  // scoped to the current year.
-  const allTime = shapePlacesStats(await rewindFetch<StatsJson>('/v1/places/stats'));
-  headline = `${n(allTime.total)} Check-ins · ${n(allTime.uniqueVenues)} Venues · ${n(allTime.thisYear)} This Year`;
-} else if (yearCheckinCount > 0) {
-  headline = `${n(yearCheckinCount)} ${checkinNoun(yearCheckinCount)} in ${year}`;
-} else {
-  headline = `No check-ins in ${year}`;
-}
+// Per-month check-in counts (drive the header count + chart bar length),
+// indexed Jan(0)..Dec(11) from the year's trend points.
+const countByMonth: number[] = Array.from({ length: 12 }, (_, m) => trendPoints[m]?.value ?? 0);
+const total = countByMonth.reduce((sum, v) => sum + v, 0);
 
 // Millisecond-precision bounds: the API compares timestamp strings, and the
 // stored values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z"
 // and would drop check-ins logged at midnight on Jan 1.
 const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00.000Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59.999Z`)}`;
 
-// Year-scoped top lists on every page (the index uses the current year's
-// range too). Years without check-ins render the empty-list fallbacks.
+// Per-month venue-CATEGORY breakdown for the stacked chart. One call keyed
+// "YYYY-MM" with a category→count map; sliced to the rendered year and indexed
+// by calendar month (0 = Jan .. 11 = Dec).
+type CategoriesJson = {
+  data: { period: string; categories: Record<string, number>; total: number }[];
+};
+const categoriesJson = await rewindFetch<CategoriesJson>(
+  `/v1/places/categories?${yearQuery}&limit=8`
+);
+const monthlyCategories: (Record<string, number> | undefined)[] = new Array(12);
+for (const bucket of categoriesJson.data) {
+  if (!bucket.period.startsWith(`${year}-`)) continue;
+  const m = Number(bucket.period.slice(5, 7)) - 1;
+  if (m >= 0 && m <= 11) monthlyCategories[m] = bucket.categories;
+}
+const monthlyTotals: number[] = Array.from({ length: 12 }, (_, m) => trendPoints[m]?.value ?? 0);
+const stacks: StackMonth[] = buildGenreStacks(monthlyCategories, monthlyTotals, PLACES_PALETTE);
+const chartHasData = stacks.some((s) => s.total > 0);
+const monthsAvailable = year === currentYear ? now.getUTCMonth() + 1 : 12;
+
+// Year-scoped top lists on every page. Years without check-ins render the
+// empty-list fallbacks.
 const stats: PlacesStats | null =
-  isGlobal || yearCheckinCount > 0
+  yearCheckinCount > 0
     ? shapePlacesStats(await rewindFetch<StatsJson>(`/v1/places/stats?${yearQuery}`))
     : null;
 
-// The recent list only appears on the index and the current-year page.
-const showRecent = isGlobal || year === currentYear;
-const listPath = isGlobal
-  ? '/v1/places/recent?limit=5'
-  : `/v1/places/recent?${yearQuery}&limit=5`;
+// The recent list only appears on the current-year page.
+const showRecent = year === currentYear;
 const checkins: RecentCheckin[] =
-  showRecent && (isGlobal || yearCheckinCount > 0)
-    ? shapeRecentCheckins(await rewindFetch<RecentJson>(listPath))
+  showRecent && yearCheckinCount > 0
+    ? shapeRecentCheckins(
+        await rewindFetch<RecentJson>(`/v1/places/recent?${yearQuery}&limit=5`)
+      )
     : [];
 
-const listHeading = isGlobal ? 'Recent Check-ins' : `Recent Check-ins in ${year}`;
-const emptyText = isGlobal ? 'No check-ins yet.' : `No check-ins in ${year}.`;
+const listHeading = `Recent Check-ins in ${year}`;
+const emptyText = `No check-ins in ${year}.`;
 ---
-<section class="container head">
-  <h1>{headline}</h1>
-  <YearNav basePath="/places" years={years} current={year} />
-</section>
+<MonthYearHeader
+  title="Places"
+  basePath="/places"
+  year={year}
+  years={years}
+  total={total}
+  countByMonth={countByMonth}
+  nounSingular="check-in"
+  nounPlural="check-ins"
+  monthsAvailable={monthsAvailable}
+/>
 
-<section class="container chart">
-  <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'check-ins')} />
-</section>
+{chartHasData && (
+  <section class="container chart">
+    <div class="chart-card">
+      <StackedMonthlyChart
+        months={stacks}
+        caption="check-ins"
+        ariaLabel={`Check-ins per month in ${year}, by category`}
+      />
+    </div>
+  </section>
+)}
 
 {showRecent && (
   <section class="container">
@@ -188,9 +215,13 @@ const emptyText = isGlobal ? 'No check-ins yet.' : `No check-ins in ${year}.`;
 
 <style>
   .container { max-width: 44rem; }
-  .head h1 { margin-bottom: 0.5rem; }
 
   .chart { margin-top: 1.75rem; }
+  .chart-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.25rem 1rem 0.75rem;
+  }
 
   h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
 

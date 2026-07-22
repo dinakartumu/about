@@ -1,41 +1,36 @@
 ---
 /**
- * One movies year: headline, year switcher, monthly-watches chart, and the
- * poster grid. Rendered by both /movies (global headline, recent 24-tile
- * grid) and /movies/{year} (year-scoped headline and every film of the year).
+ * One movies year: inline year/month header, a monthly-watches chart stacked by
+ * genre, and the poster grid. Rendered by /movies (current year) and
+ * /movies/{year}. Clicking a chart bar (or the month dropdown) filters the grid
+ * to that month; the header owns the selection and dims the other months.
  *
- * A single wide trends probe — memoized across every movies page — supplies
- * the first year with a watch, the year navigation range, and each year's
- * chart, so year pages only add the rollup headline and their poster grid.
- *
- * Year grids show the complete year: /v1/watching/recent caps limit at 50
- * and returns no pagination envelope, so the build walks page=1.. until a
- * short page arrives (the busiest year is ~200 films, so a handful of pages).
+ * A single wide trends probe — memoized across every movies page — supplies the
+ * first year with a watch and the year navigation range. The grid shows the
+ * complete year: /v1/watching/recent caps limit at 50 and returns no pagination
+ * envelope, so the build walks page=1.. until a short page arrives.
  */
 import {
+  buildGenreStacks,
+  MOVIES_PALETTE,
   rewindFetch,
   shapeRecentWatches,
   shapeTrends,
-  shapeWatchingStats,
-  shapeWatchingYear,
-  trendsAriaLabel,
   trendsFirstYear,
   wideTrendsPath,
   type RecentWatch,
+  type StackMonth,
 } from '../lib/rewind';
-import BarChart from './BarChart.astro';
-import YearNav from './YearNav.astro';
+import StackedMonthlyChart from './StackedMonthlyChart.astro';
+import MonthYearHeader from './MonthYearHeader.astro';
 
-type StatsJson = Parameters<typeof shapeWatchingStats>[0];
 type RecentJson = Parameters<typeof shapeRecentWatches>[0];
 type TrendsJson = Parameters<typeof shapeTrends>[0];
-type YearJson = Parameters<typeof shapeWatchingYear>[0];
 
 interface Props {
   year: number;
-  global?: boolean;
 }
-const { year, global: isGlobal = false } = Astro.props;
+const { year } = Astro.props;
 
 const now = new Date();
 const currentYear = now.getUTCFullYear();
@@ -48,34 +43,15 @@ for (let y = currentYear; y >= firstYear; y--) years.push(y);
 const trendPoints = shapeTrends(trends, year, now);
 const yearWatchCount = trendPoints.reduce((sum, p) => sum + p.value, 0);
 
-const n = (v: number) => Math.round(v).toLocaleString('en-US');
-const films = (count: number) => `${n(count)} ${count === 1 ? 'film' : 'films'}`;
-
-// Any failure throws and fails the build — never publish a page with
-// missing sections. Empty years skip their rollup and grid fetches (the
-// rollup 404s when a year has no watches).
-let headline: string;
-if (isGlobal) {
-  const stats = shapeWatchingStats(await rewindFetch<StatsJson>('/v1/watching/stats'));
-  headline = `${n(stats.totalMovies)} Films · ${n(stats.moviesThisYear)} This Year · ${n(stats.totalHours)} Hours`;
-} else if (yearWatchCount > 0) {
-  const rollup = shapeWatchingYear(await rewindFetch<YearJson>(`/v1/watching/year/${year}`));
-  headline = `${films(rollup.totalMovies)} in ${year}`;
-} else {
-  headline = `No films in ${year}`;
-}
-
-// Millisecond-precision bounds: the API compares timestamp strings, and the
-// stored values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z"
-// and would drop watches logged at midnight on Jan 1.
+// Millisecond-precision bounds: the API compares timestamp strings and stored
+// values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z" and
+// would drop watches logged at midnight on Jan 1.
 const yearQuery = `from=${encodeURIComponent(`${year}-01-01T00:00:00.000Z`)}&to=${encodeURIComponent(`${year}-12-31T23:59:59.999Z`)}`;
-const PAGE_LIMIT = 50; // the API's hard cap on /v1/watching/recent
-const MAX_PAGES = 20; // safety stop well past the busiest year (~200 films)
+const PAGE_LIMIT = 50;
+const MAX_PAGES = 20;
 
 const watches: RecentWatch[] = [];
-if (isGlobal) {
-  watches.push(...shapeRecentWatches(await rewindFetch<RecentJson>('/v1/watching/recent?limit=24')));
-} else if (yearWatchCount > 0) {
+if (yearWatchCount > 0) {
   for (let page = 1; page <= MAX_PAGES; page++) {
     const batch = shapeRecentWatches(
       await rewindFetch<RecentJson>(
@@ -87,26 +63,58 @@ if (isGlobal) {
   }
 }
 
-const gridHeading = isGlobal ? 'Recently Watched' : `Watched in ${year}`;
-const emptyText = isGlobal ? 'Nothing watched yet.' : `Nothing watched in ${year}.`;
+// Per-month watch counts (drive the header count + the chart bar length) and
+// per-month genre breakdown (chart segments).
+const countByMonth: number[] = new Array(12).fill(0);
+for (const w of watches) if (w.monthIndex >= 0 && w.monthIndex <= 11) countByMonth[w.monthIndex]++;
+
+type GenresJson = { data: { period: string; genres: Record<string, number>; total: number }[] };
+const genresJson = await rewindFetch<GenresJson>(`/v1/watching/genres?${yearQuery}&limit=8`);
+const monthlyGenres: (Record<string, number> | undefined)[] = new Array(12);
+for (const bucket of genresJson.data) {
+  if (!bucket.period.startsWith(`${year}-`)) continue;
+  const m = Number(bucket.period.slice(5, 7)) - 1;
+  if (m >= 0 && m <= 11) monthlyGenres[m] = bucket.genres;
+}
+
+const stacks: StackMonth[] = buildGenreStacks(monthlyGenres, countByMonth, MOVIES_PALETTE);
+const chartHasData = stacks.some((s) => s.total > 0);
+const monthsAvailable = year === currentYear ? now.getUTCMonth() + 1 : 12;
 
 const linkAttrs = (link: string | null) =>
   link ? { href: link, target: '_blank', rel: 'noopener' } : {};
 ---
-<section class="container head">
-  <h1>{headline}</h1>
-  <YearNav basePath="/movies" years={years} current={year} />
-</section>
+<MonthYearHeader
+  title="Movies"
+  basePath="/movies"
+  year={year}
+  years={years}
+  total={watches.length}
+  countByMonth={countByMonth}
+  nounSingular="film"
+  nounPlural="films"
+  monthsAvailable={monthsAvailable}
+/>
 
 <section class="container chart">
-  <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'movies')} />
+  {chartHasData ? (
+    <div class="chart-card">
+      <StackedMonthlyChart
+        months={stacks}
+        caption="films"
+        ariaLabel={`Movies watched per month in ${year}, by genre`}
+      />
+    </div>
+  ) : (
+    <p class="muted no-data">No films in {year}.</p>
+  )}
 </section>
 
 <section class="container">
-  <h2>{gridHeading}</h2>
+  <h2>Watched · {year}</h2>
   <ol class="grid" role="list">
     {watches.map((m) => (
-      <li>
+      <li data-month={m.monthIndex}>
         <a class="tile" {...linkAttrs(m.tmdbUrl)}>
           {m.image ? (
             <img
@@ -138,18 +146,30 @@ const linkAttrs = (link: string | null) =>
         </a>
       </li>
     ))}
-    {watches.length === 0 && <li class="empty muted">{emptyText}</li>}
+    {watches.length === 0 && <li class="empty muted">Nothing watched in {year}.</li>}
   </ol>
 </section>
 
 <style>
   .container { max-width: 44rem; }
-  .head h1 { margin-bottom: 0.5rem; }
 
-  .chart { margin-top: 1.75rem; }
+  .chart { margin-top: 1.5rem; }
+  .chart-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.25rem 1rem 0.75rem;
+  }
+  .no-data { margin: 1rem 0 0; }
 
-  h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
+  h2 {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2.5rem 0 1rem;
+  }
 
+  .grid :global(li.hidden) { display: none; }
   .grid {
     list-style: none;
     margin: 0;
@@ -171,7 +191,6 @@ const linkAttrs = (link: string | null) =>
     margin-bottom: 0.4rem;
   }
 
-  /* Title card shown while a poster is still processing (image null). */
   .fallback {
     display: flex;
     flex-direction: column;
@@ -201,3 +220,16 @@ const linkAttrs = (link: string | null) =>
   .sub { font-size: 0.85rem; }
   .empty { padding: 0.55rem 0; }
 </style>
+
+<script>
+  // The header resolves month selection and dispatches `chart:setMonth`; filter
+  // the poster grid to that month (show all when null).
+  const tiles = Array.from(document.querySelectorAll<HTMLLIElement>('.grid > li[data-month]'));
+  document.addEventListener('chart:setMonth', (e) => {
+    const month = (e as CustomEvent).detail?.month as number | null;
+    for (const li of tiles) {
+      const m = Number(li.getAttribute('data-month'));
+      li.classList.toggle('hidden', month != null && m !== month);
+    }
+  });
+</script>

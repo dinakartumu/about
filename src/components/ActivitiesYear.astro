@@ -1,51 +1,45 @@
 ---
 /**
- * One activities year: headline, year switcher, monthly-runs chart, and the
- * activity list — each row carries a circular sport-glyph chip, GPS
- * activities add a small route thumbnail after it (rows without a route
- * keep the plain chip+name layout), the sub line joins the date with the
- * activity's city/state, and the figures adapt to the sport: distance
- * sports show miles (plus pace for runs), stationary sports show duration
- * and calories. Rendered by both
- * /activities (global lifetime headline, recent 20) and /activities/{year}
- * (year-scoped headline and every activity of the year).
+ * One activities year: inline year/month header, a monthly-activities chart
+ * stacked by sport type, and the activity list — each row carries a circular
+ * sport-glyph chip, GPS activities add a small route thumbnail after it (rows
+ * without a route keep the plain chip+name layout), the sub line joins the
+ * date with the activity's city/state, and the figures adapt to the sport:
+ * distance sports show miles (plus pace for runs), stationary sports show
+ * duration and calories. Rendered by /activities (current year) and
+ * /activities/{year}. Clicking a chart bar (or the month dropdown) filters the
+ * list to that month; the header owns the selection and dims the other months.
  *
  * /v1/running/stats/years — one memoized call — lists every year that has
  * activities; a year absent from it renders its empty state without touching
  * the per-year endpoints (the year rollup 404s when a year has no runs). The
  * Strava backfill is still importing history, so empty years are expected.
  *
- * Year pages list the complete year: /v1/running/activities caps limit at
- * 100 and returns a pagination envelope, so the build walks page=1.. until a
- * short page arrives (the busiest year is ~150 activities, so 1-2 pages).
+ * The grid shows the complete year: /v1/running/activities caps limit at 100
+ * and returns a pagination envelope, so the build walks page=1.. until a short
+ * page arrives (the busiest year is ~150 activities, so 1-2 pages).
  */
 import {
   activityFigures,
-  fmtDuration,
+  buildGenreStacks,
+  ACTIVITIES_PALETTE,
   rewindFetch,
-  runningMonthlyPoints,
   shapeActivities,
-  shapeRunningStats,
   shapeRunningYears,
-  shapeTrends,
-  trendsAriaLabel,
   type RunActivity,
-  type TrendPoint,
+  type StackMonth,
 } from '../lib/rewind';
-import BarChart from './BarChart.astro';
 import SportIcon from './SportIcon.astro';
-import YearNav from './YearNav.astro';
+import StackedMonthlyChart from './StackedMonthlyChart.astro';
+import MonthYearHeader from './MonthYearHeader.astro';
 
-type StatsJson = Parameters<typeof shapeRunningStats>[0];
 type YearsJson = Parameters<typeof shapeRunningYears>[0];
-type RollupJson = Parameters<typeof runningMonthlyPoints>[0];
 type ActivitiesJson = Parameters<typeof shapeActivities>[0];
 
 interface Props {
   year: number;
-  global?: boolean;
 }
-const { year, global: isGlobal = false } = Astro.props;
+const { year } = Astro.props;
 
 const now = new Date();
 const currentYear = now.getUTCFullYear();
@@ -57,8 +51,6 @@ for (let y = currentYear; y >= firstYear; y--) years.push(y);
 
 const summary = summaries.find((s) => s.year === year) ?? null;
 
-const n = (v: number) => Math.round(v).toLocaleString('en-US');
-
 // Millisecond-precision bounds: the API compares timestamp strings, and the
 // stored values carry milliseconds — "T00:00:00Z" sorts after "T00:00:00.000Z"
 // and would drop activities logged at midnight on Jan 1.
@@ -67,81 +59,70 @@ const PAGE_LIMIT = 100; // the API's hard cap on /v1/running/activities
 const MAX_PAGES = 30; // safety stop well past the busiest year (~150 activities)
 
 // Any failure throws and fails the build — never publish a page with
-// missing sections. Years without activities skip the rollup and list
-// fetches. The global page shows the current year's 20 most recent; year
+// missing sections. Years without activities skip the list fetches. Year
 // pages walk the pagination envelope for the complete year.
-let trendPoints: TrendPoint[] = shapeTrends({ data: [] }, year, now);
 const runs: RunActivity[] = [];
 if (summary) {
-  trendPoints = runningMonthlyPoints(
-    await rewindFetch<RollupJson>(`/v1/running/year/${year}`),
-    year,
-    now
-  );
-  if (isGlobal) {
-    runs.push(
-      ...shapeActivities(
-        await rewindFetch<ActivitiesJson>(`/v1/running/activities?${yearQuery}&limit=20`)
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const batch = shapeActivities(
+      await rewindFetch<ActivitiesJson>(
+        `/v1/running/activities?${yearQuery}&limit=${PAGE_LIMIT}&page=${page}`
       )
     );
-  } else {
-    for (let page = 1; page <= MAX_PAGES; page++) {
-      const batch = shapeActivities(
-        await rewindFetch<ActivitiesJson>(
-          `/v1/running/activities?${yearQuery}&limit=${PAGE_LIMIT}&page=${page}`
-        )
-      );
-      runs.push(...batch);
-      if (batch.length < PAGE_LIMIT) break;
-    }
+    runs.push(...batch);
+    if (batch.length < PAGE_LIMIT) break;
   }
 }
 
-// The year headline counts every fetched activity — the year summary's
-// total_runs only counts run-type sports, which undercounts gym-heavy years.
-let headline: string;
-let subline: string | null = null;
-if (isGlobal) {
-  const stats = shapeRunningStats(await rewindFetch<StatsJson>('/v1/running/stats'));
-  const parts = [
-    `${n(stats.totalActivities)} Activities`,
-    `${n(stats.totalMiles)} Miles`,
-    `${n(stats.totalDurationS / 3600)} Hours`,
-  ];
-  headline = parts.join(' · ');
-} else if (summary) {
-  headline = `${n(runs.length)} ${runs.length === 1 ? 'activity' : 'activities'} in ${year}`;
-  const parts = [`${n(summary.totalMiles)} ${summary.totalMiles === 1 ? 'mile' : 'miles'}`];
-  parts.push(fmtDuration(summary.totalDurationS));
-  if (summary.avgPace) parts.push(`${summary.avgPace} avg pace`);
-  subline = parts.join(' · ');
-} else {
-  headline = `No activities in ${year}`;
+// Per-month sport breakdown → stacked chart, and per-month counts → header
+// count (computed client-side from the full-year activity list; no API
+// endpoint needed).
+const monthlySport: Record<string, number>[] = Array.from({ length: 12 }, () => ({}));
+const countByMonth: number[] = new Array(12).fill(0);
+for (const r of runs) {
+  const monthIndex = r.monthIndex;
+  if (monthIndex < 0 || monthIndex > 11) continue;
+  monthlySport[monthIndex][r.sport] = (monthlySport[monthIndex][r.sport] ?? 0) + 1;
+  countByMonth[monthIndex] += 1;
 }
-
-const listHeading = isGlobal ? 'Recent Activities' : `Activities in ${year}`;
-const emptyText = isGlobal ? 'No activities yet this year.' : `No activities in ${year}.`;
+const stacks: StackMonth[] = buildGenreStacks(monthlySport, countByMonth, ACTIVITIES_PALETTE);
+const chartHasData = stacks.some((s) => s.total > 0);
+const monthsAvailable = year === currentYear ? now.getUTCMonth() + 1 : 12;
 
 const linkAttrs = (link: string | null) =>
   link ? { href: link, target: '_blank', rel: 'noopener' } : {};
 ---
-<section class="container head">
-  <div>
-    <h1>{headline}</h1>
-    {subline && <p class="subline muted">{subline}</p>}
-    <YearNav basePath="/activities" years={years} current={year} />
-  </div>
-</section>
+<MonthYearHeader
+  title="Activities"
+  basePath="/activities"
+  year={year}
+  years={years}
+  total={runs.length}
+  countByMonth={countByMonth}
+  nounSingular="activity"
+  nounPlural="activities"
+  monthsAvailable={monthsAvailable}
+/>
 
 <section class="container chart">
-  <BarChart points={trendPoints} ariaLabel={trendsAriaLabel(trendPoints, 'runs')} />
+  {chartHasData ? (
+    <div class="chart-card">
+      <StackedMonthlyChart
+        months={stacks}
+        caption="activities"
+        ariaLabel={`Activities per month in ${year}, by type`}
+      />
+    </div>
+  ) : (
+    <p class="muted no-data">No activities in {year}.</p>
+  )}
 </section>
 
 <section class="container">
-  <h2>{listHeading}</h2>
+  <h2>Activities · {year}</h2>
   <ol class="list" role="list">
     {runs.map((r) => (
-      <li>
+      <li data-month={r.monthIndex}>
         <a class="row" {...linkAttrs(r.stravaUrl)}>
           <span class="meta">
             <span class="name-row">
@@ -166,7 +147,7 @@ const linkAttrs = (link: string | null) =>
         </a>
       </li>
     ))}
-    {runs.length === 0 && <li class="empty muted">{emptyText}</li>}
+    {runs.length === 0 && <li class="empty muted">No activities in {year}.</li>}
   </ol>
 </section>
 
@@ -187,15 +168,23 @@ const linkAttrs = (link: string | null) =>
     border-radius: 6px;
   }
 
-  .head h1 { margin-bottom: 0.5rem; }
-  .subline {
-    margin: 0 0 0.5rem;
-    font-size: 0.95rem;
+  .chart { margin-top: 1.5rem; }
+  .chart-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.25rem 1rem 0.75rem;
   }
+  .no-data { margin: 1rem 0 0; }
 
-  .chart { margin-top: 1.75rem; }
+  .list li.hidden { display: none; }
 
-  h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
+  h2 {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2.5rem 0 1rem;
+  }
 
   .list {
     list-style: none;
@@ -235,3 +224,16 @@ const linkAttrs = (link: string | null) =>
 
   .empty { padding: 0.55rem 0; }
 </style>
+
+<script>
+  // The header resolves month selection and dispatches `chart:setMonth`; filter
+  // the activity list to that month (show all when null).
+  const rows = Array.from(document.querySelectorAll<HTMLLIElement>('.list > li[data-month]'));
+  document.addEventListener('chart:setMonth', (e) => {
+    const month = (e as CustomEvent).detail?.month as number | null;
+    for (const li of rows) {
+      const m = Number(li.getAttribute('data-month'));
+      li.classList.toggle('hidden', month != null && m !== month);
+    }
+  });
+</script>
