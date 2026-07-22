@@ -1,9 +1,13 @@
 ---
 /**
  * Build-time inline SVG horizontal stacked bar chart of monthly plays, one row
- * per month (Jan..Dec). Each bar is stacked by that month's top artists (blue
+ * per month (Jan..Dec). Each bar is stacked by that month's top genres (blue
  * ramp) plus an "Other" segment. Months with no plays yet render as faint
- * "ghost" bars at the previous year's total, if available. No client JS.
+ * "ghost" bars at the previous year's total, if available.
+ *
+ * Interactive (progressive enhancement): hovering a segment shows a
+ * "GENRE: count" tooltip; clicking a month dispatches a `listening:selectMonth`
+ * event (the page filters to that month) and the chart dims the other months.
  */
 import type { StackMonth } from '../lib/rewind';
 
@@ -25,7 +29,6 @@ const PLOT_W = W - LEFT - RIGHT;
 const H = TOP + months.length * ROW_H + AXIS;
 const BAR_H = ROW_H * 0.6;
 
-// Nice x-axis max + tick step from the largest value shown (current or ghost).
 const rawMax = Math.max(
   1,
   ...months.map((m) => m.total),
@@ -40,66 +43,138 @@ for (let t = 0; t <= niceMax; t += step) ticks.push(t);
 const xOf = (v: number) => LEFT + (v / niceMax) * PLOT_W;
 const rowY = (i: number) => TOP + i * ROW_H;
 
-interface Rect {
+interface Seg {
   x: number;
   w: number;
   fill: string;
   ghost: boolean;
+  label: string;
+  value: number;
 }
 const rows = months.map((m, i) => {
   const y = rowY(i) + (ROW_H - BAR_H) / 2;
-  const rects: Rect[] = [];
+  const segs: Seg[] = [];
   if (m.total > 0) {
     let cx = LEFT;
     for (const seg of m.segments) {
       const w = (seg.value / niceMax) * PLOT_W;
-      rects.push({ x: cx, w, fill: seg.color, ghost: false });
+      segs.push({ x: cx, w, fill: seg.color, ghost: false, label: seg.name, value: seg.value });
       cx += w;
     }
   } else if ((ghostTotals[i] ?? 0) > 0) {
-    rects.push({ x: LEFT, w: (ghostTotals[i] / niceMax) * PLOT_W, fill: '', ghost: true });
+    segs.push({
+      x: LEFT,
+      w: (ghostTotals[i] / niceMax) * PLOT_W,
+      fill: '',
+      ghost: true,
+      label: '',
+      value: 0,
+    });
   }
-  return { label: m.label, y, cy: rowY(i) + ROW_H / 2, rects };
+  return { label: m.label, y, cy: rowY(i) + ROW_H / 2, total: m.total, segs };
 });
 ---
-<svg
-  class="chart"
-  viewBox={`0 0 ${W} ${H}`}
-  role="img"
-  aria-label={ariaLabel}
-  preserveAspectRatio="xMidYMid meet"
->
-  <!-- vertical gridlines -->
-  {ticks.map((t) => (
-    <line class="grid" x1={xOf(t)} x2={xOf(t)} y1={TOP} y2={TOP + months.length * ROW_H} />
-  ))}
+<div class="chart-wrap">
+  <svg
+    class="chart"
+    viewBox={`0 0 ${W} ${H}`}
+    role="img"
+    aria-label={ariaLabel}
+    preserveAspectRatio="xMidYMid meet"
+  >
+    {ticks.map((t) => (
+      <line class="grid" x1={xOf(t)} x2={xOf(t)} y1={TOP} y2={TOP + months.length * ROW_H} />
+    ))}
 
-  <!-- rows -->
-  {rows.map((r) => (
-    <>
-      <text class="ylabel" x={LEFT - 10} y={r.cy}>{r.label}</text>
-      {r.rects.map((rect) => (
-        <rect
-          class={rect.ghost ? 'bar ghost' : 'bar'}
-          x={rect.x}
-          y={r.y}
-          width={Math.max(0, rect.w)}
-          height={BAR_H}
-          fill={rect.ghost ? undefined : rect.fill}
-          rx="2"
-        />
-      ))}
-    </>
-  ))}
+    {rows.map((r, i) => (
+      <g
+        class:list={['row', { clickable: r.total > 0 }]}
+        data-month={i}
+        role={r.total > 0 ? 'button' : undefined}
+        aria-label={r.total > 0 ? `${r.label}: ${r.total} plays` : undefined}
+      >
+        {/* full-width hit area so clicks land anywhere on the row */}
+        <rect class="hit" x={LEFT} y={rowY(i)} width={PLOT_W} height={ROW_H} />
+        <text class="ylabel" x={LEFT - 10} y={r.cy}>{r.label}</text>
+        {r.segs.map((s) => (
+          <rect
+            class:list={['bar', { ghost: s.ghost }]}
+            x={s.x}
+            y={r.y}
+            width={Math.max(0, s.w)}
+            height={BAR_H}
+            fill={s.ghost ? undefined : s.fill}
+            data-label={s.ghost ? undefined : s.label}
+            data-value={s.ghost ? undefined : s.value}
+          />
+        ))}
+      </g>
+    ))}
 
-  <!-- x-axis ticks + caption -->
-  {ticks.map((t) => (
-    <text class="xlabel" x={xOf(t)} y={TOP + months.length * ROW_H + 18}>{t}</text>
-  ))}
-  <text class="caption" x={LEFT + PLOT_W / 2} y={H - 4}>plays</text>
-</svg>
+    {ticks.map((t) => (
+      <text class="xlabel" x={xOf(t)} y={TOP + months.length * ROW_H + 18}>{t}</text>
+    ))}
+    <text class="caption" x={LEFT + PLOT_W / 2} y={H - 4}>plays</text>
+  </svg>
+  <div class="tip" id="chart-tip" role="status" hidden></div>
+</div>
+
+<script>
+  // Hover tooltip + click-to-select-month. Pure progressive enhancement.
+  const wrap = document.querySelector('.chart-wrap') as HTMLElement | null;
+  const svg = wrap?.querySelector('svg.chart') as SVGSVGElement | null;
+  const tip = document.getElementById('chart-tip');
+  if (wrap && svg && tip) {
+    const show = (text: string, x: number, y: number) => {
+      tip.textContent = text;
+      tip.hidden = false;
+      // clamp within the wrapper
+      const wr = wrap.getBoundingClientRect();
+      const tr = tip.getBoundingClientRect();
+      let left = x - wr.left + 12;
+      left = Math.max(4, Math.min(left, wr.width - tr.width - 4));
+      tip.style.left = `${left}px`;
+      tip.style.top = `${y - wr.top - tr.height - 10}px`;
+    };
+    const hide = () => {
+      tip.hidden = true;
+    };
+
+    svg.addEventListener('mousemove', (e) => {
+      const t = e.target as Element;
+      const label = t.getAttribute?.('data-label');
+      const value = t.getAttribute?.('data-value');
+      if (label && value) {
+        show(`${label.toUpperCase()}: ${Number(value).toLocaleString('en-US')}`, e.clientX, e.clientY);
+      } else {
+        hide();
+      }
+    });
+    svg.addEventListener('mouseleave', hide);
+
+    svg.addEventListener('click', (e) => {
+      const g = (e.target as Element).closest?.('.row.clickable') as SVGGElement | null;
+      if (!g) return;
+      const month = Number(g.getAttribute('data-month'));
+      document.dispatchEvent(new CustomEvent('listening:selectMonth', { detail: { month } }));
+    });
+
+    // The page tells the chart which calendar month (0..11) is active so the
+    // others dim; null clears the selection.
+    document.addEventListener('listening:highlightMonth', (e) => {
+      const month = (e as CustomEvent).detail?.month as number | null;
+      svg.querySelectorAll<SVGGElement>('.row').forEach((g) => {
+        const i = Number(g.getAttribute('data-month'));
+        g.classList.toggle('dim', month != null && i !== month);
+      });
+    });
+  }
+</script>
 
 <style>
+  .chart-wrap {
+    position: relative;
+  }
   .chart {
     display: block;
     width: 100%;
@@ -111,31 +186,53 @@ const rows = months.map((m, i) => {
   }
   .bar {
     shape-rendering: crispEdges;
+    transition: opacity 0.15s ease;
   }
-  /* Faint reference bars (previous-year totals) for months with no data yet.
-     Uses --muted at low opacity so they read as a subtle gray on both the
-     light and dark card surface, distinct from the card background. */
+  /* Faint reference bars (previous-year totals) for months with no data yet. */
   .bar.ghost {
     fill: var(--muted);
     opacity: 0.18;
   }
-  .ylabel {
-    fill: var(--muted);
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 11px;
-    text-anchor: end;
-    dominant-baseline: central;
+  .hit {
+    fill: transparent;
   }
-  .xlabel {
-    fill: var(--muted);
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 11px;
-    text-anchor: middle;
+  .row.clickable {
+    cursor: pointer;
   }
+  .row.clickable:hover .bar:not(.ghost) {
+    opacity: 0.85;
+  }
+  .row.dim .bar:not(.ghost) {
+    opacity: 0.22;
+  }
+  .ylabel,
+  .xlabel,
   .caption {
     fill: var(--muted);
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: 11px;
+  }
+  .ylabel {
+    text-anchor: end;
+    dominant-baseline: central;
+  }
+  .xlabel,
+  .caption {
     text-anchor: middle;
+  }
+
+  .tip {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    background: var(--heading);
+    color: var(--bg, #0c0c0d);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   }
 </style>

@@ -777,34 +777,45 @@ export interface StackMonth {
 }
 
 /**
- * Build the 12 stacked month rows. `monthlyArtists[m]` is that month's top
- * artists (0 = Jan .. 11 = Dec; undefined/empty for months with no data);
- * `monthlyTotals[m]` is the month's total plays. Each month stacks the top
- * `LISTENING_RAMP.length` artists (colored by rank), then a single "Other"
- * segment for the remaining plays so the bar length equals the month total.
+ * Build the 12 stacked month rows from per-month GENRE counts. `monthlyGenres[m]`
+ * is that month's genre→count map (0 = Jan .. 11 = Dec; undefined for months
+ * with no data); `monthlyTotals[m]` is the month's actual play total.
+ *
+ * The BAR LENGTH is the play total (so bars are comparable to real scrobble
+ * counts), stacked by that month's top `LISTENING_RAMP.length` genres (colored
+ * by rank). The trailing "Other" segment fills the gap up to the play total —
+ * folding in genres past the ramp, the API's own "Other" bucket, and any plays
+ * with no genre tag at all (which is why a month's tagged genres can sum to far
+ * less than its plays).
  */
-export function buildMonthlyStacks(
-  monthlyArtists: (TopItem[] | undefined)[],
+export function buildGenreStacks(
+  monthlyGenres: (Record<string, number> | undefined)[],
   monthlyTotals: number[]
 ): StackMonth[] {
   const topN = LISTENING_RAMP.length;
   const out: StackMonth[] = [];
   for (let m = 0; m < 12; m++) {
-    const artists = (monthlyArtists[m] ?? []).slice(0, topN);
-    const total = monthlyTotals[m] ?? 0;
-    const segments: StackSegment[] = artists.map((a, i) => ({
-      name: a.name,
-      value: a.playcount,
+    const genres = monthlyGenres[m] ?? {};
+    // Rank named genres by count; the API's own "Other" bucket is folded into
+    // our trailing Other segment rather than competing for a ramp color.
+    const named = Object.entries(genres)
+      .filter(([name]) => name !== 'Other')
+      .sort((a, b) => b[1] - a[1]);
+    const top = named.slice(0, topN);
+    const segments: StackSegment[] = top.map(([name, value], i) => ({
+      name,
+      value,
       color: LISTENING_RAMP[i],
     }));
-    const named = artists.reduce((sum, a) => sum + a.playcount, 0);
-    const other = Math.max(0, total - named);
-    if (other > 0) {
-      segments.push({ name: 'Other', value: other, color: LISTENING_OTHER_COLOR });
+    const topSum = top.reduce((sum, [, v]) => sum + v, 0);
+    const genreSum = named.reduce((sum, [, v]) => sum + v, 0) + (genres['Other'] ?? 0);
+    // Bar length is the play total; never clip below the shown genre segments.
+    const total = Math.max(monthlyTotals[m] ?? 0, genreSum);
+    const otherValue = total - topSum;
+    if (otherValue > 0) {
+      segments.push({ name: 'Other', value: otherValue, color: LISTENING_OTHER_COLOR });
     }
-    // If we somehow have artist data exceeding the reported total, trust the
-    // segment sum so the bar never clips its own data.
-    out.push({ label: MONTH_ABBREV[m], total: Math.max(total, named), segments });
+    out.push({ label: MONTH_ABBREV[m], total, segments });
   }
   return out;
 }

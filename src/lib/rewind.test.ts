@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   activityFigures,
   buildArtistSparklines,
-  buildMonthlyStacks,
+  buildGenreStacks,
   fmtDuration,
   fmtWatchDate,
   LISTENING_OTHER_COLOR,
@@ -1013,44 +1013,47 @@ describe('yearHeadline', () => {
   });
 });
 
-describe('buildMonthlyStacks', () => {
-  const artist = (name: string, playcount: number) => ({
-    rank: 1,
-    name,
-    detail: '',
-    playcount,
-    image: null,
-    link: null,
-  });
-
-  it('stacks top artists by ramp color and adds an Other segment for the tail', () => {
-    const jan = [artist('A', 100), artist('B', 60)];
-    const stacks = buildMonthlyStacks([jan], [200]); // total 200, named 160
-    const janStack = stacks[0];
-    expect(janStack.label).toBe('Jan');
-    expect(janStack.total).toBe(200);
-    expect(janStack.segments.map((s) => s.color)).toEqual([
-      LISTENING_RAMP[0],
-      LISTENING_RAMP[1],
-      LISTENING_OTHER_COLOR,
+describe('buildGenreStacks', () => {
+  it('ranks named genres and folds the API Other bucket into the tail', () => {
+    const jan = { Pop: 100, Soundtrack: 60, Other: 40 };
+    const stacks = buildGenreStacks([jan], [200]);
+    const s = stacks[0];
+    expect(s.label).toBe('Jan');
+    expect(s.total).toBe(200);
+    expect(s.segments.map((seg) => [seg.name, seg.value, seg.color])).toEqual([
+      ['Pop', 100, LISTENING_RAMP[0]],
+      ['Soundtrack', 60, LISTENING_RAMP[1]],
+      ['Other', 40, LISTENING_OTHER_COLOR],
     ]);
-    expect(janStack.segments.at(-1)).toMatchObject({ name: 'Other', value: 40 });
   });
 
-  it('returns 12 months and leaves data-less months empty', () => {
-    const stacks = buildMonthlyStacks([], []);
+  it('sets bar length to the play total, folding untagged plays into Other', () => {
+    // 100 tagged plays (Pop) but 500 total plays: bar = 500, Other = 400.
+    const [s] = buildGenreStacks([{ Pop: 100 }], [500]);
+    expect(s.total).toBe(500);
+    expect(s.segments).toEqual([
+      { name: 'Pop', value: 100, color: LISTENING_RAMP[0] },
+      { name: 'Other', value: 400, color: LISTENING_OTHER_COLOR },
+    ]);
+  });
+
+  it('never clips below the shown genre sum when totals lag the genre data', () => {
+    const genres: Record<string, number> = {};
+    for (let i = 0; i < LISTENING_RAMP.length + 2; i++) genres[`G${i}`] = 10 - i;
+    const genreSum = Object.values(genres).reduce((a, b) => a + b, 0);
+    const [s] = buildGenreStacks([genres], [0]); // total lags → falls back to genreSum
+    expect(s.total).toBe(genreSum);
+    expect(s.segments).toHaveLength(LISTENING_RAMP.length + 1); // ramp + Other
+    expect(s.segments.at(-1)?.name).toBe('Other');
+  });
+
+  it('returns 12 labeled months, empty where there is no data', () => {
+    const stacks = buildGenreStacks([], []);
     expect(stacks).toHaveLength(12);
     expect(stacks.every((s) => s.total === 0 && s.segments.length === 0)).toBe(true);
     expect(stacks.map((s) => s.label)).toEqual([
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ]);
-  });
-
-  it('never clips its own data when segments exceed the reported total', () => {
-    const jan = [artist('A', 300)];
-    const stacks = buildMonthlyStacks([jan], [100]);
-    expect(stacks[0].total).toBe(300); // trusts the segment sum
-    expect(stacks[0].segments).toHaveLength(1); // no negative Other
   });
 });
 
