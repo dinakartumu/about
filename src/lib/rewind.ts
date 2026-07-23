@@ -256,6 +256,7 @@ export interface WatchedShow {
   image: ShapedImage | null;
   episodesWatched: number;
   totalEpisodes: number;
+  months: number[]; // 0..11, distinct months with an episode in range
   tmdbUrl: string | null;
 }
 
@@ -267,6 +268,7 @@ interface ApiShow {
   image: ApiImage | null;
   total_episodes: number;
   episodes_watched: number;
+  months?: number[];
 }
 interface ApiShowsResponse {
   data: ApiShow[];
@@ -280,6 +282,7 @@ export function shapeShows(json: ApiShowsResponse): WatchedShow[] {
     image: shapeImage(s.image),
     episodesWatched: s.episodes_watched,
     totalEpisodes: s.total_episodes,
+    months: Array.isArray(s.months) ? s.months : [],
     tmdbUrl: s.tmdb_id ? `https://www.themoviedb.org/tv/${s.tmdb_id}` : null,
   }));
 }

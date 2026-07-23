@@ -83,16 +83,11 @@ const stacks: StackMonth[] = buildGenreStacks(monthlyGenres, countByMonth, MOVIE
 const chartHasData = stacks.some((s) => s.total > 0);
 const monthsAvailable = year === currentYear ? now.getUTCMonth() + 1 : 12;
 
-// TV shows are tracked all-time (the API's /shows list isn't year-scoped), so
-// the section only appears on the current-year page — the movies landing.
-// Sorted by episodes watched, most-watched first.
-const isCurrent = year === currentYear;
-const shows: WatchedShow[] = isCurrent
-  ? shapeShows(await rewindFetch(`/v1/watching/shows?limit=100`))
-      .filter((s) => s.episodesWatched > 0)
-      .sort((a, b) => b.episodesWatched - a.episodesWatched)
-      .slice(0, 18)
-  : [];
+// TV shows watched in this year (each carries the months it was watched, for
+// the same month filter as the movie grid).
+const shows: WatchedShow[] = shapeShows(
+  await rewindFetch(`/v1/watching/watched-shows?${yearQuery}&limit=24`)
+);
 
 const linkAttrs = (link: string | null) =>
   link ? { href: link, target: '_blank', rel: 'noopener' } : {};
@@ -165,10 +160,10 @@ const linkAttrs = (link: string | null) =>
 
 {shows.length > 0 && (
   <section class="container">
-    <h2>TV Shows</h2>
-    <ol class="grid" role="list">
+    <h2>TV Shows · {year}</h2>
+    <ol class="grid tv-grid" role="list">
       {shows.map((s) => (
-        <li>
+        <li data-months={s.months.join(',')}>
           <a class="tile" {...linkAttrs(s.tmdbUrl)}>
             {s.image ? (
               <img
@@ -271,13 +266,24 @@ const linkAttrs = (link: string | null) =>
 
 <script>
   // The header resolves month selection and dispatches `chart:setMonth`; filter
-  // the poster grid to that month (show all when null).
+  // the movie grid (one month per tile) and the TV grid (a show can span several
+  // months) to that month, showing all when null.
   const tiles = Array.from(document.querySelectorAll<HTMLLIElement>('.grid > li[data-month]'));
+  const showTiles = Array.from(
+    document.querySelectorAll<HTMLLIElement>('.tv-grid > li[data-months]')
+  );
   document.addEventListener('chart:setMonth', (e) => {
     const month = (e as CustomEvent).detail?.month as number | null;
     for (const li of tiles) {
       const m = Number(li.getAttribute('data-month'));
       li.classList.toggle('hidden', month != null && m !== month);
+    }
+    for (const li of showTiles) {
+      const months = (li.getAttribute('data-months') || '')
+        .split(',')
+        .filter(Boolean)
+        .map(Number);
+      li.classList.toggle('hidden', month != null && !months.includes(month));
     }
   });
 </script>
