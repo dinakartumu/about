@@ -5,16 +5,24 @@ name: Rebuild on new data
 # a new music discovery) shows up on the static site within ~an hour without
 # burning the Pages build budget on empty rebuilds.
 #
-# "New data" = any activity_feed event in the last ~70 min (Rewind's feed
-# excludes routine scrobbles, so this tracks the things you actually log). A
-# 12:00 UTC floor always rebuilds once a day to catch backdated entries and
+# "New data" = any activity_feed row INSERTED since the previous run of this
+# workflow (queried by created_at via POST /v1/query, a read-scope endpoint).
+# Insertion time, not occurrence time, is the load-bearing choice: events only
+# become visible when a sync lands them, which can lag the event itself by an
+# hour (hourly cron sources) or half a day (offline Swarm check-ins) — an
+# occurred_at window silently misses those. The window is anchored to the
+# previous run's start (plus margin) instead of a fixed 70 minutes because
+# GitHub's schedule drifts; observed gaps run 90-155 minutes.
+#
+# A 12:00 UTC floor always rebuilds once a day to catch backdated entries and
 # refresh the listening aggregates; workflow_dispatch always rebuilds.
 on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
 
-permissions: {}
+permissions:
+  actions: read
 
 jobs:
   rebuild:
@@ -25,6 +33,7 @@ jobs:
           PAGES_DEPLOY_HOOK: ${{ secrets.PAGES_DEPLOY_HOOK }}
           REWIND_API_KEY: ${{ secrets.REWIND_API_KEY }}
           EVENT: ${{ github.event_name }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ -z "$PAGES_DEPLOY_HOOK" ]; then
             echo "PAGES_DEPLOY_HOOK secret is not set" >&2
@@ -37,17 +46,26 @@ jobs:
           elif [ "$(date -u +%H)" = "12" ]; then
             reason="daily 12:00 UTC floor"
           else
-            from=$(python3 -c "import datetime as d; print((d.datetime.now(d.UTC)-d.timedelta(minutes=70)).strftime('%Y-%m-%dT%H:%M:%SZ'))")
-            count=$(curl -fsS -H "Authorization: Bearer $REWIND_API_KEY" \
-              "https://rewind.dinakartumu.com/v1/feed?from=$from&limit=1" 2>/dev/null \
-              | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('data',[])))" 2>/dev/null || echo 0)
-            echo "New feed items since $from: ${count:-0}"
-            [ "${count:-0}" -gt 0 ] && reason="new data in the last hour"
+            # Window start = previous completed run of this workflow minus a
+            # 5-minute margin, clamped to [75 min, 6 h] ago: never narrower
+            # than the old fixed window, never unboundedly wide (the daily
+            # floor covers anything older than the clamp).
+            prev=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/rebuild.yml/runs?status=completed&per_page=1" --jq '.workflow_runs[0].run_started_at' 2>/dev/null || echo "")
+            from=$(python3 -c "import datetime as d; now=d.datetime.now(d.UTC); s='$prev'; f=(d.datetime.fromisoformat(s.replace('Z','+00:00')) if s else now-d.timedelta(hours=6))-d.timedelta(minutes=5); f=max(f, now-d.timedelta(hours=6)); f=min(f, now-d.timedelta(minutes=75)); print(f.strftime('%Y-%m-%dT%H:%M:%SZ'))" 2>/dev/null \
+              || python3 -c "import datetime as d; print((d.datetime.now(d.UTC)-d.timedelta(hours=6)).strftime('%Y-%m-%dT%H:%M:%SZ'))")
+
+            count=$(curl -fsS -X POST -H "Authorization: Bearer $REWIND_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d "{\"sql\": \"SELECT count(*) FROM activity_feed WHERE created_at > '$from'\"}" \
+              "https://rewind.dinakartumu.com/v1/query" 2>/dev/null \
+              | python3 -c "import sys,json; print(json.load(sys.stdin)['rows'][0][0])" 2>/dev/null || echo 0)
+            echo "Feed rows inserted since $from: ${count:-0}"
+            [ "${count:-0}" -gt 0 ] && reason="new data since previous run"
           fi
 
           if [ -n "$reason" ]; then
             echo "Rebuilding ($reason)…"
             curl -fsS -X POST "$PAGES_DEPLOY_HOOK" >/dev/null && echo "Deploy hook fired."
           else
-            echo "No new data in the last hour — skipping rebuild."
+            echo "No new data since the previous run — skipping rebuild."
           fi
