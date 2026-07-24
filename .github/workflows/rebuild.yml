@@ -1,11 +1,17 @@
-name: Daily rebuild
+name: Rebuild on new data
 
-# Re-triggers the Cloudflare Pages production build so the data pages
-# (/listening, /movies, /places, /activities) pick up fresh data from the
-# Rewind API (build-time fetch).
+# Runs hourly but only re-triggers the Cloudflare Pages build when there is
+# actually new data, so a freshly logged movie / workout / check-in / read (or
+# a new music discovery) shows up on the static site within ~an hour without
+# burning the Pages build budget on empty rebuilds.
+#
+# "New data" = any activity_feed event in the last ~70 min (Rewind's feed
+# excludes routine scrobbles, so this tracks the things you actually log). A
+# 12:00 UTC floor always rebuilds once a day to catch backdated entries and
+# refresh the listening aggregates; workflow_dispatch always rebuilds.
 on:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions: {}
@@ -14,12 +20,34 @@ jobs:
   rebuild:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Cloudflare Pages deploy hook
+      - name: Rebuild only if there is new data
         env:
           PAGES_DEPLOY_HOOK: ${{ secrets.PAGES_DEPLOY_HOOK }}
+          REWIND_API_KEY: ${{ secrets.REWIND_API_KEY }}
+          EVENT: ${{ github.event_name }}
         run: |
           if [ -z "$PAGES_DEPLOY_HOOK" ]; then
             echo "PAGES_DEPLOY_HOOK secret is not set" >&2
             exit 1
           fi
-          curl -fsS -X POST "$PAGES_DEPLOY_HOOK"
+
+          reason=""
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            reason="manual dispatch"
+          elif [ "$(date -u +%H)" = "12" ]; then
+            reason="daily 12:00 UTC floor"
+          else
+            from=$(python3 -c "import datetime as d; print((d.datetime.now(d.UTC)-d.timedelta(minutes=70)).strftime('%Y-%m-%dT%H:%M:%SZ'))")
+            count=$(curl -fsS -H "Authorization: Bearer $REWIND_API_KEY" \
+              "https://rewind.dinakartumu.com/v1/feed?from=$from&limit=1" 2>/dev/null \
+              | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('data',[])))" 2>/dev/null || echo 0)
+            echo "New feed items since $from: ${count:-0}"
+            [ "${count:-0}" -gt 0 ] && reason="new data in the last hour"
+          fi
+
+          if [ -n "$reason" ]; then
+            echo "Rebuilding ($reason)…"
+            curl -fsS -X POST "$PAGES_DEPLOY_HOOK" >/dev/null && echo "Deploy hook fired."
+          else
+            echo "No new data in the last hour — skipping rebuild."
+          fi
