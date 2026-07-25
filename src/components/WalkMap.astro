@@ -17,6 +17,8 @@ import { assetUrl } from '../lib/images';
 
 interface Props {
   map: {
+    /** Display name; may differ from Strava's city label. */
+    title: string;
     city: string;
     images: { dark: string; light: string };
     width: number;
@@ -40,7 +42,7 @@ const stats = [
 ] as const;
 ---
 <section class="walkmap" aria-labelledby="walkmap-heading">
-  <h2 id="walkmap-heading">On foot in {map.city}</h2>
+  <h2 id="walkmap-heading">On foot in {map.title}</h2>
 
   <div
     class="frame"
@@ -49,7 +51,7 @@ const stats = [
     <svg
       viewBox={`0 0 ${map.width} ${map.height}`}
       role="img"
-      aria-label={`Map of ${map.walks} walks totalling ${map.miles} miles in ${map.city}`}
+      aria-label={`Map of ${map.walks} walks totalling ${map.miles} miles in ${map.title}`}
     >
       {map.paths.map((d) => <path d={d} />)}
     </svg>
