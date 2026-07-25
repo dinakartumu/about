@@ -30,6 +30,7 @@ interface Props {
     paths: { d: string; foot: boolean }[];
     breakdown: { sport: string; count: number; miles: number }[];
     footOnly: boolean;
+    walkOnly: boolean;
     activities: number;
     miles: number;
     months: number;
@@ -49,6 +50,10 @@ const sportLabel = (sport: string, count: number) =>
 
 const FOOT = new Set(['walk', 'hike', 'run', 'trail run', 'virtual run']);
 const isFoot = (sport: string) => FOOT.has(spaced(sport));
+
+// Say what was actually done: "walked" only when it all was, "on foot" when
+// it was hiked or run too, "covered" once wheels are involved.
+const distanceVerb = map.walkOnly ? 'walked' : map.footOnly ? 'on foot' : 'covered';
 
 // Draw wheels first so the rarer foot routes read on top of them.
 const ordered = [...map.paths].sort((a, b) => Number(a.foot) - Number(b.foot));
@@ -75,7 +80,7 @@ const ordered = [...map.paths].sort((a, b) => Number(a.foot) - Number(b.foot));
         <i class="dot" aria-hidden="true"></i><b>{t.count}</b> {sportLabel(t.sport, t.count)}
       </span>
     ))}
-    <span><b>{map.miles}</b> mi {map.footOnly ? 'walked' : 'covered'}</span>
+    <span><b>{map.miles}</b> mi {distanceVerb}</span>
     <span><b>{map.months}</b> {map.months === 1 ? 'month' : 'months'}</span>
   </p>
   <p class="attr">{map.attribution}</p>
