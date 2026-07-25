@@ -1,0 +1,2159 @@
+{
+  "title": "Berkeley",
+  "slug": "berkeley",
+  "description": "The public stairways that thread the hills, the windows and doorways of the flats below, and the bay at the end of the day.",
+  "cover": "berkeley/DSC03450",
+  "date": "2023-05-07",
+  "sections": [
+    {
+      "title": "Alley steps",
+      "count": 23
+    },
+    {
+      "title": "House windows",
+      "count": 24
+    },
+    {
+      "title": "House entrances",
+      "count": 23
+    },
+    {
+      "title": "Gardens",
+      "count": 15
+    },
+    {
+      "title": "Cats",
+      "count": 5
+    },
+    {
+      "title": "Little free libraries",
+      "count": 9
+    },
+    {
+      "title": "Cars",
+      "count": 8
+    },
+    {
+      "title": "Streets",
+      "count": 26
+    },
+    {
+      "title": "Sunsets",
+      "count": 18
+    }
+  ],
+  "photos": [
+    {
+      "id": "berkeley/DSC03353",
+      "width": 4000,
+      "height": 6000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4",
+        "shutter": "1/160",
+        "iso": 500,
+        "taken": "2022-04-06T13:26:00.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03357",
+      "width": 4000,
+      "height": 6000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4",
+        "shutter": "1/160",
+        "iso": 640,
+        "taken": "2022-04-06T13:30:51.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1951",
+      "width": 6839,
+      "height": 4559,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.8",
+        "shutter": "1/105",
+        "iso": 125,
+        "taken": "2023-03-19T10:02:00.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1954",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/170",
+        "iso": 125,
+        "taken": "2023-03-19T10:06:54.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3639",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/420",
+        "iso": 125,
+        "taken": "2023-04-10T11:04:25.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3519",
+      "width": 2510,
+      "height": 3446,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/75",
+        "iso": 125,
+        "taken": "2022-04-06T13:44:13.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3651",
+      "width": 2651,
+      "height": 3535,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/110",
+        "iso": 125,
+        "taken": "2022-04-12T13:34:40.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3655",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/100",
+        "iso": 160,
+        "taken": "2022-04-12T13:38:43.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3656",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/120",
+        "iso": 64,
+        "taken": "2022-04-12T13:41:08.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3662",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/150",
+        "iso": 50,
+        "taken": "2022-04-12T13:43:25.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3667",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/300",
+        "iso": 50,
+        "taken": "2022-04-12T13:50:20.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3669",
+      "width": 2343,
+      "height": 3124,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/800",
+        "iso": 50,
+        "taken": "2022-04-12T13:52:30.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3670",
+      "width": 2353,
+      "height": 3137,
+      "exif": {
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/2900",
+        "iso": 50,
+        "taken": "2022-04-12T13:53:08.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3678",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/40",
+        "iso": 400,
+        "taken": "2022-04-12T14:09:02.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3680",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/60",
+        "iso": 400,
+        "taken": "2022-04-12T14:14:33.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3718",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/70",
+        "iso": 125,
+        "taken": "2022-04-13T13:43:19.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3961",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/600",
+        "iso": 50,
+        "taken": "2022-04-25T11:57:50.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3972",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/580",
+        "iso": 50,
+        "taken": "2022-04-25T12:10:13.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4015",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/220",
+        "iso": 40,
+        "taken": "2022-04-26T13:58:22.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4039",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/160",
+        "iso": 64,
+        "taken": "2022-04-27T13:56:01.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5429",
+      "width": 2610,
+      "height": 3480,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/40",
+        "iso": 500,
+        "taken": "2022-07-05T15:09:55.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5453",
+      "width": 2824,
+      "height": 3765,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/120",
+        "iso": 80,
+        "taken": "2022-07-08T13:59:26.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5463",
+      "width": 2711,
+      "height": 3614,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/560",
+        "iso": 50,
+        "taken": "2022-07-08T14:20:58.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2830",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-03-30T12:34:04.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2835",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-30T12:39:06.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2840",
+      "width": 5152,
+      "height": 5163,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/210",
+        "iso": 125,
+        "taken": "2023-03-30T12:45:27.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2853",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.2",
+        "shutter": "1/125",
+        "iso": 125,
+        "taken": "2023-03-30T12:57:35.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2855",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-03-30T12:58:14.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2857",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-03-30T12:59:01.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2865",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/240",
+        "iso": 125,
+        "taken": "2023-03-30T13:03:23.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2871",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-03-30T13:04:59.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2878",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/170",
+        "iso": 125,
+        "taken": "2023-03-30T13:12:39.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2884",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-03-30T13:15:20.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2899",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/240",
+        "iso": 125,
+        "taken": "2023-03-30T13:28:43.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2907",
+      "width": 4411,
+      "height": 6617,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-03-30T13:37:44.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2914",
+      "width": 3624,
+      "height": 5436,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2",
+        "shutter": "1/125",
+        "iso": 125,
+        "taken": "2023-03-30T13:45:31.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2916",
+      "width": 4475,
+      "height": 6713,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.8",
+        "shutter": "1/110",
+        "iso": 125,
+        "taken": "2023-03-30T13:45:48.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3621",
+      "width": 2221,
+      "height": 3332,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-04-10T10:33:14.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3625",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-04-10T10:36:56.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3648",
+      "width": 5609,
+      "height": 3739,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/480",
+        "iso": 125,
+        "taken": "2023-04-10T11:39:42.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3649",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-04-10T11:40:12.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5657",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/60",
+        "iso": 500,
+        "taken": "2022-07-19T14:45:50.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8775",
+      "width": 5444,
+      "height": 7259,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/800",
+        "iso": 80,
+        "taken": "2023-01-21T11:09:34.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8779",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/750",
+        "iso": 80,
+        "taken": "2023-01-21T11:13:58.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8780",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/120",
+        "iso": 80,
+        "taken": "2023-01-21T11:14:58.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8885",
+      "width": 4003,
+      "height": 5338,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/1200",
+        "iso": 80,
+        "taken": "2023-01-26T08:43:14.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8886",
+      "width": 3024,
+      "height": 3252,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/1800",
+        "iso": 64,
+        "taken": "2023-01-26T08:43:23.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1955",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-03-19T10:17:39.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2839",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-30T12:43:51.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2844",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-03-30T12:47:53.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2849",
+      "width": 4638,
+      "height": 6960,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/170",
+        "iso": 125,
+        "taken": "2023-03-30T12:53:36.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2850",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2023-03-30T12:55:22.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2854",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-03-30T12:57:55.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2856",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/210",
+        "iso": 125,
+        "taken": "2023-03-30T12:58:51.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2862",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-03-30T13:02:25.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2863",
+      "width": 4573,
+      "height": 6860,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-03-30T13:02:53.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2874",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/250",
+        "iso": 125,
+        "taken": "2023-03-30T13:11:31.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2922",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.2",
+        "shutter": "1/125",
+        "iso": 125,
+        "taken": "2023-03-30T13:50:54.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2932",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/70",
+        "iso": 125,
+        "taken": "2023-03-30T13:58:56.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3633",
+      "width": 4589,
+      "height": 6884,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-04-10T10:52:04.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3637",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-04-10T11:00:37.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3640",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/480",
+        "iso": 125,
+        "taken": "2023-04-10T11:15:41.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3641",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-04-10T11:15:54.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3667",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/450",
+        "iso": 125,
+        "taken": "2023-04-10T12:47:05.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5724",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/70",
+        "iso": 250,
+        "taken": "2022-07-22T12:14:16.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8734",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/400",
+        "iso": 80,
+        "taken": "2023-01-20T10:59:47.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8742",
+      "width": 5015,
+      "height": 6687,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/440",
+        "iso": 80,
+        "taken": "2023-01-20T11:25:30.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8781",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/120",
+        "iso": 80,
+        "taken": "2023-01-21T11:18:46.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8782",
+      "width": 4819,
+      "height": 6425,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/270",
+        "iso": 80,
+        "taken": "2023-01-21T11:19:24.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8841",
+      "width": 5534,
+      "height": 7379,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/500",
+        "iso": 80,
+        "taken": "2023-01-25T08:38:15.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1964",
+      "width": 4710,
+      "height": 7066,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/240",
+        "iso": 125,
+        "taken": "2023-03-19T10:29:42.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1966",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2",
+        "shutter": "1/110",
+        "iso": 125,
+        "taken": "2023-03-19T10:31:34.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2817",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/160",
+        "iso": 125,
+        "taken": "2023-03-30T12:14:57.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2828",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2023-03-30T12:24:58.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2912",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.6",
+        "shutter": "1/60",
+        "iso": 125,
+        "taken": "2023-03-30T13:40:23.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3618",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-04-10T10:29:09.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3624",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-04-10T10:35:20.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3626",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-04-10T10:37:14.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3632",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/210",
+        "iso": 125,
+        "taken": "2023-04-10T10:45:10.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3635",
+      "width": 4219,
+      "height": 6328,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-04-10T10:53:26.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3642",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-04-10T11:18:41.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF4241",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/70",
+        "iso": 125,
+        "taken": "2023-05-07T07:49:38.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4038",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/70",
+        "iso": 250,
+        "taken": "2022-04-27T13:54:45.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4472",
+      "width": 2104,
+      "height": 2805,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/700",
+        "iso": 50,
+        "taken": "2022-05-16T14:13:24.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5659",
+      "width": 2618,
+      "height": 3490,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 1.57mm f/1.8",
+        "focal": "2mm",
+        "aperture": "f/1.8",
+        "shutter": "1/60",
+        "iso": 400,
+        "taken": "2022-07-19T14:55:05.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC04442",
+      "width": 4793,
+      "height": 3595,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/2",
+        "shutter": "1/125",
+        "iso": 6400,
+        "taken": "2022-07-16T15:19:44.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2834",
+      "width": 3597,
+      "height": 5395,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-03-30T12:37:03.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3437",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/100",
+        "iso": 125,
+        "taken": "2022-04-04T12:52:08.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3957",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/100",
+        "iso": 50,
+        "taken": "2022-04-25T11:55:25.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4041",
+      "width": 1129,
+      "height": 1505,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/320",
+        "iso": 50,
+        "taken": "2022-04-27T13:57:07.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1972",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.8",
+        "shutter": "1/120",
+        "iso": 125,
+        "taken": "2023-03-19T10:48:33.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2900",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.6",
+        "shutter": "1/70",
+        "iso": 125,
+        "taken": "2023-03-30T13:30:38.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3631",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-04-10T10:44:13.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3651",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/180",
+        "iso": 125,
+        "taken": "2023-04-10T11:47:14.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4460",
+      "width": 2569,
+      "height": 3425,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/125",
+        "iso": 40,
+        "taken": "2022-05-16T13:20:41.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4461",
+      "width": 2511,
+      "height": 3348,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/850",
+        "iso": 50,
+        "taken": "2022-05-16T13:43:20.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5721",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/190",
+        "iso": 40,
+        "taken": "2022-07-22T12:12:26.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_6294",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/350",
+        "iso": 80,
+        "taken": "2022-09-28T12:21:56.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8853",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/1000",
+        "iso": 80,
+        "taken": "2023-01-25T08:46:49.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC04334",
+      "width": 6000,
+      "height": 4000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/2",
+        "shutter": "1/160",
+        "iso": 3200,
+        "taken": "2022-07-08T15:13:00.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2821",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-30T12:18:35.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2924",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.8",
+        "shutter": "1/80",
+        "iso": 125,
+        "taken": "2023-03-30T13:52:45.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2929",
+      "width": 3970,
+      "height": 5955,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 320,
+        "taken": "2023-03-30T13:55:36.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3668",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/550",
+        "iso": 125,
+        "taken": "2023-04-10T12:57:26.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF4238",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/125",
+        "iso": 125,
+        "taken": "2023-05-07T07:46:47.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3650",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/150",
+        "iso": 32,
+        "taken": "2022-04-12T13:27:06.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3839",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/120",
+        "iso": 80,
+        "taken": "2022-04-21T12:34:00.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1990",
+      "width": 7017,
+      "height": 4678,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.8",
+        "shutter": "1/105",
+        "iso": 125,
+        "taken": "2023-03-19T11:12:38.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF1992",
+      "width": 5151,
+      "height": 7727,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.8",
+        "shutter": "1/120",
+        "iso": 125,
+        "taken": "2023-03-19T11:14:44.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2005",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/210",
+        "iso": 125,
+        "taken": "2023-03-19T11:33:13.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2009",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 400,
+        "taken": "2023-03-19T11:56:53.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2829",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-03-30T12:32:19.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2833",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/250",
+        "iso": 125,
+        "taken": "2023-03-30T12:35:16.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2838",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/240",
+        "iso": 125,
+        "taken": "2023-03-30T12:43:28.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2842",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/350",
+        "iso": 125,
+        "taken": "2023-03-30T12:46:36.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2852",
+      "width": 4150,
+      "height": 6225,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/250",
+        "iso": 125,
+        "taken": "2023-03-30T12:56:08.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2858",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.2",
+        "shutter": "1/150",
+        "iso": 125,
+        "taken": "2023-03-30T12:59:12.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2859",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2023-03-30T12:59:47.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2870",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-03-30T13:04:44.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2881",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-03-30T13:14:37.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF2886",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-30T13:16:42.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3628",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/420",
+        "iso": 125,
+        "taken": "2023-04-10T10:40:17.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3662",
+      "width": 4222,
+      "height": 6333,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2023-04-10T12:02:51.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF3690",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/2000",
+        "iso": 125,
+        "taken": "2023-04-14T02:48:31.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSCF4216",
+      "width": 4240,
+      "height": 6360,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/8",
+        "shutter": "1/140",
+        "iso": 125,
+        "taken": "2023-05-07T07:20:40.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3435",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/800",
+        "iso": 50,
+        "taken": "2022-04-04T12:47:10.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3453",
+      "width": 2182,
+      "height": 2909,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 1.57mm f/1.8",
+        "focal": "2mm",
+        "aperture": "f/1.8",
+        "shutter": "1/100",
+        "iso": 50,
+        "taken": "2022-04-04T13:18:02.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_3859",
+      "width": 2895,
+      "height": 3860,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/4600",
+        "iso": 32,
+        "taken": "2022-04-21T13:10:41.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4467",
+      "width": 3024,
+      "height": 2945,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 1.57mm f/1.8",
+        "focal": "2mm",
+        "aperture": "f/1.8",
+        "shutter": "1/420",
+        "iso": 32,
+        "taken": "2022-05-16T13:51:49.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5449",
+      "width": 2824,
+      "height": 3765,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/600",
+        "iso": 50,
+        "taken": "2022-07-08T13:34:42.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5489",
+      "width": 2635,
+      "height": 3513,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/60",
+        "iso": 400,
+        "taken": "2022-07-08T15:17:59.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8740",
+      "width": 4984,
+      "height": 6645,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/800",
+        "iso": 100,
+        "taken": "2023-01-20T11:17:40.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8891",
+      "width": 5124,
+      "height": 6832,
+      "exif": {
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/60",
+        "iso": 100,
+        "taken": "2023-01-26T10:50:41.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03358",
+      "width": 6000,
+      "height": 4000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4.5",
+        "shutter": "1/200",
+        "iso": 100,
+        "taken": "2022-04-06T13:32:44.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03371-Pano",
+      "width": 12987,
+      "height": 4119,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4",
+        "shutter": "1/160",
+        "iso": 100,
+        "taken": "2022-04-06T13:47:18.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03383-Pano",
+      "width": 20550,
+      "height": 3589,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4.5",
+        "shutter": "1/125",
+        "iso": 100,
+        "taken": "2022-04-06T13:54:51.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03388",
+      "width": 6000,
+      "height": 4000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4",
+        "shutter": "1/100",
+        "iso": 500,
+        "taken": "2022-04-06T14:10:17.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03450",
+      "width": 6000,
+      "height": 3376,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "E PZ 16-50mm F3.5-5.6 OSS",
+        "focal": "39mm",
+        "aperture": "f/5.6",
+        "shutter": "1/60",
+        "iso": 250,
+        "taken": "2022-04-08T14:11:45.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03570",
+      "width": 6000,
+      "height": 4000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4",
+        "shutter": "1/100",
+        "iso": 400,
+        "taken": "2022-04-27T14:25:17.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC03572",
+      "width": 6000,
+      "height": 3376,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4",
+        "shutter": "1/100",
+        "iso": 500,
+        "taken": "2022-04-27T14:25:29.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC04407",
+      "width": 4068,
+      "height": 2289,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4.5",
+        "shutter": "1/2000",
+        "iso": 100,
+        "taken": "2022-07-16T14:30:23.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC04422",
+      "width": 5134,
+      "height": 3423,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4.5",
+        "shutter": "1/640",
+        "iso": 100,
+        "taken": "2022-07-16T14:45:48.000Z"
+      }
+    },
+    {
+      "id": "berkeley/DSC04433",
+      "width": 6000,
+      "height": 4000,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/4.5",
+        "shutter": "1/250",
+        "iso": 100,
+        "taken": "2022-07-16T14:52:39.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_2988",
+      "width": 2915,
+      "height": 3886,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/400",
+        "iso": 32,
+        "taken": "2022-03-06T12:25:46.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4012",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/240",
+        "iso": 32,
+        "taken": "2022-04-26T13:52:59.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4016",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/400",
+        "iso": 32,
+        "taken": "2022-04-26T14:07:00.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4205",
+      "width": 1891,
+      "height": 2521,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/730",
+        "iso": 32,
+        "taken": "2022-05-04T14:08:45.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4207",
+      "width": 2367,
+      "height": 3156,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 5.7mm f/1.5",
+        "focal": "6mm",
+        "aperture": "f/1.5",
+        "shutter": "1/1150",
+        "iso": 50,
+        "taken": "2022-05-04T14:10:09.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_4471",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/2500",
+        "iso": 25,
+        "taken": "2022-05-16T14:00:34.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_5573",
+      "width": 2119,
+      "height": 2825,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/1600",
+        "iso": 32,
+        "taken": "2022-07-16T14:06:43.000Z"
+      }
+    },
+    {
+      "id": "berkeley/IMG_8808",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/60",
+        "iso": 80,
+        "taken": "2023-01-21T12:04:17.000Z"
+      }
+    }
+  ]
+}
