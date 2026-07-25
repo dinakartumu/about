@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PHOTO_WIDTHS, photoSrcset, photoUrl } from './images';
+import { PHOTO_WIDTHS, assetUrl, photoSrcset, photoUrl } from './images';
 
 // These tests assume src/lib/config.ts has:
 //   PHOTOS_BASE = 'https://photos.dinakartumu.com'
@@ -67,5 +67,23 @@ describe('photoSrcset', () => {
 
   it('URL-encodes ids in srcset entries', () => {
     expect(photoSrcset('la mesa/DSC 001')).toContain('/photos/la%20mesa/DSC%20001.jpg 480w');
+  });
+});
+
+describe('assetUrl', () => {
+  it('takes a full key including extension, with no photos/ prefix added', () => {
+    expect(assetUrl('maps/berkeley-dark.png')).toBe(`${BASE}/maps/berkeley-dark.png`);
+  });
+
+  it('transforms a non-photo asset when given a width', () => {
+    expect(assetUrl('maps/berkeley-dark.png', { width: 1800, fit: 'scale-down' })).toBe(
+      `${BASE}/cdn-cgi/image/quality=82,format=auto,width=1800,fit=scale-down/maps/berkeley-dark.png`
+    );
+  });
+
+  it('is what photoUrl is built on — same output for the photo key', () => {
+    expect(assetUrl('photos/la-mesa/DSC04812.jpg', { width: 480 })).toBe(
+      photoUrl('la-mesa/DSC04812', { width: 480 })
+    );
   });
 });

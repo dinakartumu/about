@@ -1,0 +1,114 @@
+---
+/**
+ * The walks behind a photoset, over a Mapbox basemap.
+ *
+ * The basemap is a CSS background rather than an <image> in the SVG, so the
+ * light and dark variants can be swapped by selector and the visitor only ever
+ * downloads the one they can see. The routes sit on top as an SVG whose
+ * viewBox matches the basemap's pixel space exactly — they were projected into
+ * it by scripts/build-walk-maps.mjs, Web Mercator about the same centre and
+ * zoom Mapbox rendered at, which is what puts them on the street centrelines.
+ *
+ * Nothing is computed here and nothing runs in the browser: the geometry is
+ * committed, the PNGs live in R2 beside the photos and go through the same
+ * Cloudflare transform, so they arrive as AVIF. No Mapbox token ships.
+ */
+import { assetUrl } from '../lib/images';
+
+interface Props {
+  map: {
+    city: string;
+    images: { dark: string; light: string };
+    width: number;
+    height: number;
+    paths: string[];
+    walks: number;
+    miles: number;
+    months: number;
+    attribution: string;
+  };
+}
+const { map } = Astro.props;
+
+// The rendered PNG is 2x the logical box, so ask for that many pixels.
+const basemap = (key: string) => `url("${assetUrl(key, { width: map.width * 2, fit: 'scale-down' })}")`;
+
+const stats = [
+  [map.walks, map.walks === 1 ? 'walk' : 'walks'],
+  [map.miles, 'mi walked'],
+  [map.months, map.months === 1 ? 'month' : 'months'],
+] as const;
+---
+<section class="walkmap" aria-labelledby="walkmap-heading">
+  <h2 id="walkmap-heading">On foot in {map.city}</h2>
+
+  <div
+    class="frame"
+    style={`--map-dark: ${basemap(map.images.dark)}; --map-light: ${basemap(map.images.light)}; aspect-ratio: ${map.width} / ${map.height};`}
+  >
+    <svg
+      viewBox={`0 0 ${map.width} ${map.height}`}
+      role="img"
+      aria-label={`Map of ${map.walks} walks totalling ${map.miles} miles in ${map.city}`}
+    >
+      {map.paths.map((d) => <path d={d} />)}
+    </svg>
+  </div>
+
+  <p class="stats">
+    {stats.map(([value, label], i) => (
+      <>
+        {i > 0 && <span class="sep" aria-hidden="true">·</span>}
+        <span><b>{value}</b> {label}</span>
+      </>
+    ))}
+  </p>
+  <p class="attr">{map.attribution}</p>
+</section>
+
+<style>
+  .walkmap { margin-top: 4.5rem; }
+  .walkmap h2 {
+    margin: 0 0 1.5rem;
+    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+    letter-spacing: -0.01em;
+  }
+
+  /* Dark is the default, matching global.css; the inline theme script sets
+     data-theme before first paint, so there is no flash of the wrong basemap. */
+  .frame {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--surface);
+    background-image: var(--map-dark);
+    background-size: cover;
+    background-position: center;
+  }
+  :global(:root[data-theme='light']) .frame { background-image: var(--map-light); }
+
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* One weight, one colour: the basemap is already doing the talking, and
+     overlapping traces brighten the streets walked most. */
+  path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-opacity: 0.85;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .stats b { color: var(--text); font-weight: 600; }
+  .sep { opacity: 0.4; }
+  .attr { margin: 0.25rem 0 0; font-size: 0.7rem; color: var(--muted); opacity: 0.7; }
+</style>
