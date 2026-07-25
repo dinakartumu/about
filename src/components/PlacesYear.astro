@@ -307,26 +307,32 @@ const emptyText = `No check-ins in ${year}.`;
 
   h2 { font-size: 1.1rem; margin: 2.25rem 0 0.75rem; }
 
+  /* Everything inside .list is addressed with :global() because the month
+     swap rebuilds these rows via innerHTML, and elements created that way
+     never get Astro's data-astro-cid-* attribute — scoped selectors would
+     simply stop matching, dropping the layout entirely. Scoping stays on the
+     .list container, so nothing leaks past it. Same approach as
+     ListeningYear.astro. */
   .list {
     list-style: none;
     margin: 0;
     padding: 0;
     max-width: 44rem;
   }
-  .list li + li { border-top: 1px solid var(--surface); }
-  .row {
+  .list :global(li) + :global(li) { border-top: 1px solid var(--surface); }
+  .list :global(.row) {
     display: flex;
     align-items: baseline;
     gap: 1rem;
     padding: 0.55rem 0;
   }
-  .meta {
+  .list :global(.meta) {
     display: flex;
     flex-direction: column;
     min-width: 0;
   }
 
-  .name-row {
+  .list :global(.name-row) {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -335,7 +341,7 @@ const emptyText = `No check-ins in ${year}.`;
 
   /* Foursquare glyphs are dark gray on transparent: invert on the dark
      theme (the default), show as-is when the visitor picks light. */
-  .icon {
+  .list :global(.icon) {
     flex-shrink: 0;
     width: 26px;
     height: 26px;
@@ -346,20 +352,20 @@ const emptyText = `No check-ins in ${year}.`;
        background reads correctly on both themes without filters. */
     background: #e9e4da;
   }
-  :global(:root[data-theme='light']) .icon { filter: none; }
+  :global(:root[data-theme='light']) .list :global(.icon) { filter: none; }
 
-  .name {
+  .list :global(.name) {
     color: var(--heading);
     font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .sub { font-size: 0.85rem; }
-  .shout { font-style: italic; }
+  .list :global(.sub) { font-size: 0.85rem; }
+  .list :global(.shout) { font-style: italic; }
 
-  .date,
-  .count {
+  .list :global(.date),
+  .list :global(.count) {
     margin-left: auto;
     white-space: nowrap;
     font-size: 0.9rem;
@@ -374,14 +380,14 @@ const emptyText = `No check-ins in ${year}.`;
     gap: 0 2.5rem;
     max-width: 44rem;
   }
-  .compact .name { font-weight: 400; color: var(--text); }
+  .compact :global(.name) { font-weight: 400; color: var(--text); }
 
-  .city {
+  .list :global(.city) {
     font-size: 0.85rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .empty { padding: 0.55rem 0; }
+  .list :global(.empty) { padding: 0.55rem 0; }
 </style>
