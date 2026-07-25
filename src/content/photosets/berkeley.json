@@ -4,6 +4,44 @@
   "description": "The public stairways that thread the hills, the windows and doorways of the flats below, and the bay at the end of the day.",
   "cover": "berkeley/IMG_3667",
   "date": "2023-05-07",
+  "sections": [
+    {
+      "title": "Alley steps",
+      "count": 23
+    },
+    {
+      "title": "House windows",
+      "count": 24
+    },
+    {
+      "title": "House entrances",
+      "count": 23
+    },
+    {
+      "title": "Gardens",
+      "count": 15
+    },
+    {
+      "title": "Cats",
+      "count": 5
+    },
+    {
+      "title": "Little free libraries",
+      "count": 9
+    },
+    {
+      "title": "Cars",
+      "count": 8
+    },
+    {
+      "title": "Streets",
+      "count": 26
+    },
+    {
+      "title": "Sunsets",
+      "count": 18
+    }
+  ],
   "photos": [
     {
       "id": "berkeley/DSC03353",

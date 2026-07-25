@@ -9,6 +9,19 @@ const photosets = defineCollection({
     description: z.string().default(''),
     cover: z.string(),
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    /**
+     * Optional headings over consecutive runs of `photos`, in order. Omit for
+     * an unbroken set. Counts are advisory — see layOutSections in
+     * src/lib/photo-layout.ts for how over/under-runs are handled.
+     */
+    sections: z
+      .array(
+        z.object({
+          title: z.string().min(1),
+          count: z.number().int().positive(),
+        })
+      )
+      .optional(),
     photos: z
       .array(
         z.object({
