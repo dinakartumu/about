@@ -23,7 +23,7 @@ import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import 'dotenv/config';
-import { buildWalkMap } from '../src/lib/walk-map.ts';
+import { buildWalkMap, tripWindow } from '../src/lib/walk-map.ts';
 import { r2Client, uploadIfMissing } from './lib/r2.mjs';
 
 const MANIFEST_DIR = 'src/content/photosets';
@@ -87,17 +87,13 @@ for (const file of manifests) {
     : { city: set.city ?? cityForSlug(set.slug), sports: set.sports };
   const place = match.state ?? match.city;
   // The window is the photos' own span — the walks that produced them.
-  const taken = set.photos.map((p) => p.exif?.taken).filter(Boolean).sort();
-  if (!taken.length) {
+  const window = tripWindow(set.photos.map((p) => p.exif?.taken).filter(Boolean));
+  if (!window) {
     skipped.push([set.slug, 'no photo timestamps']);
     continue;
   }
 
-  const map = buildWalkMap(allActivities, {
-    ...match,
-    from: taken[0],
-    to: taken[taken.length - 1],
-  });
+  const map = buildWalkMap(allActivities, { ...match, ...window });
   if (!map) {
     skipped.push([set.slug, `not enough activity in ${place}`]);
     continue;
