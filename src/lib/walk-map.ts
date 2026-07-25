@@ -20,8 +20,14 @@
 /** Mapbox GL styles are 512px-tiled; zoom is defined against that, not 256. */
 const TILE_SIZE = 512;
 
-/** Strava sport types that count as walking. Runs and rides are another story. */
-export const WALK_SPORTS = new Set(['Walk']);
+/** Default when a set says nothing: the walking it was photographed on. */
+export const DEFAULT_SPORTS = ['Walk'];
+
+/** Sports done on foot — they get the accent stroke and the "walked" wording. */
+export const FOOT_SPORTS = new Set(['Walk', 'Hike', 'Run', 'TrailRun', 'VirtualRun']);
+
+/** A set asking for every activity it can find, however it was moved through. */
+export const ALL_SPORTS = 'all';
 
 /**
  * Below this a map is a lonely squiggle rather than a portrait of a place.
@@ -42,11 +48,24 @@ export type Point = [number, number];
 export interface WalkActivity {
   sport_type: string;
   city: string | null;
+  state?: string | null;
   /** Google encoded polyline; absent on indoor activities. */
   polyline: string | null;
   distance_mi: number;
   /** ISO 8601 start time. */
   date: string;
+}
+
+export interface SportTally {
+  sport: string;
+  count: number;
+  miles: number;
+}
+
+export interface RoutePath {
+  d: string;
+  /** Drives both the stroke colour and, in aggregate, the page's wording. */
+  foot: boolean;
 }
 
 export interface WalkMap {
@@ -55,9 +74,13 @@ export interface WalkMap {
   zoom: number;
   width: number;
   height: number;
-  /** One SVG path per walk, in the basemap's pixel space. */
-  paths: string[];
-  walks: number;
+  /** One SVG path per activity, in the basemap's pixel space. */
+  paths: RoutePath[];
+  /** Per-sport counts, largest first — the stats line and its legend. */
+  breakdown: SportTally[];
+  /** True when every matched activity was on foot: changes the wording. */
+  footOnly: boolean;
+  activities: number;
   miles: number;
   /** Calendar months touched, inclusive. */
   months: number;
@@ -197,17 +220,28 @@ export function decodePolyline(encoded: string): LatLng[] {
   return points;
 }
 
-/** Walks belonging to a set: right sport, right city, inside the photos' span. */
-export function selectWalks(
+export interface Match {
+  /** Strava's city label. Goa's activity spans three cities, hence state. */
+  city?: string;
+  /** Strava's state label — the right key when a trip roamed a region. */
+  state?: string;
+  /** Sport types to include, or ALL_SPORTS. Defaults to walking. */
+  sports?: string[] | typeof ALL_SPORTS;
+}
+
+/** Activities belonging to a set: right place, right sport, inside the photos' span. */
+export function selectActivities(
   activities: WalkActivity[],
-  city: string,
+  { city, state, sports = DEFAULT_SPORTS }: Match,
   from: string,
   to: string
 ): WalkActivity[] {
+  if (!city && !state) return [];
+  const wanted = sports === ALL_SPORTS ? null : new Set(sports);
   return activities.filter(
     (a) =>
-      WALK_SPORTS.has(a.sport_type) &&
-      a.city === city &&
+      (wanted === null || wanted.has(a.sport_type)) &&
+      (city ? a.city === city : a.state === state) &&
       typeof a.polyline === 'string' &&
       a.polyline.length > 0 &&
       a.date >= from &&
@@ -215,8 +249,21 @@ export function selectWalks(
   );
 }
 
-export interface BuildOptions {
-  city: string;
+/** Per-sport counts and mileage, largest first. */
+export function tally(activities: WalkActivity[]): SportTally[] {
+  const bySport = new Map<string, SportTally>();
+  for (const a of activities) {
+    const t = bySport.get(a.sport_type) ?? { sport: a.sport_type, count: 0, miles: 0 };
+    t.count += 1;
+    t.miles += a.distance_mi || 0;
+    bySport.set(a.sport_type, t);
+  }
+  return [...bySport.values()]
+    .map((t) => ({ ...t, miles: Math.round(t.miles) }))
+    .sort((a, b) => b.count - a.count || a.sport.localeCompare(b.sport));
+}
+
+export interface BuildOptions extends Match {
   /** Inclusive ISO bounds — the span of the set's photos. */
   from: string;
   to: string;
@@ -227,13 +274,15 @@ export interface BuildOptions {
 }
 
 /**
- * Select a set's walks and project them into a Mapbox frame, or return null
- * when there isn't enough walking to be worth drawing.
+ * Select a set's activities and project them into a Mapbox frame, or return
+ * null when there isn't enough movement to be worth drawing.
  */
 export function buildWalkMap(
   activities: WalkActivity[],
   {
     city,
+    state,
+    sports,
     from,
     to,
     width = 900,
@@ -242,14 +291,15 @@ export function buildWalkMap(
     tolerance = SIMPLIFY_TOLERANCE,
   }: BuildOptions
 ): WalkMap | null {
-  const matched = selectWalks(activities, city, from, to);
+  const matched = selectActivities(activities, { city, state, sports }, from, to);
   const miles = matched.reduce((sum, a) => sum + (a.distance_mi || 0), 0);
   if (matched.length < MIN_WALKS || miles < MIN_MILES) return null;
 
-  const routes = matched
-    .map((a) => decodePolyline(a.polyline as string))
-    .filter((r) => r.length > 1);
-  const bounds = boundsOf(routes);
+  // Keep each route paired with its activity so the sport survives projection.
+  const routed = matched
+    .map((a) => ({ activity: a, points: decodePolyline(a.polyline as string) }))
+    .filter((r) => r.points.length > 1);
+  const bounds = boundsOf(routed.map((r) => r.points));
   if (!bounds) return null;
 
   const zoom = fitZoom(bounds, width, height, padding);
@@ -264,12 +314,16 @@ export function buildWalkMap(
     mercatorY(lat, zoom) - originY,
   ];
 
-  const paths = routes
-    .map((route) => simplify(route.map(project), tolerance))
-    .filter((route) => route.length > 1)
-    .map((route) =>
-      route.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join('')
-    );
+  const paths: RoutePath[] = routed
+    .map((r) => ({
+      points: simplify(r.points.map(project), tolerance),
+      foot: FOOT_SPORTS.has(r.activity.sport_type),
+    }))
+    .filter((r) => r.points.length > 1)
+    .map((r) => ({
+      d: r.points.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(''),
+      foot: r.foot,
+    }));
   if (!paths.length) return null;
 
   return {
@@ -278,7 +332,9 @@ export function buildWalkMap(
     width,
     height,
     paths,
-    walks: matched.length,
+    breakdown: tally(matched),
+    footOnly: matched.every((a) => FOOT_SPORTS.has(a.sport_type)),
+    activities: matched.length,
     miles: Math.round(miles),
     months: monthsSpanned(matched.map((a) => a.date)),
   };

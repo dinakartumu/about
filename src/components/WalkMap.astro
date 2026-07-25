@@ -1,6 +1,6 @@
 ---
 /**
- * The walks behind a photoset, over a Mapbox basemap.
+ * The activity behind a photoset, over a Mapbox basemap.
  *
  * The basemap is a CSS background rather than an <image> in the SVG, so the
  * light and dark variants can be swapped by selector and the visitor only ever
@@ -9,22 +9,28 @@
  * it by scripts/build-walk-maps.mjs, Web Mercator about the same centre and
  * zoom Mapbox rendered at, which is what puts them on the street centrelines.
  *
+ * Most sets were photographed on foot and say so. Goa was ridden, so foot and
+ * wheel are drawn in different colours and the wording follows — "97 mi
+ * covered" rather than a claim about walking.
+ *
  * Nothing is computed here and nothing runs in the browser: the geometry is
  * committed, the PNGs live in R2 beside the photos and go through the same
- * Cloudflare transform, so they arrive as AVIF. No Mapbox token ships.
+ * Cloudflare transform. No Mapbox token ships.
  */
 import { assetUrl } from '../lib/images';
 
 interface Props {
   map: {
-    /** Display name; may differ from Strava's city label. */
+    /** Display name; may differ from Strava's labels. */
     title: string;
-    city: string;
+    place: string;
     images: { dark: string; light: string };
     width: number;
     height: number;
-    paths: string[];
-    walks: number;
+    paths: { d: string; foot: boolean }[];
+    breakdown: { sport: string; count: number; miles: number }[];
+    footOnly: boolean;
+    activities: number;
     miles: number;
     months: number;
     attribution: string;
@@ -33,16 +39,22 @@ interface Props {
 const { map } = Astro.props;
 
 // The rendered PNG is 2x the logical box, so ask for that many pixels.
-const basemap = (key: string) => `url("${assetUrl(key, { width: map.width * 2, fit: 'scale-down' })}")`;
+const basemap = (key: string) =>
+  `url("${assetUrl(key, { width: map.width * 2, fit: 'scale-down' })}")`;
 
-const stats = [
-  [map.walks, map.walks === 1 ? 'walk' : 'walks'],
-  [map.miles, 'mi walked'],
-  [map.months, map.months === 1 ? 'month' : 'months'],
-] as const;
+/** "TrailRun" → "trail runs", so the stats line reads as prose. */
+const spaced = (sport: string) => sport.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
+const sportLabel = (sport: string, count: number) =>
+  count === 1 ? spaced(sport) : `${spaced(sport)}s`;
+
+const FOOT = new Set(['walk', 'hike', 'run', 'trail run', 'virtual run']);
+const isFoot = (sport: string) => FOOT.has(spaced(sport));
+
+// Draw wheels first so the rarer foot routes read on top of them.
+const ordered = [...map.paths].sort((a, b) => Number(a.foot) - Number(b.foot));
 ---
 <section class="walkmap" aria-labelledby="walkmap-heading">
-  <h2 id="walkmap-heading">On foot in {map.title}</h2>
+  <h2 id="walkmap-heading">{map.footOnly ? 'On foot in' : 'Around'} {map.title}</h2>
 
   <div
     class="frame"
@@ -51,25 +63,28 @@ const stats = [
     <svg
       viewBox={`0 0 ${map.width} ${map.height}`}
       role="img"
-      aria-label={`Map of ${map.walks} walks totalling ${map.miles} miles in ${map.title}`}
+      aria-label={`Map of ${map.activities} activities totalling ${map.miles} miles in ${map.title}`}
     >
-      {map.paths.map((d) => <path d={d} />)}
+      {ordered.map((p) => <path class={p.foot ? 'foot' : 'wheel'} d={p.d} />)}
     </svg>
   </div>
 
   <p class="stats">
-    {stats.map(([value, label], i) => (
-      <>
-        {i > 0 && <span class="sep" aria-hidden="true">·</span>}
-        <span><b>{value}</b> {label}</span>
-      </>
+    {map.breakdown.map((t) => (
+      <span class={isFoot(t.sport) ? 'foot' : 'wheel'}>
+        <i class="dot" aria-hidden="true"></i><b>{t.count}</b> {sportLabel(t.sport, t.count)}
+      </span>
     ))}
+    <span><b>{map.miles}</b> mi {map.footOnly ? 'walked' : 'covered'}</span>
+    <span><b>{map.months}</b> {map.months === 1 ? 'month' : 'months'}</span>
   </p>
   <p class="attr">{map.attribution}</p>
 </section>
 
 <style>
-  .walkmap { margin-top: 4.5rem; }
+  .walkmap { margin-top: 4.5rem; --route-wheel: #6f9dc4; }
+  :global(:root[data-theme='light']) .walkmap { --route-wheel: #2f6690; }
+
   .walkmap h2 {
     margin: 0 0 1.5rem;
     font-size: clamp(1.35rem, 2.5vw, 1.75rem);
@@ -91,26 +106,35 @@ const stats = [
 
   svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  /* One weight, one colour: the basemap is already doing the talking, and
-     overlapping traces brighten the streets walked most. */
+  /* One weight per mode: the basemap is already doing the talking, and
+     overlapping traces brighten whatever was covered most. */
   path {
     fill: none;
-    stroke: var(--accent);
     stroke-opacity: 0.85;
     stroke-width: 2;
     stroke-linejoin: round;
     stroke-linecap: round;
   }
+  path.foot { stroke: var(--accent); }
+  path.wheel { stroke: var(--route-wheel); stroke-opacity: 0.72; }
 
   .stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.15rem 1rem;
     margin: 0.75rem 0 0;
     font-size: 0.9rem;
     color: var(--muted);
   }
   .stats b { color: var(--text); font-weight: 600; }
-  .sep { opacity: 0.4; }
-  .attr { margin: 0.25rem 0 0; font-size: 0.7rem; color: var(--muted); opacity: 0.7; }
+  .dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+  }
+  .stats .foot .dot { background: var(--accent); }
+  .stats .wheel .dot { background: var(--route-wheel); }
+  .attr { margin: 0.4rem 0 0; font-size: 0.7rem; color: var(--muted); opacity: 0.7; }
 </style>

@@ -16,6 +16,16 @@ const photosets = defineCollection({
      */
     city: z.string().optional(),
     /**
+     * Strava state, for a set named after a region rather than a town — Goa's
+     * activity is spread across Mapusa, Calangute and Panjim. Wins over `city`.
+     */
+    state: z.string().optional(),
+    /**
+     * Sport types to draw, or 'all'. Defaults to walking: most sets were
+     * photographed on foot, but Goa was ridden.
+     */
+    sports: z.union([z.literal('all'), z.array(z.string().min(1))]).optional(),
+    /**
      * Optional headings over consecutive runs of `photos`, in order. Omit for
      * an unbroken set. Counts are advisory — see layOutSections in
      * src/lib/photo-layout.ts for how over/under-runs are handled.
