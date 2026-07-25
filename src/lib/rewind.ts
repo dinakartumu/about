@@ -723,12 +723,17 @@ export function trendsAriaLabel(points: TrendPoint[], noun: string): string {
   return `Monthly ${noun}, peak ${fullMonth} ${peak.value.toLocaleString('en-US')}`;
 }
 
-// The API allows 60 requests per key per sliding 60s window. Builds make on
-// the order of 100-200 API calls (and the count grows with each new year
-// page), so pace requests client-side: track recent send times and wait for
-// the window to open before exceeding a safety margin. The 50-per-61s budget
-// stays under the key's 60 rpm limit.
-const RATE_LIMIT = 50;
+// The `pages-build` key is provisioned at 120 rpm (api_keys.rate_limit_rpm;
+// the schema *default* is 60, which an earlier version of this comment
+// described). Builds now make ~900 calls — every month of every year across
+// listening and places — so the client budget is the single biggest lever on
+// build time: pacing at 50/61s spent ~17 minutes almost entirely waiting.
+//
+// 100 per 61s (~98 rpm) roughly halves that while leaving ~20 rpm of headroom
+// for anything else using the key mid-build. Raising it further risks 429s;
+// rewindFetch retries those, but a build that leans on retries is slower than
+// one that stays under the limit.
+const RATE_LIMIT = 100;
 const RATE_WINDOW_MS = 61_000;
 const sentAt: number[] = [];
 
@@ -748,7 +753,14 @@ async function waitForRateWindow(): Promise<void> {
 // data, so identical GETs are deduped for the life of the build process.
 const fetchCache = new Map<string, Promise<unknown>>();
 
-/** Build-time fetch: throws on a missing key or any non-200, naming the path. */
+/**
+ * Build-time fetch: throws on a missing key or any non-200, naming the path.
+ *
+ * 429 is retried rather than thrown. The client budget above should keep the
+ * build under the key's limit on its own, but anything else touching the same
+ * key mid-build (a cron feed check, a backfill script) can push it over — and
+ * without a retry, one such collision fails the entire build.
+ */
 export function rewindFetch<T = unknown>(path: string): Promise<T> {
   const cached = fetchCache.get(path);
   if (cached) return cached as Promise<T>;
@@ -758,14 +770,23 @@ export function rewindFetch<T = unknown>(path: string): Promise<T> {
     if (!key) {
       throw new Error(`REWIND_API_KEY is not set (needed for ${path})`);
     }
-    await waitForRateWindow();
-    const res = await fetch(`${REWIND_BASE}${path}`, {
-      headers: { Authorization: `Bearer ${key}` },
-    });
-    if (!res.ok) {
-      throw new Error(`Rewind API ${res.status} on ${path}`);
+
+    for (let attempt = 0; ; attempt++) {
+      await waitForRateWindow();
+      const res = await fetch(`${REWIND_BASE}${path}`, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+
+      if (res.status === 429 && attempt < 4) {
+        const retryAfter = Number(res.headers.get('retry-after')) || 5;
+        await new Promise((resolve) => setTimeout(resolve, (retryAfter + 1) * 1000));
+        continue;
+      }
+      if (!res.ok) {
+        throw new Error(`Rewind API ${res.status} on ${path}`);
+      }
+      return res.json() as Promise<T>;
     }
-    return res.json() as Promise<T>;
   })();
 
   // A failed request is not cached — a retry within the same build may succeed.

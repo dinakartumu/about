@@ -4,8 +4,10 @@
  * by venue category, and the year's top categories/cities/venues (year-scoped
  * /v1/places/stats via from/to). Rendered by /places (current year) and
  * /places/{year}. Clicking a chart bar (or the month dropdown) dims the other
- * months; the header owns the selection. Places has no per-month item list, so
- * only the chart reacts.
+ * months and swaps the three top lists to that month; the header owns the
+ * selection. Per-month stats are fetched at build time for months that have
+ * check-ins (~140 across every year), so the lists follow the month on any
+ * year rather than staying year-scoped.
  *
  * The recent check-in list appears only on the current-year page — five
  * entries. Historical years show just the header, chart, and the three top
@@ -93,6 +95,27 @@ const stats: PlacesStats | null =
     ? shapePlacesStats(await rewindFetch<StatsJson>(`/v1/places/stats?${yearQuery}`))
     : null;
 
+// Per-month top lists, so picking a month swaps all three lists instead of
+// only dimming the chart. Months without check-ins are skipped, which bounds
+// this to the ~140 months that actually have data across every year.
+const monthStats: (PlacesStats | null)[] = new Array(12).fill(null);
+for (let m = 0; m < 12; m++) {
+  if ((countByMonth[m] ?? 0) === 0) continue;
+  // Same millisecond-precision bounds as yearQuery above: the API compares
+  // timestamp strings, so "T00:00:00Z" would sort after "T00:00:00.000Z".
+  const from = new Date(Date.UTC(year, m, 1)).toISOString();
+  const to = new Date(Date.UTC(year, m + 1, 1) - 1).toISOString();
+  const q = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+  monthStats[m] = shapePlacesStats(await rewindFetch<StatsJson>(`/v1/places/stats?${q}`));
+}
+
+// Island payload for the client-side month swap: index 12 is "all months".
+const emptyStats = { topCategories: [], topCities: [], topVenues: [] };
+const islandJson = JSON.stringify({
+  all: stats ?? emptyStats,
+  months: monthStats.map((s) => s ?? emptyStats),
+}).replace(/</g, '\\u003c');
+
 // The recent list only appears on the current-year page.
 const showRecent = year === currentYear;
 const checkins: RecentCheckin[] =
@@ -159,7 +182,7 @@ const emptyText = `No check-ins in ${year}.`;
   <div class="cols">
     <div>
       <h2>Top Categories</h2>
-      <ol class="list compact" role="list">
+      <ol id="top-categories" class="list compact" role="list">
         {(stats?.topCategories ?? []).map((c) => (
           <li>
             <div class="row">
@@ -178,7 +201,7 @@ const emptyText = `No check-ins in ${year}.`;
     </div>
     <div>
       <h2>Top Cities</h2>
-      <ol class="list compact" role="list">
+      <ol id="top-cities" class="list compact" role="list">
         {(stats?.topCities ?? []).map((c) => (
           <li>
             <div class="row">
@@ -192,7 +215,7 @@ const emptyText = `No check-ins in ${year}.`;
     </div>
     <div>
       <h2>Top Venues</h2>
-      <ol class="list compact" role="list">
+      <ol id="top-venues" class="list compact" role="list">
         {(stats?.topVenues ?? []).map((v) => (
           <li>
             <div class="row">
@@ -212,6 +235,65 @@ const emptyText = `No check-ins in ${year}.`;
     </div>
   </div>
 </section>
+
+<script id="places-island" type="application/json" is:inline set:html={islandJson} />
+
+<script>
+  // Swap the three top lists when the header resolves a month selection.
+  // MonthYearHeader owns the dropdown and the chart-bar clicks; it dispatches
+  // `chart:setMonth` with a calendar month index, or null for "all months".
+  {
+    const island = document.getElementById('places-island');
+    type Counted = { name: string; count: number; icon?: string | null };
+    type Venue = Counted & { city?: string | null };
+    type Stats = { topCategories: Counted[]; topCities: Counted[]; topVenues: Venue[] };
+
+    if (island?.textContent) {
+      const data = JSON.parse(island.textContent) as { all: Stats; months: Stats[] };
+
+      const esc = (s: string) =>
+        s.replace(
+          /[&<>"']/g,
+          (c) =>
+            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string
+        );
+
+      const n = (v: number) => Math.round(v).toLocaleString('en-US');
+
+      const icon = (src?: string | null) =>
+        src
+          ? `<img class="icon" src="${esc(src)}" alt="" width="20" height="20" loading="lazy" decoding="async">`
+          : '';
+
+      const iconLi = (c: Counted) =>
+        `<li><div class="row"><span class="name-row">${icon(c.icon)}<span class="name">${esc(c.name)}</span></span><span class="count muted">${n(c.count)}</span></div></li>`;
+
+      const cityLi = (c: Counted) =>
+        `<li><div class="row"><span class="name">${esc(c.name)}</span><span class="count muted">${n(c.count)}</span></div></li>`;
+
+      const venueLi = (v: Venue) =>
+        `<li><div class="row"><span class="name-row">${icon(v.icon)}<span class="name">${esc(v.name)}</span>${
+          v.city ? `<span class="city muted">${esc(v.city)}</span>` : ''
+        }</span><span class="count muted">${n(v.count)}</span></div></li>`;
+
+      const fill = <T,>(id: string, items: T[], render: (i: T) => string) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = items.length
+          ? items.map(render).join('')
+          : '<li class="empty muted">Nothing here yet.</li>';
+      };
+
+      document.addEventListener('chart:setMonth', (e) => {
+        const month = (e as CustomEvent).detail?.month as number | null;
+        const s = month == null ? data.all : (data.months[month] ?? data.all);
+        fill('top-categories', s.topCategories, iconLi);
+        fill('top-cities', s.topCities, cityLi);
+        fill('top-venues', s.topVenues, venueLi);
+      });
+    }
+  }
+</script>
 
 <style>
   .container { max-width: 44rem; }

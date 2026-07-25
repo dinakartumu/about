@@ -5,10 +5,11 @@
  * tracks lists. Rendered by both /listening (current year) and
  * /listening/{year}.
  *
- * Per-month top artists are fetched for every year to power the stacked chart
- * and the per-artist sparklines. Per-month albums + tracks (for the month
- * dropdown) are only fetched for the current year — historical years show
- * year-level lists, keeping the build cost bounded.
+ * Per-month top artists, albums, and tracks are fetched for every month of
+ * every year, so selecting a month updates all three lists no matter which
+ * year is shown. This costs ~24 extra API calls per past year at build time;
+ * fetching only the current year's months used to leave historical years
+ * showing year-level albums/tracks that ignored the month dropdown.
  */
 import {
   LISTENING_FIRST_YEAR,
@@ -36,7 +37,6 @@ interface Props {
 const { year } = Astro.props;
 
 const now = new Date();
-const isCurrentYear = year === now.getUTCFullYear();
 
 const years: number[] = [];
 for (let y = now.getUTCFullYear(); y >= LISTENING_FIRST_YEAR; y--) years.push(y);
@@ -82,12 +82,11 @@ if (year - 1 >= LISTENING_FIRST_YEAR) {
 }
 
 // One batch per range (months in sequence; rewindFetch self-throttles to the
-// API rate window). Artists are fetched for every range to feed the chart +
-// sparklines; albums/tracks per-month only for the current year's dropdown.
+// API rate window). Artists, albums, and tracks are all fetched for every
+// range so picking a month updates every list, on any year.
 interface MonthData {
   label: string;
   monthIndex: number | null; // 0..11, or null for "All months"
-  fetchedLists: boolean; // whether albums/tracks were fetched for this range
   artists: TopItem[];
   albums: TopItem[];
   tracks: TopItem[];
@@ -106,18 +105,13 @@ for (const { label, from, to } of ranges) {
     shapeTopList
   );
 
-  let albums: TopItem[] = [];
-  let tracks: TopItem[] = [];
-  const fetchedLists = isCurrentYear || isAll;
-  if (fetchedLists) {
-    [albums, tracks] = await Promise.all([
-      rewindFetch<TopListJson>(`/v1/listening/top/albums?${q}&limit=12`).then(shapeTopList),
-      rewindFetch<TopListJson>(`/v1/listening/top/tracks?${q}&limit=10`).then(shapeTopList),
-    ]);
-  }
+  const [albums, tracks] = await Promise.all([
+    rewindFetch<TopListJson>(`/v1/listening/top/albums?${q}&limit=12`).then(shapeTopList),
+    rewindFetch<TopListJson>(`/v1/listening/top/tracks?${q}&limit=10`).then(shapeTopList),
+  ]);
 
   if (monthIndex !== null) monthlyArtists[monthIndex] = artists;
-  months.push({ label, monthIndex, fetchedLists, artists, albums, tracks });
+  months.push({ label, monthIndex, artists, albums, tracks });
 }
 
 const [all] = months;
@@ -142,13 +136,11 @@ const linkAttrs = (link: string | null) =>
   link ? { href: link, target: '_blank', rel: 'noopener' } : {};
 
 // Island: months augmented with each artist's sparkline path, plus the
-// calendar month index, the month's play total (for the headline), and whether
-// its albums/tracks were fetched (past-year months only carry artists).
+// calendar month index and the month's play total (for the headline).
 const islandMonths = months.map((m) => ({
   label: m.label,
   monthIndex: m.monthIndex,
   total: m.monthIndex === null ? headline.totalPlays : (monthlyTotals[m.monthIndex] ?? 0),
-  fetchedLists: m.fetchedLists,
   artists: m.artists.map((a) => ({ ...a, spark: sparkPathByName[a.name] ?? '' })),
   albums: m.albums,
   tracks: m.tracks,
@@ -297,7 +289,6 @@ const islandJson = JSON.stringify(islandMonths).replace(/</g, '\\u003c');
     label: string;
     monthIndex: number | null;
     total: number;
-    fetchedLists: boolean;
     artists: Item[];
     albums: Item[];
     tracks: Item[];
@@ -370,16 +361,12 @@ const islandJson = JSON.stringify(islandMonths).replace(/</g, '\\u003c');
 
     // Apply an island index (0 = All months): swap the lists, update the
     // headline count, and tell the chart which calendar month to highlight.
-    // Albums/tracks are only swapped when that range fetched them (past-year
-    // months carry artists only, so their album/track lists stay year-level).
     const applyMonth = (index: number) => {
       const m = months[index];
       if (!m) return;
       fill('top-artists', m.artists, artistLi);
-      if (m.fetchedLists) {
-        fill('top-albums', m.albums, albumLi);
-        fill('top-tracks', m.tracks, trackLi);
-      }
+      fill('top-albums', m.albums, albumLi);
+      fill('top-tracks', m.tracks, trackLi);
       if (countEl) countEl.textContent = m.total.toLocaleString('en-US');
       if (nounEl) nounEl.textContent = m.total === 1 ? 'play' : 'plays';
       document.dispatchEvent(
