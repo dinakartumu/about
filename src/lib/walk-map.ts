@@ -24,11 +24,13 @@ const TILE_SIZE = 512;
 export const WALK_SPORTS = new Set(['Walk']);
 
 /**
- * Below this a map is a lonely squiggle rather than a portrait of a place:
- * Napa and Palo Alto have a single afternoon walk each. Sets under the bar
- * render nothing.
+ * Below this a map is a lonely squiggle rather than a portrait of a place.
+ * Mileage carries most of the judgement — Fremont has four walks totalling
+ * under five miles and reads as noise, while Varanasi has four totalling
+ * sixteen and is a real portrait of a compact old city. The walk count only
+ * has to rule out a single line pretending to be a map.
  */
-export const MIN_WALKS = 5;
+export const MIN_WALKS = 3;
 export const MIN_MILES = 10;
 
 /** Simplification tolerance in output pixels — visually lossless, ~3x smaller. */

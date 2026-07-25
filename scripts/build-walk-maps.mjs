@@ -18,6 +18,7 @@
  * if a backfill changes history.
  */
 import { parseArgs } from 'node:util';
+import { createHash } from 'node:crypto';
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -91,13 +92,12 @@ for (const file of manifests) {
     continue;
   }
 
-  const images = Object.fromEntries(
-    Object.keys(MAP_STYLES).map((theme) => [theme, `maps/${set.slug}-${theme}.png`])
-  );
   const record = {
     slug: set.slug,
+    /** Display name. `city` is Strava's label and can differ — Dharamshala. */
+    title: set.title,
     city,
-    images,
+    images: {},
     ...map,
     attribution: '© Mapbox © OpenStreetMap',
   };
@@ -118,8 +118,15 @@ for (const file of manifests) {
   };
 
   if (opts['skip-image']) {
+    // Carry the existing keys forward — they name bytes already in R2.
+    const prev = path.join(OUT_DIR, `${set.slug}.json`);
+    if (!existsSync(prev)) {
+      console.error(`  no existing ${prev} to keep image keys from — run without --skip-image`);
+      process.exit(1);
+    }
+    record.images = JSON.parse(await readFile(prev, 'utf8')).images;
     await write();
-    console.log(`  ${Object.values(images).join(', ')} (left alone)`);
+    console.log(`  ${Object.values(record.images).join(', ')} (left alone)`);
     built.push(set.slug);
     continue;
   }
@@ -154,8 +161,18 @@ for (const file of manifests) {
       process.exit(1);
     }
     const png = Buffer.from(await res.arrayBuffer());
-    const result = await uploadIfMissing(client, bucket, images[theme], png, { force: opts.force });
-    console.log(`  ${images[theme]} (${result}, ${(png.length / 1024).toFixed(0)} KB)`);
+    // Content-hashed key: regenerating a basemap writes a new object rather
+    // than replacing one behind a CDN cache, so a stale image can never be
+    // served and a negative cache on the old key can never poison the new one.
+    const hash = createHash('sha256').update(png).digest('hex').slice(0, 8);
+    const key = `maps/${set.slug}-${theme}-${hash}.png`;
+    record.images[theme] = key;
+
+    const result = await uploadIfMissing(client, bucket, key, png, {
+      force: opts.force,
+      contentType: 'image/png',
+    });
+    console.log(`  ${key} (${result}, ${(png.length / 1024).toFixed(0)} KB)`);
   }
 
   await write();

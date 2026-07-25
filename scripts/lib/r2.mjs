@@ -13,8 +13,18 @@ export function r2Client({ accountId, accessKeyId, secretAccessKey }) {
  * Returns 'uploaded', 'skipped' (exists, same size), or 'mismatch' (exists but
  * the remote size differs from the local body — likely a re-exported edit).
  * Pass { force: true } to skip the existence check and PUT unconditionally.
+ *
+ * contentType defaults to JPEG because almost everything here is a photo; the
+ * walk-map basemaps are PNG and must say so, or Cloudflare's image resizer is
+ * handed a file whose bytes contradict its type.
  */
-export async function uploadIfMissing(client, bucket, key, body, { force = false } = {}) {
+export async function uploadIfMissing(
+  client,
+  bucket,
+  key,
+  body,
+  { force = false, contentType = 'image/jpeg' } = {}
+) {
   if (!force) {
     try {
       const head = await client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
@@ -24,7 +34,7 @@ export async function uploadIfMissing(client, bucket, key, body, { force = false
     }
   }
   await client.send(
-    new PutObjectCommand({ Bucket: bucket, Key: key, Body: body, ContentType: 'image/jpeg' })
+    new PutObjectCommand({ Bucket: bucket, Key: key, Body: body, ContentType: contentType })
   );
   return 'uploaded';
 }

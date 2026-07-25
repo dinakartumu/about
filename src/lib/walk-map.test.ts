@@ -182,7 +182,7 @@ describe('buildWalkMap', () => {
     expect(map!.miles).toBeGreaterThanOrEqual(MIN_MILES);
   });
 
-  it('returns null below the walk count', () => {
+  it('returns null below the walk count, however far those walks went', () => {
     expect(buildWalkMap(enough(MIN_WALKS - 1, { distance_mi: 50 }), opts)).toBeNull();
   });
 

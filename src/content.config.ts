@@ -10,6 +10,12 @@ const photosets = defineCollection({
     cover: z.string(),
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     /**
+     * City as Strava labels it, when the slug doesn't match. Only used to find
+     * the set's walks — Dharamshala is "Dharamsala" there, and a slug-derived
+     * guess silently finds nothing.
+     */
+    city: z.string().optional(),
+    /**
      * Optional headings over consecutive runs of `photos`, in order. Omit for
      * an unbroken set. Counts are advisory — see layOutSections in
      * src/lib/photo-layout.ts for how over/under-runs are handled.
