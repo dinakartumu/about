@@ -11,9 +11,11 @@ describe('photoUrl', () => {
     expect(photoUrl('la-mesa/DSC04812')).toBe(`${BASE}/photos/la-mesa/DSC04812.jpg`);
   });
 
+  // Param order below is defaults-then-opts because photoUrl spreads opts last so
+  // callers can override format (see the format test). Cloudflare ignores order.
   it('returns a cdn-cgi transform URL when a width is given', () => {
     expect(photoUrl('la-mesa/DSC04812', { width: 480 })).toBe(
-      `${BASE}/cdn-cgi/image/width=480,quality=82,format=auto/photos/la-mesa/DSC04812.jpg`
+      `${BASE}/cdn-cgi/image/quality=82,format=auto,width=480/photos/la-mesa/DSC04812.jpg`
     );
   });
 
@@ -23,7 +25,7 @@ describe('photoUrl', () => {
 
   it('URL-encodes path segments in the transform URL', () => {
     expect(photoUrl('la mesa/DSC 001', { width: 480 })).toBe(
-      `${BASE}/cdn-cgi/image/width=480,quality=82,format=auto/photos/la%20mesa/DSC%20001.jpg`
+      `${BASE}/cdn-cgi/image/quality=82,format=auto,width=480/photos/la%20mesa/DSC%20001.jpg`
     );
   });
 
@@ -31,7 +33,18 @@ describe('photoUrl', () => {
     const url = photoUrl('la-mesa/DSC04812', { width: undefined, height: 500 });
     expect(url).not.toContain('undefined');
     expect(url).toBe(
-      `${BASE}/cdn-cgi/image/height=500,quality=82,format=auto/photos/la-mesa/DSC04812.jpg`
+      `${BASE}/cdn-cgi/image/quality=82,format=auto,height=500/photos/la-mesa/DSC04812.jpg`
+    );
+  });
+
+  // Guards the reason opts is spread after the defaults: OG images must be able to
+  // force jpeg, since format=auto serves AVIF and X rejects it for link cards.
+  it('lets a caller override the default format', () => {
+    expect(photoUrl('la-mesa/DSC04812', { width: 1200, format: 'jpeg' })).toContain(
+      'format=jpeg'
+    );
+    expect(photoUrl('la-mesa/DSC04812', { width: 1200, format: 'jpeg' })).not.toContain(
+      'format=auto'
     );
   });
 });

@@ -16,6 +16,9 @@ export function photoUrl(id: string, opts: TransformOpts = {}): string {
   if (!TRANSFORMS_ENABLED || (!opts.width && !opts.height)) {
     return `${PHOTOS_BASE}/${path}`;
   }
+  // Defaults first so opts can override them — notably format, which OG images set
+  // to 'jpeg'. Don't reorder to put opts first: Cloudflare ignores param order, and
+  // spreading opts last is what makes the override work.
   const params = Object.entries({ quality: 82, format: 'auto', ...opts })
     .filter(([, v]) => v !== undefined)
     .map(([k, v]) => `${k}=${v}`)
