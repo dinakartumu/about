@@ -12,6 +12,7 @@ import {
   selectActivities,
   simplify,
   tally,
+  tripWindow,
   type WalkActivity,
 } from './walk-map';
 
@@ -120,6 +121,37 @@ describe('fitZoom', () => {
   it('zooms out for a wider area', () => {
     const wide = { minLat: 30, maxLat: 45, minLng: -125, maxLng: -110 };
     expect(fitZoom(wide, 900, 780, 30)).toBeLessThan(fitZoom(bounds, 900, 780, 30));
+  });
+});
+
+describe('tripWindow', () => {
+  it('widens to whole UTC days', () => {
+    expect(tripWindow(['2025-05-27T13:38:18.000Z', '2025-06-04T04:54:11.000Z'])).toEqual({
+      from: '2025-05-27T00:00:00.000Z',
+      to: '2025-06-04T23:59:59.999Z',
+    });
+  });
+
+  it('covers activity later on the last day than the final photo', () => {
+    // Triund began 2025-06-04T07:05:42Z; the last frame was 04:54:11Z.
+    const w = tripWindow(['2025-05-27T13:38:18.000Z', '2025-06-04T04:54:11.000Z']);
+    expect('2025-06-04T07:05:42Z' >= w.from && '2025-06-04T07:05:42Z' <= w.to).toBe(true);
+  });
+
+  it('ignores order', () => {
+    expect(tripWindow(['2025-06-04T00:00:00.000Z', '2025-05-27T00:00:00.000Z']).from)
+      .toBe('2025-05-27T00:00:00.000Z');
+  });
+
+  it('handles a single day', () => {
+    expect(tripWindow(['2025-06-04T12:00:00.000Z'])).toEqual({
+      from: '2025-06-04T00:00:00.000Z',
+      to: '2025-06-04T23:59:59.999Z',
+    });
+  });
+
+  it('is null with nothing to go on', () => {
+    expect(tripWindow([])).toBeNull();
   });
 });
 

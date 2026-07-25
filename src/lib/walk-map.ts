@@ -187,6 +187,23 @@ export function fitZoom(bounds: Bounds, width: number, height: number, padding: 
   return 1;
 }
 
+/**
+ * The window a set's activity should be drawn from, given its photo times.
+ *
+ * Widened to whole UTC days, because a set covers days and not instants. The
+ * Triund hike began two hours after Dharamshala's last frame — the biggest
+ * walk of that trip, excluded on a technicality by a window that ended at the
+ * shutter. Anything on the first or last day of a set belongs to it.
+ */
+export function tripWindow(taken: string[]): { from: string; to: string } | null {
+  const days = taken.filter(Boolean).map((t) => t.slice(0, 10)).sort();
+  if (!days.length) return null;
+  return {
+    from: `${days[0]}T00:00:00.000Z`,
+    to: `${days[days.length - 1]}T23:59:59.999Z`,
+  };
+}
+
 /** Calendar months spanned, inclusive: Mar 2022 through May 2023 is 15. */
 export function monthsSpanned(dates: string[]): number {
   const stamps = dates
