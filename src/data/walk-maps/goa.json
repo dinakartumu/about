@@ -145,6 +145,7 @@
     }
   ],
   "footOnly": false,
+  "walkOnly": false,
   "activities": 28,
   "miles": 97,
   "months": 2,

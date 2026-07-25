@@ -35,6 +35,7 @@
     }
   ],
   "footOnly": true,
+  "walkOnly": true,
   "activities": 3,
   "miles": 13,
   "months": 1,

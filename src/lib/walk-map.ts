@@ -20,11 +20,17 @@
 /** Mapbox GL styles are 512px-tiled; zoom is defined against that, not 256. */
 const TILE_SIZE = 512;
 
-/** Default when a set says nothing: the walking it was photographed on. */
-export const DEFAULT_SPORTS = ['Walk'];
-
-/** Sports done on foot — they get the accent stroke and the "walked" wording. */
+/** Sports done on foot — they get the accent stroke and the on-foot wording. */
 export const FOOT_SPORTS = new Set(['Walk', 'Hike', 'Run', 'TrailRun', 'VirtualRun']);
+
+/**
+ * Default when a set says nothing: however the place was covered on foot.
+ *
+ * Walk-only was too narrow and quietly dropped real ground — Dharamshala's
+ * hikes, and twenty of La Mesa's runs. A hill town is hiked and a suburb is
+ * run; both are the same act of moving through the place the photos came from.
+ */
+export const DEFAULT_SPORTS = [...FOOT_SPORTS];
 
 /** A set asking for every activity it can find, however it was moved through. */
 export const ALL_SPORTS = 'all';
@@ -78,8 +84,10 @@ export interface WalkMap {
   paths: RoutePath[];
   /** Per-sport counts, largest first — the stats line and its legend. */
   breakdown: SportTally[];
-  /** True when every matched activity was on foot: changes the wording. */
+  /** True when every matched activity was on foot: "Around X" otherwise. */
   footOnly: boolean;
+  /** True when all of it was walking, so "mi walked" is literally accurate. */
+  walkOnly: boolean;
   activities: number;
   miles: number;
   /** Calendar months touched, inclusive. */
@@ -334,6 +342,7 @@ export function buildWalkMap(
     paths,
     breakdown: tally(matched),
     footOnly: matched.every((a) => FOOT_SPORTS.has(a.sport_type)),
+    walkOnly: matched.every((a) => a.sport_type === 'Walk'),
     activities: matched.length,
     miles: Math.round(miles),
     months: monthsSpanned(matched.map((a) => a.date)),

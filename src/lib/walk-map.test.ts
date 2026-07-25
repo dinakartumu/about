@@ -235,11 +235,30 @@ describe('buildWalkMap', () => {
     expect(buildWalkMap(enough(), { ...opts, city: 'Nowhere' })).toBeNull();
   });
 
-  it('marks a walking-only set footOnly, and a mixed one not', () => {
-    expect(buildWalkMap(enough(), opts).footOnly).toBe(true);
+  it('marks a walking-only set both footOnly and walkOnly', () => {
+    const map = buildWalkMap(enough(), opts);
+    expect(map.footOnly).toBe(true);
+    expect(map.walkOnly).toBe(true);
+  });
+
+  it('is footOnly but not walkOnly once hikes or runs are in', () => {
+    const map = buildWalkMap([...enough(4), ...enough(4, { sport_type: 'Hike' })], opts);
+    expect(map.footOnly).toBe(true);
+    expect(map.walkOnly).toBe(false);
+  });
+
+  it('is neither once wheels are involved', () => {
     const mixed = [...enough(4), ...enough(4, { sport_type: 'Ride' })];
     const map = buildWalkMap(mixed, { ...opts, sports: 'all' });
     expect(map.footOnly).toBe(false);
+    expect(map.walkOnly).toBe(false);
+  });
+
+  it('takes hikes and runs by default, not just walks', () => {
+    const onFoot = [...enough(2), ...enough(2, { sport_type: 'Hike' }), ...enough(2, { sport_type: 'Run' })];
+    expect(buildWalkMap(onFoot, opts).activities).toBe(6);
+    // ...but still not rides.
+    expect(buildWalkMap([...onFoot, walk({ sport_type: 'Ride' })], opts).activities).toBe(6);
   });
 
   it('tags each path with whether it was on foot', () => {
