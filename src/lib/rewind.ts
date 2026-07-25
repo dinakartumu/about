@@ -7,6 +7,7 @@
  */
 
 import { decodePolyline, polylineToSvgPath } from './polyline';
+import { readCache, writeCache } from './build-cache';
 
 const REWIND_BASE = 'https://rewind.dinakartumu.com';
 
@@ -756,6 +757,11 @@ const fetchCache = new Map<string, Promise<unknown>>();
 /**
  * Build-time fetch: throws on a missing key or any non-200, naming the path.
  *
+ * Closed-year requests are served from the committed shard cache when one
+ * exists (see build-cache.ts), so a normal build only talks to the API about
+ * the current year. A cache miss just falls through to a live fetch, which
+ * keeps the build correct with no cache at all — only slower.
+ *
  * 429 is retried rather than thrown. The client budget above should keep the
  * build under the key's limit on its own, but anything else touching the same
  * key mid-build (a cron feed check, a backfill script) can push it over — and
@@ -764,6 +770,14 @@ const fetchCache = new Map<string, Promise<unknown>>();
 export function rewindFetch<T = unknown>(path: string): Promise<T> {
   const cached = fetchCache.get(path);
   if (cached) return cached as Promise<T>;
+
+  const currentYear = new Date().getUTCFullYear();
+  const fromDisk = readCache(path, currentYear);
+  if (fromDisk !== undefined) {
+    const hit = Promise.resolve(fromDisk as T);
+    fetchCache.set(path, hit);
+    return hit;
+  }
 
   const request = (async () => {
     const key = import.meta.env.REWIND_API_KEY;
@@ -785,7 +799,9 @@ export function rewindFetch<T = unknown>(path: string): Promise<T> {
       if (!res.ok) {
         throw new Error(`Rewind API ${res.status} on ${path}`);
       }
-      return res.json() as Promise<T>;
+      const json = (await res.json()) as T;
+      writeCache(path, currentYear, json);
+      return json;
     }
   })();
 
