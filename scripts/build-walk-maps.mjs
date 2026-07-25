@@ -78,7 +78,14 @@ for (const file of manifests) {
   const set = JSON.parse(await readFile(path.join(MANIFEST_DIR, file), 'utf8'));
   if (wanted && !wanted.has(set.slug)) continue;
 
-  const city = set.city ?? cityForSlug(set.slug);
+  // Where to look, and for what. A set naming a region (Goa) matches on state
+  // so activity spread across its towns all counts; otherwise on city, which
+  // defaults to the slug and can be overridden when Strava spells it its own
+  // way (Dharamsala).
+  const match = set.state
+    ? { state: set.state, sports: set.sports }
+    : { city: set.city ?? cityForSlug(set.slug), sports: set.sports };
+  const place = match.state ?? match.city;
   // The window is the photos' own span — the walks that produced them.
   const taken = set.photos.map((p) => p.exif?.taken).filter(Boolean).sort();
   if (!taken.length) {
@@ -86,9 +93,13 @@ for (const file of manifests) {
     continue;
   }
 
-  const map = buildWalkMap(allActivities, { city, from: taken[0], to: taken[taken.length - 1] });
+  const map = buildWalkMap(allActivities, {
+    ...match,
+    from: taken[0],
+    to: taken[taken.length - 1],
+  });
   if (!map) {
-    skipped.push([set.slug, `not enough walking in ${city}`]);
+    skipped.push([set.slug, `not enough activity in ${place}`]);
     continue;
   }
 
@@ -96,14 +107,15 @@ for (const file of manifests) {
     slug: set.slug,
     /** Display name. `city` is Strava's label and can differ — Dharamshala. */
     title: set.title,
-    city,
+    place,
     images: {},
     ...map,
     attribution: '© Mapbox © OpenStreetMap',
   };
 
+  const summary = map.breakdown.map((t) => `${t.count} ${t.sport}`).join(', ');
   console.log(
-    `${set.slug}: ${map.walks} walks, ${map.miles} mi, ${map.months} months ` +
+    `${set.slug}: ${summary} — ${map.miles} mi over ${map.months} month${map.months === 1 ? '' : 's'} ` +
       `— zoom ${map.zoom} @ ${map.center.map((n) => n.toFixed(4)).join(',')}`
   );
 
