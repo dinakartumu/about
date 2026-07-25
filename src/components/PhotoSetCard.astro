@@ -8,10 +8,10 @@ interface Props {
   coverWidth?: number;
   coverHeight?: number;
   count: number;
-  date: string;
+  /** Display label, single year or a span — see yearLabel in src/lib/photoset.ts. */
+  year: string;
 }
-const { slug, title, cover, coverWidth, coverHeight, count, date } = Astro.props;
-const year = date.slice(0, 4);
+const { slug, title, cover, coverWidth, coverHeight, count, year } = Astro.props;
 const ratio = coverWidth && coverHeight ? `${coverWidth} / ${coverHeight}` : '3 / 2';
 
 // Native aspect ratio: request by width and let height follow the source.
