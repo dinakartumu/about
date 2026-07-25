@@ -9,10 +9,14 @@ interface TransformOpts {
   format?: 'auto' | 'jpeg' | 'webp' | 'png';
 }
 
-/** URL for a photo by manifest id (e.g. "la-mesa/DSC04812"), optionally resized. */
-export function photoUrl(id: string, opts: TransformOpts = {}): string {
-  // Ids come from raw file basenames and may contain spaces etc.
-  const path = encodeURI(`photos/${id}.jpg`);
+/**
+ * URL for any object in the bucket, by full key including extension.
+ * Photos have photoUrl; this is for everything that isn't one — currently the
+ * walk-map basemaps at maps/<slug>-<theme>.png.
+ */
+export function assetUrl(key: string, opts: TransformOpts = {}): string {
+  // Keys derive from raw file basenames and may contain spaces etc.
+  const path = encodeURI(key);
   if (!TRANSFORMS_ENABLED || (!opts.width && !opts.height)) {
     return `${PHOTOS_BASE}/${path}`;
   }
@@ -24,6 +28,11 @@ export function photoUrl(id: string, opts: TransformOpts = {}): string {
     .map(([k, v]) => `${k}=${v}`)
     .join(',');
   return `${PHOTOS_BASE}/cdn-cgi/image/${params}/${path}`;
+}
+
+/** URL for a photo by manifest id (e.g. "la-mesa/DSC04812"), optionally resized. */
+export function photoUrl(id: string, opts: TransformOpts = {}): string {
+  return assetUrl(`photos/${id}.jpg`, opts);
 }
 
 export const PHOTO_WIDTHS = [480, 800, 1200, 1600, 2400];
