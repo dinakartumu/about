@@ -160,11 +160,11 @@ interface ApiTrendsResponse {
 }
 
 /**
- * Earliest listening year page. The Last.fm account was registered 2016-08
- * but has no 2016 scrobbles, so the pages start at 2017 — bump this back
- * if backfilled 2016 data ever appears.
+ * Earliest listening year page. Last.fm scrobbling starts 2017-10-04, but the
+ * years before it were backfilled from a Spotify Extended Streaming History
+ * export, so the history now reaches 2013-09-07.
  */
-export const LISTENING_FIRST_YEAR = 2017;
+export const LISTENING_FIRST_YEAR = 2013;
 
 /**
  * Month options for the listening dropdown: an "All months" entry spanning
