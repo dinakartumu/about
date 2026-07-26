@@ -205,6 +205,22 @@ describe('selectActivities', () => {
     expect(sel(goa, { city: 'Goa', sports: 'all' })).toEqual([]);
   });
 
+  it('matches several cities when a city is labelled by neighbourhood', () => {
+    // San Francisco: Strava files the same trip under Noe Valley, the Mission
+    // and Parkside, and the state is all of California.
+    const sf = [
+      walk({ city: 'Noe Valley', state: 'California' }),
+      walk({ city: 'Mission District', state: 'California' }),
+      walk({ city: 'Parkside', state: 'California' }),
+      walk({ city: 'Berkeley', state: 'California' }),
+    ];
+    expect(sel(sf, { city: ['Noe Valley', 'Mission District', 'Parkside'] })).toHaveLength(3);
+  });
+
+  it('matches nothing for an empty city list', () => {
+    expect(sel([walk()], { city: [] })).toEqual([]);
+  });
+
   it('matches nothing when given no place at all', () => {
     expect(sel([walk()], {})).toEqual([]);
   });

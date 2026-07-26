@@ -81,11 +81,12 @@ for (const file of manifests) {
   // Where to look, and for what. A set naming a region (Goa) matches on state
   // so activity spread across its towns all counts; otherwise on city, which
   // defaults to the slug and can be overridden when Strava spells it its own
-  // way (Dharamsala).
+  // way (Dharamsala) or scatters one city over its neighbourhoods (San
+  // Francisco).
   const match = set.state
     ? { state: set.state, sports: set.sports }
     : { city: set.city ?? cityForSlug(set.slug), sports: set.sports };
-  const place = match.state ?? match.city;
+  const place = match.state ?? [match.city].flat().join(', ');
   // The window is the photos' own span — the walks that produced them.
   const window = tripWindow(set.photos.map((p) => p.exif?.taken).filter(Boolean));
   if (!window) {
