@@ -24,11 +24,24 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import 'dotenv/config';
 import { buildWalkMap, tripWindow } from '../src/lib/walk-map.ts';
+import { arcActivities } from '../src/lib/arc.ts';
+import { readArcWindow } from './lib/arc-source.mjs';
 import { r2Client, uploadIfMissing } from './lib/r2.mjs';
 
 const MANIFEST_DIR = 'src/content/photosets';
 const OUT_DIR = 'src/data/walk-maps';
 const CACHE_DIR = 'rewind-cache';
+/**
+ * An Arc Timeline Editor backup, for the sets whose ground Strava never held.
+ * Read only for sets that ask for it by declaring `arc`, and only the buckets
+ * their window touches. Nothing from it is committed but the drawn route.
+ */
+const ARC_DIR =
+  process.env.ARC_BACKUP_DIR ??
+  path.join(
+    process.env.HOME ?? '',
+    'Library/Mobile Documents/iCloud~com~bigpaua~Arc-Timeline-Editor/Documents/Backup'
+  );
 /**
  * One basemap per site theme. The page swaps them with a CSS media query
  * rather than hiding one in the DOM, so a visitor only ever downloads the one
@@ -49,6 +62,27 @@ const { values: opts, positionals } = parseArgs({
 /** "la-mesa" -> "La Mesa". A set's own `city` wins when the slug lies. */
 const cityForSlug = (slug) =>
   slug.split('-').filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
+
+/**
+ * The backup itself, given either its own path or the folder of backup chains
+ * Arc writes them into. Chains are named by UUID, so the newest one wins.
+ */
+async function resolveArcDir(dir) {
+  if (existsSync(path.join(dir, 'items'))) return dir;
+  if (!existsSync(dir)) return null;
+  const chains = [];
+  for (const name of await readdir(dir)) {
+    const candidate = path.join(dir, name);
+    if (!existsSync(path.join(candidate, 'items'))) continue;
+    const meta = path.join(candidate, 'metadata.json');
+    const when = existsSync(meta)
+      ? JSON.parse(await readFile(meta, 'utf8')).lastBackupDate ?? ''
+      : '';
+    chains.push([when, candidate]);
+  }
+  chains.sort((a, b) => b[0].localeCompare(a[0]));
+  return chains.length ? chains[0][1] : null;
+}
 
 // --- every activity we have on disk, deduped -------------------------------
 const activities = new Map();
@@ -94,7 +128,32 @@ for (const file of manifests) {
     continue;
   }
 
-  const map = buildWalkMap(allActivities, { ...match, ...window });
+  // Some ground was never deliberately recorded — Pondicherry was three days
+  // of walking with Strava closed. Arc ran through it anyway, so a set can ask
+  // for its timeline as well. It carries no city label, hence the centre and
+  // radius: without them a long window would sweep in every other city in it.
+  let pool = allActivities;
+  if (set.arc) {
+    const arcDir = await resolveArcDir(ARC_DIR);
+    if (!arcDir) {
+      console.error(`${set.slug} asks for Arc, but no backup at ${ARC_DIR} — set ARC_BACKUP_DIR.`);
+      process.exit(1);
+    }
+    const { items, samples } = await readArcWindow(arcDir, window);
+    const fromArc = arcActivities(items, samples, {
+      city: [match.city].flat()[0] ?? place,
+      state: match.state ?? null,
+      center: set.arc.center,
+      radiusKm: set.arc.radiusKm,
+    });
+    pool = [...allActivities, ...fromArc];
+    console.log(
+      `${set.slug}: ${fromArc.length} activities from Arc ` +
+        `(${items.length} items, ${samples.length} samples read)`
+    );
+  }
+
+  const map = buildWalkMap(pool, { ...match, ...window });
   if (!map) {
     skipped.push([set.slug, `not enough activity in ${place}`]);
     continue;

@@ -28,6 +28,19 @@ const photosets = defineCollection({
      */
     sports: z.union([z.literal('all'), z.array(z.string().min(1))]).optional(),
     /**
+     * Take this set's activity from the Arc timeline backup as well as Strava,
+     * for ground that was walked without anything being recorded — Pondicherry
+     * was three days on foot with Strava closed. Arc has no city label, so the
+     * set says where it was: `center` is [lat, lng] and anything whose route
+     * sits further than `radiusKm` from it belongs to some other trip.
+     */
+    arc: z
+      .object({
+        center: z.tuple([z.number(), z.number()]),
+        radiusKm: z.number().positive().default(25),
+      })
+      .optional(),
+    /**
      * Optional headings over consecutive runs of `photos`, in order. Omit for
      * an unbroken set. Counts are advisory — see layOutSections in
      * src/lib/photo-layout.ts for how over/under-runs are handled.
