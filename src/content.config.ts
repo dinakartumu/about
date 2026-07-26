@@ -12,9 +12,11 @@ const photosets = defineCollection({
     /**
      * City as Strava labels it, when the slug doesn't match. Only used to find
      * the set's walks — Dharamshala is "Dharamsala" there, and a slug-derived
-     * guess silently finds nothing.
+     * guess silently finds nothing. Several may be given: Strava files a San
+     * Francisco trip under its neighbourhoods, and `state` there is the whole
+     * of California.
      */
-    city: z.string().optional(),
+    city: z.union([z.string(), z.array(z.string().min(1)).min(1)]).optional(),
     /**
      * Strava state, for a set named after a region rather than a town — Goa's
      * activity is spread across Mapusa, Calangute and Panjim. Wins over `city`.

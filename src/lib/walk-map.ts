@@ -246,8 +246,13 @@ export function decodePolyline(encoded: string): LatLng[] {
 }
 
 export interface Match {
-  /** Strava's city label. Goa's activity spans three cities, hence state. */
-  city?: string;
+  /**
+   * Strava's city label, or several. A big city is filed by neighbourhood —
+   * one San Francisco trip lands under Noe Valley, Mission District and
+   * Parkside — and `state` is too coarse to stand in, being all of California.
+   * Goa's activity spans three towns of one small state, hence `state` too.
+   */
+  city?: string | string[];
   /** Strava's state label — the right key when a trip roamed a region. */
   state?: string;
   /** Sport types to include, or ALL_SPORTS. Defaults to walking. */
@@ -263,10 +268,11 @@ export function selectActivities(
 ): WalkActivity[] {
   if (!city && !state) return [];
   const wanted = sports === ALL_SPORTS ? null : new Set(sports);
+  const cities = city === undefined ? null : new Set(Array.isArray(city) ? city : [city]);
   return activities.filter(
     (a) =>
       (wanted === null || wanted.has(a.sport_type)) &&
-      (city ? a.city === city : a.state === state) &&
+      (cities ? a.city !== null && cities.has(a.city) : a.state === state) &&
       typeof a.polyline === 'string' &&
       a.polyline.length > 0 &&
       a.date >= from &&
