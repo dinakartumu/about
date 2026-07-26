@@ -1,0 +1,165 @@
+{
+  "title": "Golden Gate",
+  "slug": "golden-gate",
+  "description": "",
+  "cover": "golden-gate/DSCF0167",
+  "date": "2023-02-15",
+  "city": "San Francisco",
+  "sports": "all",
+  "photos": [
+    {
+      "id": "golden-gate/DSC04579",
+      "width": 6000,
+      "height": 3376,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/1.4",
+        "shutter": "1/160",
+        "iso": 320,
+        "taken": "2022-09-16T01:11:32.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0110-Pano",
+      "width": 23264,
+      "height": 4084,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-02-15T11:58:04.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0112",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/240",
+        "iso": 125,
+        "taken": "2023-02-15T11:58:12.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0114",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-02-15T11:58:44.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0140",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/240",
+        "iso": 125,
+        "taken": "2023-02-15T12:01:55.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0141",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/400",
+        "iso": 125,
+        "taken": "2023-02-15T12:02:55.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0157",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/5000",
+        "iso": 125,
+        "taken": "2023-02-15T12:09:08.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0167",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/1000",
+        "iso": 125,
+        "taken": "2023-02-15T12:14:03.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0174",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/220",
+        "iso": 125,
+        "taken": "2023-02-15T12:16:58.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/DSCF0184",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/3000",
+        "iso": 125,
+        "taken": "2023-02-15T12:18:29.000Z"
+      }
+    },
+    {
+      "id": "golden-gate/IMG_7453",
+      "width": 4032,
+      "height": 3024,
+      "exif": {
+        "camera": "iPhone X",
+        "lens": "iPhone X back dual camera 4mm f/1.8",
+        "focal": "4mm",
+        "aperture": "f/1.8",
+        "shutter": "1/648",
+        "iso": 20,
+        "taken": "2017-11-19T10:33:22.000Z"
+      }
+    }
+  ]
+}

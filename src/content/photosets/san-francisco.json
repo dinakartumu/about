@@ -1,0 +1,668 @@
+{
+  "title": "San Francisco",
+  "slug": "san-francisco",
+  "description": "",
+  "cover": "san-francisco/DSCF1049",
+  "date": "2023-03-17",
+  "city": ["Noe Valley", "Mission District", "Parkside"],
+  "photos": [
+    {
+      "id": "san-francisco/DSC03678",
+      "width": 3898,
+      "height": 5197,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/5",
+        "shutter": "1/1250",
+        "iso": 100,
+        "taken": "2022-05-07T11:47:33.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSC03680",
+      "width": 5375,
+      "height": 3023,
+      "exif": {
+        "camera": "ILCE-6400",
+        "lens": "56mm F1.4 DC DN | Contemporary 018",
+        "focal": "56mm",
+        "aperture": "f/5",
+        "shutter": "1/500",
+        "iso": 100,
+        "taken": "2022-05-07T11:47:47.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/IMG_4367",
+      "width": 3024,
+      "height": 4032,
+      "exif": {
+        "camera": "iPhone 13 Pro",
+        "lens": "iPhone 13 Pro back triple camera 9mm f/2.8",
+        "focal": "9mm",
+        "aperture": "f/2.8",
+        "shutter": "1/250",
+        "iso": 32,
+        "taken": "2022-05-07T12:29:26.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF0069",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.2",
+        "shutter": "1/320",
+        "iso": 125,
+        "taken": "2023-02-15T02:51:12.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF0996",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-03-02T06:55:50.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/IMG_9617",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/1500",
+        "iso": 80,
+        "taken": "2023-03-02T06:57:38.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF0999",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/480",
+        "iso": 125,
+        "taken": "2023-03-02T07:09:31.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1009",
+      "width": 4141,
+      "height": 6212,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-02T07:13:13.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1011",
+      "width": 3890,
+      "height": 5835,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/1000",
+        "iso": 125,
+        "taken": "2023-03-02T07:14:29.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1015",
+      "width": 3873,
+      "height": 5809,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/300",
+        "iso": 125,
+        "taken": "2023-03-02T07:21:15.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1016",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-03-02T07:22:35.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/IMG_9633",
+      "width": 6048,
+      "height": 8064,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/340",
+        "iso": 80,
+        "taken": "2023-03-02T07:30:24.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1021",
+      "width": 4477,
+      "height": 6716,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-03-02T07:33:43.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1022",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-03-02T07:34:11.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1032",
+      "width": 4613,
+      "height": 6920,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-02T10:31:00.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1038-Pano",
+      "width": 13955,
+      "height": 7500,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-02T10:33:12.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1042",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/250",
+        "iso": 125,
+        "taken": "2023-03-02T10:42:04.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1043",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/180",
+        "iso": 125,
+        "taken": "2023-03-02T10:44:30.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1045",
+      "width": 4709,
+      "height": 7064,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.5",
+        "shutter": "1/160",
+        "iso": 125,
+        "taken": "2023-03-02T10:45:01.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1047",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/2.8",
+        "shutter": "1/280",
+        "iso": 125,
+        "taken": "2023-03-02T10:58:37.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1048",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/950",
+        "iso": 125,
+        "taken": "2023-03-02T11:06:50.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1049",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-03-02T11:08:38.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/IMG_9644",
+      "width": 4709,
+      "height": 6279,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/70",
+        "iso": 125,
+        "taken": "2023-03-02T11:17:20.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/IMG_9647",
+      "width": 8064,
+      "height": 6048,
+      "exif": {
+        "camera": "iPhone 14 Pro",
+        "lens": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
+        "focal": "7mm",
+        "aperture": "f/1.8",
+        "shutter": "1/950",
+        "iso": 100,
+        "taken": "2023-03-02T11:19:45.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1081",
+      "width": 4324,
+      "height": 6486,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-03T05:51:56.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1086",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5",
+        "shutter": "1/950",
+        "iso": 125,
+        "taken": "2023-03-03T05:54:06.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1088",
+      "width": 5418,
+      "height": 3048,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-03T05:55:11.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1099",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/5.6",
+        "shutter": "1/1400",
+        "iso": 125,
+        "taken": "2023-03-03T06:42:30.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1101",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-03T06:45:44.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1109",
+      "width": 3886,
+      "height": 5829,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/3.6",
+        "shutter": "1/340",
+        "iso": 125,
+        "taken": "2023-03-03T08:05:14.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1112",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/680",
+        "iso": 125,
+        "taken": "2023-03-03T08:06:47.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1114",
+      "width": 5894,
+      "height": 4420,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/750",
+        "iso": 125,
+        "taken": "2023-03-03T08:10:04.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1134",
+      "width": 4864,
+      "height": 7296,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4.5",
+        "shutter": "1/500",
+        "iso": 125,
+        "taken": "2023-03-03T09:39:01.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1135",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.6",
+        "shutter": "1/80",
+        "iso": 125,
+        "taken": "2023-03-03T10:22:39.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1137",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/55",
+        "iso": 125,
+        "taken": "2023-03-03T11:23:53.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1139",
+      "width": 4085,
+      "height": 6128,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/16",
+        "shutter": "1/50",
+        "iso": 2500,
+        "taken": "2023-03-03T11:59:51.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1140",
+      "width": 4197,
+      "height": 6296,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/16",
+        "shutter": "1/50",
+        "iso": 1600,
+        "taken": "2023-03-03T12:00:15.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1141",
+      "width": 4303,
+      "height": 6454,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/16",
+        "shutter": "1/50",
+        "iso": 1600,
+        "taken": "2023-03-03T12:01:45.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1143",
+      "width": 3952,
+      "height": 5928,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/14",
+        "shutter": "1/50",
+        "iso": 1000,
+        "taken": "2023-03-03T12:10:13.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1144",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/14",
+        "shutter": "1/50",
+        "iso": 8000,
+        "taken": "2023-03-03T12:12:09.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1145",
+      "width": 2679,
+      "height": 4018,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/14",
+        "shutter": "1/50",
+        "iso": 2000,
+        "taken": "2023-03-03T12:14:11.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1154",
+      "width": 3957,
+      "height": 5935,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 160,
+        "taken": "2023-03-03T12:31:26.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1171",
+      "width": 4198,
+      "height": 6297,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 640,
+        "taken": "2023-03-03T13:48:22.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1506",
+      "width": 5152,
+      "height": 7728,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/640",
+        "iso": 125,
+        "taken": "2023-03-07T11:44:05.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1843",
+      "width": 7436,
+      "height": 4183,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/4",
+        "shutter": "1/600",
+        "iso": 125,
+        "taken": "2023-03-17T12:51:55.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1857",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 160,
+        "taken": "2023-03-17T13:48:29.000Z"
+      }
+    },
+    {
+      "id": "san-francisco/DSCF1862",
+      "width": 7728,
+      "height": 5152,
+      "exif": {
+        "camera": "X-T5",
+        "lens": "XF33mmF1.4 R LM WR",
+        "focal": "33mm",
+        "aperture": "f/1.4",
+        "shutter": "1/50",
+        "iso": 200,
+        "taken": "2023-03-17T13:49:12.000Z"
+      }
+    }
+  ]
+}
