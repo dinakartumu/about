@@ -63,6 +63,33 @@ const features = [
       </div>
     </header>
 
+    <div class="shots">
+      <figure>
+        <img
+          src="/photodrift/settings-general.jpg"
+          alt="PhotoDrift's General settings: Launch at Login, a shuffle interval from 15 minutes to 4 hours, and an open Scaling menu showing Fill Screen, Fit to Screen, Stretch to Fill, Center and Tile."
+          width="1300"
+          height="1165"
+          loading="lazy"
+        />
+        <figcaption class="muted">
+          Pick how often the wallpaper changes and how each photo is fitted to the screen.
+        </figcaption>
+      </figure>
+      <figure>
+        <img
+          src="/photodrift/settings-albums.jpg"
+          alt="PhotoDrift's Albums settings, showing a scrollable list of Adobe Lightroom albums with checkboxes and Select All and Deselect All buttons."
+          width="1300"
+          height="1622"
+          loading="lazy"
+        />
+        <figcaption class="muted">
+          Tick the albums you want. Apple Photos and Lightroom sit behind the same picker.
+        </figcaption>
+      </figure>
+    </div>
+
     <h2>What it does</h2>
     <ul class="features">
       {features.map((f) => (
@@ -143,6 +170,23 @@ const features = [
   .requirements { margin: 1rem 0 0; font-size: 0.85rem; }
 
   h2 { font-size: 1.25rem; margin: 2.5rem 0 1rem; }
+
+  .shots {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .shots figure { margin: 0; }
+  .shots img {
+    width: 100%;
+    border-radius: 0.6rem;
+    border: 1px solid var(--surface);
+  }
+  .shots figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
 
   .features {
     list-style: none;
