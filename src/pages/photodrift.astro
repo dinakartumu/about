@@ -1,0 +1,169 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const repo = 'https://github.com/dinakartumu/PhotoDrift';
+const releases = `${repo}/releases/latest`;
+
+const features = [
+  {
+    title: 'Two libraries, one pool',
+    body: 'Pick albums from Apple Photos and Adobe Lightroom and PhotoDrift shuffles across both as a single collection.',
+  },
+  {
+    title: 'Set it and forget it',
+    body: 'Choose an interval from fifteen minutes to four hours. Your desktop keeps changing while you work.',
+  },
+  {
+    title: 'Fits any screen',
+    body: 'Fill, Fit, Stretch, Center, or Tile. Fit composites a gradient from the photo itself so portraits never sit on grey bars.',
+  },
+  {
+    title: 'Every desktop',
+    body: 'Wallpapers apply across Spaces, and reapply when you switch between them.',
+  },
+  {
+    title: 'Works offline',
+    body: 'Images are cached and prefetched ahead of time. Lose the network and it falls back to your local Photos library.',
+  },
+  {
+    title: 'Stays out of the way',
+    body: 'A menu bar app with no dock icon and no window. Around 40 MB of memory while idle.',
+  },
+];
+---
+
+<Layout
+  title="PhotoDrift · Dinakar Tumu"
+  description="A macOS menu bar app that shuffles your desktop wallpaper from Apple Photos and Adobe Lightroom."
+  image="https://dinakartumu.com/photodrift/og.png"
+  imageWidth={1200}
+  imageHeight={630}
+>
+  <section class="container">
+    <header class="hero">
+      <img
+        src="/photodrift/icon.png"
+        alt="PhotoDrift app icon: a stack of photo cards on a dark rounded square"
+        width="128"
+        height="128"
+        class="icon"
+      />
+      <div class="intro">
+        <h1>PhotoDrift</h1>
+        <p class="tagline">Your photos, drifting across your desktop.</p>
+        <p class="muted lede">
+          A macOS menu bar app that shuffles your wallpaper from Apple Photos and
+          Adobe Lightroom. Choose some albums, pick an interval, forget it exists.
+        </p>
+        <div class="actions">
+          <a class="button primary" href={releases}>Download for macOS</a>
+          <a class="button" href={repo}>View source</a>
+        </div>
+        <p class="muted requirements">Requires macOS 14 or later · Free and open source</p>
+      </div>
+    </header>
+
+    <h2>What it does</h2>
+    <ul class="features">
+      {features.map((f) => (
+        <li>
+          <h3>{f.title}</h3>
+          <p class="muted">{f.body}</p>
+        </li>
+      ))}
+    </ul>
+
+    <h2>Your photos stay yours</h2>
+    <p class="muted prose">
+      PhotoDrift talks to exactly two places: your local Photos library and, if you connect
+      it, Adobe's Lightroom API. There is no PhotoDrift server, no account, and no analytics.
+      Lightroom sign-in uses OAuth with PKCE, and the resulting tokens live in your macOS
+      Keychain. Cached images sit in the app's own container and never leave the machine.
+    </p>
+
+    <h2>Installing</h2>
+    <ol class="steps muted prose">
+      <li>Download the latest DMG from <a href={releases}>Releases</a>.</li>
+      <li>Drag PhotoDrift to your Applications folder.</li>
+      <li>Launch it — the icon appears in your menu bar, not the dock.</li>
+      <li>Grant Photos access when asked, then pick albums under Settings.</li>
+    </ol>
+    <p class="muted prose small">
+      Builds are signed with a Developer ID and notarized by Apple, so they open without a
+      Gatekeeper warning. Lightroom is optional; Apple Photos alone works fine.
+    </p>
+  </section>
+</Layout>
+
+<style>
+  .container { max-width: 44rem; }
+
+  .hero {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+  }
+  .icon {
+    width: 128px;
+    height: 128px;
+    flex-shrink: 0;
+    border-radius: 22%;
+  }
+  .intro { min-width: 0; }
+  .hero h1 { margin: 0 0 0.35rem; }
+  .tagline {
+    margin: 0 0 0.75rem;
+    font-size: 1.15rem;
+    color: var(--accent);
+  }
+  .lede { margin: 0 0 1.5rem; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .button {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--surface);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    /* No transition on colour: these resolve from theme variables, and transitioning them
+       leaves the button stuck on the previous theme's values when the toggle flips. */
+  }
+  .button:hover { border-color: var(--accent); color: var(--accent); }
+  .button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  .button.primary:hover { opacity: 0.88; color: var(--bg); }
+
+  .requirements { margin: 1rem 0 0; font-size: 0.85rem; }
+
+  h2 { font-size: 1.25rem; margin: 2.5rem 0 1rem; }
+
+  .features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+  }
+  .features h3 { font-size: 1rem; margin: 0 0 0.3rem; font-weight: 500; }
+  .features p { margin: 0; font-size: 0.9rem; }
+
+  .prose { max-width: 38rem; }
+  .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .small { font-size: 0.85rem; }
+
+  .steps { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem; }
+
+  @media (max-width: 34rem) {
+    .hero { flex-direction: column; gap: 1.25rem; }
+    .icon { width: 96px; height: 96px; }
+    .features { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

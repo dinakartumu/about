@@ -1,5 +1,11 @@
 [
   {
+    "title": "PhotoDrift",
+    "blurb": "macOS menu bar app that shuffles your desktop wallpaper from Apple Photos and Lightroom albums.",
+    "href": "/photodrift",
+    "year": "2026"
+  },
+  {
     "title": "Pageloop",
     "blurb": "TODO: one-liner about what you build at Pageloop.",
     "href": "https://pageloop.ai",
