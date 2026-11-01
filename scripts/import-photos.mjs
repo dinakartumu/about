@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
-import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readdir, readFile, writeFile, mkdir, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import 'dotenv/config';
@@ -9,6 +9,7 @@ import exifr from 'exifr';
 import { mergeManifest } from './lib/manifest.mjs';
 import { toPhotoExif } from './lib/exif-format.mjs';
 import { r2Client, uploadIfMissing } from './lib/r2.mjs';
+import { fitWithinLimits } from './lib/resize-limits.mjs';
 
 const MANIFEST_DIR = 'src/content/photosets';
 const EXIF_FIELDS = ['Model', 'LensModel', 'FocalLength', 'FNumber', 'ExposureTime', 'ISO', 'DateTimeOriginal'];
@@ -64,15 +65,20 @@ console.log(`Scanning ${files.length} photos in ${folder} …`);
 const scanned = [];
 for (const file of files) {
   const filePath = path.join(folder, file);
-  const meta = await sharp(filePath).metadata();
+  const meta = await sharp(filePath, { limitInputPixels: false }).metadata();
   const swap = (meta.orientation ?? 1) >= 5; // EXIF rotated 90°/270°
   const raw = await exifr.parse(filePath, EXIF_FIELDS).catch(() => null);
+  // Too big for Cloudflare to resize: upload a smaller copy instead of the original
+  const fit = fitWithinLimits({ width: meta.width, height: meta.height, bytes: (await stat(filePath)).size });
+  if (fit) console.log(`  ${file}: ${meta.width}×${meta.height} → ${fit.width}×${fit.height} (over Cloudflare's resize limits)`);
+  const { width, height } = fit ?? meta;
   scanned.push({
     id: `${slug}/${path.parse(file).name}`,
-    width: swap ? meta.height : meta.width,
-    height: swap ? meta.width : meta.height,
+    width: swap ? height : width,
+    height: swap ? width : height,
     exif: toPhotoExif(raw),
     _file: filePath,
+    _fit: fit,
   });
 }
 
@@ -86,7 +92,7 @@ if (dupes.length) {
 // 2. Merge into manifest
 const merged = mergeManifest(
   existing,
-  scanned.map(({ _file, ...p }) => p),
+  scanned.map(({ _file, _fit, ...p }) => p),
   { prune: opts.prune }
 );
 if (!existing) {
@@ -124,7 +130,14 @@ for (const p of toUpload) {
   const key = `photos/${p.id}.jpg`;
   let result;
   try {
-    result = await uploadIfMissing(client, bucket, key, await readFile(p._file), { force: opts.force });
+    const body = p._fit
+      ? await sharp(p._file, { limitInputPixels: false })
+          .resize(p._fit.width, p._fit.height)
+          .withMetadata()
+          .jpeg({ quality: 92, mozjpeg: true })
+          .toBuffer()
+      : await readFile(p._file);
+    result = await uploadIfMissing(client, bucket, key, body, { force: opts.force });
   } catch (err) {
     console.error(`\nUpload failed for ${key}: ${err.message}`);
     process.exit(1);
