@@ -22,7 +22,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  actions: read
+  # write, not read: the keepalive step below re-enables this workflow.
+  actions: write
 
 jobs:
   rebuild:
@@ -68,4 +69,20 @@ jobs:
             curl -fsS -X POST "$PAGES_DEPLOY_HOOK" >/dev/null && echo "Deploy hook fired."
           else
             echo "No new data since the previous run — skipping rebuild."
+          fi
+
+      # GitHub disables scheduled workflows after 60 days without repository
+      # activity, and this one runs on its own for months at a time — it went
+      # dark from 2026-10-25 to 2026-11-09 that way, silently freezing the site.
+      # Re-enabling an already-active workflow through the API resets that
+      # inactivity timer without needing a commit. Once a day is plenty.
+      - name: Keep the schedule from being disabled for inactivity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || [ "$(date -u +%H)" = "12" ]; then
+            gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/rebuild.yml/enable" \
+              && echo "Inactivity timer reset."
+          else
+            echo "Not the daily run — skipping keepalive."
           fi
