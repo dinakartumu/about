@@ -1,0 +1,141 @@
+/* Skin for the ramka photo viewer (PhotoViewer.tsx). ramka ships no styles;
+   this is trimmed from its default preset. The portal mounts on <body>, so
+   these are global rules keyed off the lb-* classes the viewer sets. The
+   --lightbox-* variables are written by ramka at runtime. */
+
+.lb-portal {
+  --lb-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lb-backdrop {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  background-color: #000;
+  transition: opacity var(--lightbox-pull-snap-duration, var(--lightbox-vt-duration, 360ms))
+    var(--lightbox-pull-snap-easing, var(--lb-ease-out-expo));
+}
+@starting-style {
+  .lb-backdrop[data-open] { opacity: 0; }
+}
+/* Pull-to-dismiss fades the backdrop as the photo is dragged away. */
+.lb-backdrop[data-open] { opacity: calc(0.95 - var(--lightbox-pull-progress, 0) * 0.6); }
+.lb-backdrop[data-pulling] { transition: none; }
+
+.lb-content {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior: contain;
+  outline: none;
+  opacity: 0;
+  transition: opacity var(--lightbox-vt-duration, 360ms) var(--lb-ease-out-expo);
+  --lb-inset-top: calc(3.5rem + env(safe-area-inset-top, 0px));
+  --lb-inset-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+  --lb-inset-inline: 0px;
+}
+@media (min-width: 768px) {
+  .lb-content {
+    --lb-inset-top: 2.5vh;
+    --lb-inset-bottom: 2.5vh;
+    --lb-inset-inline: 5rem;
+  }
+}
+.lb-content[data-open] { opacity: 1; }
+@starting-style {
+  .lb-content[data-open] { opacity: 0; }
+}
+
+.lb-slides {
+  flex: 1;
+  gap: 1.25rem;
+  scrollbar-width: none;
+}
+.lb-slides::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) {
+  .lb-slides { gap: 0; }
+}
+
+.lb-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  height: 100%;
+  padding-top: var(--lb-inset-top);
+  padding-bottom: var(--lb-inset-bottom);
+  padding-inline: var(--lb-inset-inline);
+}
+
+.lb-slide img {
+  border-radius: 4px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.lb-control {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+.lb-control:hover { background: rgb(255 255 255 / 0.22); }
+.lb-control:focus { outline: none; }
+.lb-control:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.lb-control[data-disabled],
+.lb-control:disabled { opacity: 0.25; cursor: default; }
+.lb-control svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lb-close {
+  top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  right: 0.75rem;
+}
+
+/* Arrows on desktop only; on touch screens, swipe. */
+.lb-nav { display: none; }
+@media (min-width: 768px) and (hover: hover) {
+  .lb-nav { display: inline-flex; top: 50%; transform: translateY(-50%); }
+  .lb-prev { left: 1.25rem; }
+  .lb-next { right: 1.25rem; }
+}
+
+.lb-counter {
+  position: absolute;
+  left: 50%;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: rgb(255 255 255 / 0.7);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+@media (min-width: 768px) {
+  .lb-counter {
+    top: calc(1.4rem + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    left: 1.5rem;
+    transform: none;
+  }
+}
+
+/* While the viewer runs a pull or zoom gesture, keep chrome out of the way. */
+.lb-content[data-pulling] .lb-control,
+.lb-content[data-pulling] .lb-counter { opacity: 0; }
