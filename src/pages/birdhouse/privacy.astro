@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const updated = 'November 11, 2026';
+const email = 'dinakar91@gmail.com';
+---
+
+<Layout
+  title="Birdhouse Privacy Policy · Dinakar Tumu"
+  description="How Birdhouse Social, an X client for iPhone, iPad and Mac, handles your data."
+>
+  <article class="container prose">
+    <h1>Birdhouse privacy policy</h1>
+    <p class="muted small">Last updated {updated}</p>
+
+    <p>
+      Birdhouse Social ("Birdhouse") is an app for reading and posting to X on iPhone, iPad
+      and Mac. It is made by Dinakar Tumu, an independent developer. Birdhouse is not
+      affiliated with or endorsed by X Corp.
+    </p>
+
+    <h2>The short version</h2>
+    <p>
+      Birdhouse has no server of its own. It talks directly to X, and everything it keeps
+      stays on your device. There are no ads, no analytics and no tracking, and I never see
+      your account, your posts or your messages.
+    </p>
+
+    <h2>Signing in</h2>
+    <p>
+      You sign in on X's own sign-in page, shown inside the app. Birdhouse never sees or
+      stores your password. After you sign in, the session cookies X issues are saved in
+      your device's Keychain and are sent only to X.
+    </p>
+
+    <h2>What stays on your device</h2>
+    <ul>
+      <li>Timelines, posts, profiles, lists and notifications fetched from X, cached so the app opens quickly.</li>
+      <li>Your drafts, mute rules and settings.</li>
+      <li>Images and videos, cached for display.</li>
+    </ul>
+    <p>
+      This data is stored in the app's private storage. Signing out removes your session,
+      and deleting the app removes everything it stored.
+    </p>
+
+    <h2>Who Birdhouse talks to</h2>
+    <p>
+      Birdhouse connects only to X and its media servers (x.com, twimg.com and t.co) to
+      load your timeline, post on your behalf and fetch images and videos. What you do
+      there is covered by <a href="https://x.com/en/privacy">X's privacy policy</a>.
+      Opening a link from a post opens that website, which has its own policy.
+    </p>
+
+    <h2>Camera and photos</h2>
+    <p>
+      If you allow it, Birdhouse uses the camera to take a photo for a post, and adds to your
+      photo library only the photos and videos you choose to save. Media you attach is sent
+      only to X, as part of your post.
+    </p>
+
+    <h2>Crash reports and beta feedback</h2>
+    <p>
+      Birdhouse doesn't include any crash-reporting or analytics tools. If you share crash
+      reports or feedback with developers through Apple (for example in TestFlight), Apple
+      passes them to me under <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>.
+      I use them only to fix bugs.
+    </p>
+
+    <h2>Children</h2>
+    <p>
+      Birdhouse is not directed at children, and follows X's own age requirements.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      If this policy changes, the new version will be posted on this page with a new date.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions about privacy? Email <a href={`mailto:${email}`}>{email}</a>.
+    </p>
+  </article>
+</Layout>
+
+<style>
+  .container { max-width: 40rem; }
+  h1 { margin: 0 0 0.35rem; }
+  h2 { font-size: 1.15rem; margin: 2.25rem 0 0.75rem; }
+  .small { font-size: 0.85rem; margin-top: 0; }
+  .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .prose ul { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem; }
+</style>
